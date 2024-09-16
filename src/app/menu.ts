@@ -39,21 +39,21 @@ export const menu: IMenu = {
             href: '/cadastramento',
             name: 'cadastramento',
             icon: LocationCityIcon,
-            cor: '#d50000',
+            cor: '#EE1D23',
         },
         {
             title: 'Vistoria',
             href: '/vistoria',
             name: 'vistoria',
             icon: FindInPageIcon,
-            cor: '#ffb300',
+            cor: '#FFAB00',
         },
         {
             title: 'Despacho',
             href: '/despacho',
             name: 'despacho',
             icon: DomainAddIcon,
-            cor: '#00b0ff',
+            cor: '#1877F2',
         }
     ],
     adminOptions: [
