@@ -60,8 +60,10 @@ export default function Content({
             display: 'flex',
             flexDirection: 'column',
             minWidth: 0,
-            height: '100%',
+            height: '100vh',
             gap: 1,
+            bgcolor: 'background.level1',
+            overflowY: 'auto'
           }}
         >
           <SecondHeader
