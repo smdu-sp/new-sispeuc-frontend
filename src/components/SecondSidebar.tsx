@@ -31,7 +31,7 @@ const RenderMenu = (menu: IMenu, pagina?: string) => {
       }}
     >
       <Typography level="body-lg" fontWeight={900} sx={{ lineHeight: 2, borderRadius: 2, backgroundColor: 'transparent', ml: -0.3, display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}><img style={{ width: 30, height: 30 }} src={LogoPref.src} />SISPEUC</Typography>
-      <ListSubheader sx={{ lineHeight: 2, borderRadius: 2, backgroundColor: 'transparent', ml: -1.9, fontWeight: 600, mb: 1, color: '#000' }}>Menu Princiapal</ListSubheader>
+      <ListSubheader sx={{ lineHeight: 2, borderRadius: 2, backgroundColor: 'transparent', ml: -1.9, fontWeight: 600, mb: 1 }}>Menu Princiapal</ListSubheader>
       {menu.userOptions.map((page) => (
         <ListItem sx={{ width: '100%' }} key={page.name}>
           <ListItemButton component={Link} underline="none" selected={pagina === page.name} href={page.href}>
