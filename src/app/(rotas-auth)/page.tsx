@@ -16,6 +16,8 @@ import Chart from '@/components/Chart';
 import PieArcLabel from '@/components/PieChart';
 import ChartHori from '@/components/ChartHori';
 import FormatTextdirectionRToLIcon from '@mui/icons-material/FormatTextdirectionRToL';
+import { MaterialSymbol } from 'react-material-symbols';
+import 'react-material-symbols/rounded';
 
 export default function Home() {
 
@@ -28,11 +30,13 @@ export default function Home() {
       });
   }, [])
 
+
   return (
     <Content
       titulo={'Olá ' + nome + ', boas vindas ao SISPEUC 👋'}
       pagina='/'
     >
+       <MaterialSymbol icon="moving_ministry" size={54} weight={900} color='#1877F2' />
       <Box sx={{ width: '100%', display: 'flex', gap: 2, mb: 2 }}>
         <CardImoveis width='25%' icone={GroupAddOutlinedIcon} titulo="Prospecção" botao='Ver imóveis' corIcon='#283593' />
         <CardImoveis width='25%' icone={LocationCityIcon} titulo="Cadastramento" botao='Ver imóveis' corIcon='#EE1D23' />
@@ -40,7 +44,7 @@ export default function Home() {
         <CardImoveis width='25%' icone={DomainAddIcon} titulo="Despacho" botao='Ver imóveis' corIcon='#1877F2' />
       </Box>
       <Box sx={{ width: '100%', display: 'flex', gap: 2, mb: 2 }}>
-        <CardParam width='25%' icone={LocationCityIcon} param='714K' descricao='Imóveis' corIcon='#EE1D23' />
+        <CardParam width='25%' icone={LocationCityIcon} param='714k' descricao='Imóveis' corIcon='#EE1D23' />
         <CardParam width='25%' icone={GroupAddOutlinedIcon} param='1.35m' descricao='prospectados' corIcon='#283593' />
         <CardParam width='25%' icone={FormatTextdirectionRToLIcon} param='1.72m' descricao='Em preenchimento' corIcon='#FFAB00' />
         <CardParam width='25%' icone={DomainAddIcon} param='234' descricao='Despachados' corIcon='#1877F2' />
@@ -71,10 +75,14 @@ export default function Home() {
           boxShadow: '0px 12px 24px -4px #919EAB1F',
         }}
         >
-          <Typography level='h3' sx={{ mt: 2, ml: 5 }}>
-            Visão geral imóveis
-          </Typography>
-          <PieArcLabel />
+          <Box sx={{ height: '5%' }}>
+            <Typography level='h3' sx={{ mt: 2, ml: 5 }}>
+              Visão geral imóveis
+            </Typography>
+          </Box>
+          <Box sx={{ width: '100%', height: '95%', display: 'flex', justifyContent: 'center' }}>
+            <PieArcLabel />
+          </Box>
         </Box>
       </Box>
       <Box sx={{

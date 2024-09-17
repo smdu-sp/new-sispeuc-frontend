@@ -20,8 +20,9 @@ const series = [
         color: '#1877F2',
         data: alphabetStock.map((day) => day.volume),
         highlightScope: { highlight: 'item' },
-        lineStyle: {
-        },
+        bar: {
+            width: 10
+        }
     },
     {
         type: 'line',

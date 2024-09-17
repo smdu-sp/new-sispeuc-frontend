@@ -11,7 +11,6 @@ export interface IMenuOption {
     icon:   any; 
     cor?:    string;
 };
-
 export interface IMenu {
     userOptions:    IMenuOption[];
     adminOptions:   IMenuOption[];
@@ -25,7 +24,6 @@ export const menu: IMenu = {
             href: '/',
             name: '/',
             icon: Home,
-            cor: '#000',
         },
         {
             title: 'Prospecção',
