@@ -27,8 +27,8 @@ export const menu: IMenu = {
         },
         {
             title: 'Prospecção',
-            href: '/prospecção',
-            name: 'prospecção',
+            href: '/prospeccao',
+            name: 'Prospecção',
             icon: GroupAddOutlinedIcon,
             cor: '#283593',
         },
