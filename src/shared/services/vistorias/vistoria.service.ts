@@ -1,10 +1,11 @@
 'use server'
 
 import { authOptions } from "@/shared/auth/authOptions";
-import { VistoriaRequestDTO, VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
 import { getServerSession } from "next-auth";
 
-const api_url = 'http://localhost:3000/vistorias';
+import { VistoriaRequestDTO, VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
+
+const api_url: string = 'http://localhost:3000/vistorias';
 
 export const createVistoria = async (request: VistoriaRequestDTO): Promise<VistoriaResponseDTO> => {
     const session = await getServerSession(authOptions);
@@ -22,10 +23,11 @@ export const createVistoria = async (request: VistoriaRequestDTO): Promise<Visto
 };
 
 export const getAllVistorias = async (
-    limit: number, offset: number, orderBy: string, order: string
+    limit: number = 10, offset: number = 0, orderBy: string = '', order: string = ''
 ): Promise<VistoriaResponseDTO[]> => {
     const session = await getServerSession(authOptions);
-    const response: Response = await fetch(`${api_url}/buscar-vistorias?limit=${limit}&offset=${offset}&orderBy=${orderBy}&order=${order}`, {
+    const request_url: string = `${api_url}/buscar-vistorias?limit=${limit}&offset=${offset}&orderBy=${orderBy}&order=${order}`;
+    const response: Response = await fetch(request_url, {
         method: 'GET',
         headers: { 
             'Content-Type': 'application/json',
@@ -51,7 +53,9 @@ export const getOneVistoria = async (id: string): Promise<VistoriaResponseDTO> =
     return data;
 };
 
-export const updateVistoria = async (id: string, request: VistoriaRequestDTO): Promise<VistoriaResponseDTO> => {
+export const updateVistoria = async (
+    id: string, request: VistoriaRequestDTO
+): Promise<VistoriaResponseDTO> => {
     const session = await getServerSession(authOptions);
     const response: Response = await fetch(`${api_url}/atualizar-vistoria/${id}`, {
         method: 'PATCH',
