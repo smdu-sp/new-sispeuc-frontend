@@ -71,6 +71,11 @@ export default function Prospeccao() {
     }));
   };
 
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+    console.log(file);
+  };
+
   return (
     <Content
       breadcrumbs={[{ label: 'Prospecção', href: '/prospeccao' }]}
@@ -78,8 +83,23 @@ export default function Prospeccao() {
       pagina="Prospecção"
     >
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', gap: 3, mb: 5 }}>
-        <Button sx={{ bgcolor: theme.palette.text.icon, color: 'background.body' }} startDecorator={<UploadIcon sx={{ height: 20, width: 20 }} />}>Importar imóveis</Button>
-        <Button onClick={() => {router.push('/prospeccao/detalhes')}} sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }} startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}>Criar ficha em branco</Button>
+        <div>
+          <input
+            type="file"
+            id="file-upload"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+          <Button
+            component="label"
+            htmlFor="file-upload"
+            sx={{ bgcolor: theme.palette.text.icon, color: 'background.body' }}
+            startDecorator={<UploadIcon sx={{ height: 20, width: 20 }} />}
+          >
+            Importar imóveis
+          </Button>
+        </div>
+        <Button onClick={() => { router.push('/prospeccao/detalhes') }} sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }} startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}>Criar ficha em branco</Button>
       </Box>
       <Sheet sx={{ borderTopLeftRadius: 20, borderTopRightRadius: 20, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, boxShadow: 'xs' }}>
         <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
@@ -130,7 +150,7 @@ export default function Prospeccao() {
                   <td>{row.numero}</td>
                   <td><Chip color="danger" variant="soft">{row.status}</Chip></td>
                   <td>
-                    <Button onClick={() => {router.push('prospeccao/detalhes/' + row.id )}} sx={{ bgcolor: theme.palette.text.primary, color: backgroudLevel1 }}>
+                    <Button onClick={() => { router.push('prospeccao/detalhes/' + row.id) }} sx={{ bgcolor: theme.palette.text.primary, color: backgroudLevel1 }}>
                       Ver Ficha
                     </Button>
                   </td>
