@@ -1,15 +1,15 @@
 'use client'
 
 import { useContext, useEffect, useState } from "react";
-import { Autocomplete, AutocompleteOption, Box, Button, Card, CardActions, CardOverflow, Chip, ChipPropsColorOverrides, ColorPaletteProp, Divider, FormControl, FormLabel, IconButton, Input, Option, Select, Stack } from "@mui/joy";
-import { Badge, Business, Check, Clear, EmailRounded, Warning } from "@mui/icons-material";
+import { Box, Button, Card, CardActions, CardOverflow, Chip, ChipPropsColorOverrides, ColorPaletteProp, Divider, FormControl, FormLabel, IconButton, Input, Option, Select, Stack } from "@mui/joy";
+import { Badge, Check, Clear, EmailRounded, Warning } from "@mui/icons-material";
 import { useRouter } from 'next/navigation';
 import { OverridableStringUnion } from '@mui/types';
 
 import Content from "@/components/Content";
 import { IUsuario } from "@/shared/services/usuario.services";
-import * as usuarioServices from "@/shared/services/usuario.services";
 import { AlertsContext } from "@/providers/alertsProvider";
+import { buscarNovoUsuario, createUsuario, getOneUsuario, updateUsuario } from "@/shared/services/usuarios/usuarios.service";
 
 export default function UsuarioDetalhes(props: any) {
     const [usuario, setUsuario] = useState<IUsuario>();
@@ -31,7 +31,7 @@ export default function UsuarioDetalhes(props: any) {
 
     useEffect(() => {
         if (id) {
-            usuarioServices.buscarPorId(id)
+            getOneUsuario(id)
                 .then((response: IUsuario) => {
                     setUsuario(response);
                     setPermissao(response.permissao);
@@ -42,7 +42,7 @@ export default function UsuarioDetalhes(props: any) {
 
     const submitData = () => {
         if (usuario){
-            usuarioServices.atualizar(usuario.id, {
+            updateUsuario(usuario.id, {
                 permissao
             }).then((response) => {
                 if (response.id) {
@@ -51,7 +51,7 @@ export default function UsuarioDetalhes(props: any) {
             })
         } else {
             if (novoUsuario){
-                usuarioServices.criar({
+                createUsuario({
                     nome, login, email, permissao
                 }).then((response) => {
                     if (response.id) {
@@ -65,7 +65,7 @@ export default function UsuarioDetalhes(props: any) {
 
     const buscarNovo = () => {
         if (login)
-            usuarioServices.buscarNovo(login).then((response) => {
+            buscarNovoUsuario(login).then((response: any) => {
                 if (response.message) setAlert('Erro', response.message, 'warning', 3000, Warning);
                 if (response.id)
                     router.push('/usuarios/detalhes/' + response.id);

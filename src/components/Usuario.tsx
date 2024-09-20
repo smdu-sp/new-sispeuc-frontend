@@ -6,6 +6,7 @@ import * as usuarioServices from "@/shared/services/usuario.services";
 import { IUsuario } from "@/shared/services/usuario.services";
 import { Logout } from "@mui/icons-material";
 import { signOut } from "next-auth/react";
+import { validaUsuario } from "@/shared/services/usuarios/usuarios.service";
 
 export default function Usuario() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function Usuario() {
   }
 
   useEffect(() => {
-    usuarioServices.validaUsuario()
+    validaUsuario()
       .then((response: IUsuario) => {
         setUsuario(response);
       });

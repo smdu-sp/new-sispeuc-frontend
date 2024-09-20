@@ -5,18 +5,30 @@ export interface AuditoriaResponseDTO {
   usuarioId: string,
   acaoTipo: string,
   registroTipo: string,
-  alteracao: {},
+  alteracao: AuditoriaAlteracaoDTO,
   criadoEm: Date
 }
 
-
-// {
-//   "id": 1,
-//   "nomeRota": "vistoria",
-//   "registroId": null,
-//   "usuarioId": "string",
-//   "acaoTipo": "consultou",
-//   "registroTipo": "vistorias/buscar-vistorias",
-//   "alteracao": {},
-//   "criadoEm": "2024-09-19T14:30:48.695Z"
-// },
+interface AuditoriaAlteracaoDTO {
+  servico: boolean,
+  tipoUso: string,
+  comercio: boolean,
+  imovelId: number,
+  descricao: string,
+  industria: boolean,
+  processoId: number,
+  unifamiliar: boolean,
+  dataVistoria: Date
+  tipoVistoria: string,
+  multifamiliar: boolean,
+  tipoTipologia: string,
+  qtdePavimentos: number,
+  usoPodaVegetacao: boolean,
+  usoFachadaBoaCondicao: boolean,
+  areaLoteTotalConstatada: number,
+  usoEsquadriaBoaCondicao: boolean,
+  indiceOcupacaoConstatado: number,
+  areaConstruidaNaoComputavel: number,
+  areaCoberturaTotalConstatada: number,
+  areaConstruidaTotalConstatada: number
+}
