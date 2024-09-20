@@ -15,10 +15,5 @@ export const validarVitalidade = async (): Promise<VitalidadeSuccessDTO | Vitali
       'Authorization': `Bearer ${session?.access_token}`
     }
   });
-  if (response.status != 200) {
-    const data: VitalidadeErrorDTO = await response.json();
-    return data;
-  }
-  const data: VitalidadeSuccessDTO = await response.json();
-  return data;
+  return await response.json();
 };

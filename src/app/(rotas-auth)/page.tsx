@@ -17,7 +17,6 @@ import FormatTextdirectionRToLIcon from '@mui/icons-material/FormatTextdirection
 import { MaterialSymbol } from 'react-material-symbols';
 import 'react-material-symbols/rounded';
 import { validaUsuario } from '@/shared/services/usuarios/usuarios.service';
-import { validarVitalidade } from '@/shared/services/vitalidade/vitalidade.service';
 
 export default function Home() {
 
@@ -28,8 +27,6 @@ export default function Home() {
       .then((response: IUsuario) => {
         setNome(response.nome);
       });
-
-    validarVitalidade().then(response => console.log(response));
   }, [])
 
   return (
