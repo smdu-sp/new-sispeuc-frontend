@@ -18,7 +18,7 @@ import ChartHori from '@/components/ChartHori';
 import FormatTextdirectionRToLIcon from '@mui/icons-material/FormatTextdirectionRToL';
 import { MaterialSymbol } from 'react-material-symbols';
 import 'react-material-symbols/rounded';
-import { getAllVistorias, getOneVistoria } from '@/shared/services/vistorias/vistoria.service';
+import { getAllAuditorias, getOneAuditoria } from '@/shared/services/auditorias/auditoria.service';
 
 export default function Home() {
 
