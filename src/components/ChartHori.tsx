@@ -41,8 +41,7 @@ const chartSetting = {
     xAxis: [
     ],
     height: 400,
-    width: 1200,
-    barWidth: 50
+    width: 1200
 };
 
 const valueFormatter = (value: number | null) => `${value}mm`;
