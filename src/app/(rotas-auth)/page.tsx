@@ -18,18 +18,21 @@ import ChartHori from '@/components/ChartHori';
 import FormatTextdirectionRToLIcon from '@mui/icons-material/FormatTextdirectionRToL';
 import { MaterialSymbol } from 'react-material-symbols';
 import 'react-material-symbols/rounded';
+import { getAllAuditorias, getOneAuditoria } from '@/shared/services/auditorias/auditoria.service';
+import { validaUsuario } from '@/shared/services/usuarios/usuarios.service';
 
 export default function Home() {
 
   const [nome, setNome] = useState('');
 
   useEffect(() => {
-    usuarioServices.validaUsuario()
+    validaUsuario()
       .then((response: IUsuario) => {
         setNome(response.nome);
       });
-  }, [])
 
+    
+  }, [])
 
   return (
     <Content
