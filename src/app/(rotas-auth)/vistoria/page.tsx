@@ -1,11 +1,10 @@
 'use client'
 
 import Content from '@/components/Content';
-import { useEffect, useState } from 'react';
-import { Box, Button, Input, Tooltip, Typography, useTheme } from '@mui/joy';
+import { useEffect, useState, useContext } from 'react';
+import { Box, Button, Input, Tooltip, Typography, useTheme, IconButton } from '@mui/joy';
 import 'react-material-symbols/rounded';
 import * as React from 'react';
-import IconButton from '@mui/joy/IconButton';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -16,9 +15,14 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import * as vistoriaServices from '@/shared/services/vistorias/vistoria.service';
 import { VistoriaResponseDTO } from '@/types/vistorias/vistorias.dto';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { AlertsContext } from "@/providers/alertsProvider";
+import { set } from 'zod';
+import { Check } from '@mui/icons-material';
+
 
 export default function Prospeccao() {
 
@@ -26,15 +30,30 @@ export default function Prospeccao() {
   const backgroudLevel1 = theme.palette.background.level1;
   const router = useRouter();
   const [rows, setRows] = useState<VistoriaResponseDTO[]>([]);
-
+  const searchParam = useSearchParams();
+  const { setAlert } = useContext(AlertsContext);
   const getVistorias = async () => {
     await vistoriaServices.getAllVistorias().then((response) => {
       setRows(response);
+    }).then(() => {
     })
   };
 
+  const notificacao = () => {
+    const att = searchParam.get('att');
+    const add = searchParam.get('add');
+    if (att === '0') {
+      setAlert('Vistoria Atualizada!', 'Vistoria atualizada com sucesso!', 'success', 3000, Check);
+    }
+    if (add === '0') {
+      setAlert('Vistoria Criada!', 'Vistoria criada com sucesso!', 'success', 3000, Check);
+
+    }
+  }
+
   useEffect(() => {
     getVistorias();
+    notificacao();
   }, []);
 
   const [openRows, setOpenRows] = React.useState<any>({});
@@ -95,7 +114,8 @@ export default function Prospeccao() {
               <th style={{ backgroundColor: backgroudLevel1 }}>Lote total constatada</th>
               <th style={{ backgroundColor: backgroudLevel1 }}>Cober. total constatada</th>
               <th style={{ backgroundColor: backgroudLevel1 }}>Indice Ocupacao</th>
-              <th style={{ backgroundColor: backgroudLevel1, width: '5%' }} aria-label="empty" />
+              <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
+              <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
             </tr>
           </thead>
           <tbody>
@@ -126,10 +146,15 @@ export default function Prospeccao() {
                         <KeyboardArrowUpIcon sx={{ transition: '0.2s', transform: openRows[row.id] ? 'rotate(0deg)' : 'rotate(180deg)' }} />
                       </IconButton>
                     </td>
+                    <td>
+                      <IconButton size="sm" variant="soft" color="neutral">
+                        <DeleteForeverIcon sx={{ color: theme.palette.text.primary, width: 25, height: 25 }} />
+                      </IconButton>
+                    </td>
                   </tr>
                 </Tooltip>
                 <tr>
-                  <td style={{ height: 0, padding: 0 }} colSpan={12}>
+                  <td style={{ height: 0, padding: 0 }} colSpan={13}>
                     {openRows[row.id] && (
                       <Sheet variant="soft" sx={{ p: 1.6, height: '152px' }}>
                         <Box sx={{ bgcolor: 'background.body', p: 1, borderRadius: 10, height: '100%' }}>

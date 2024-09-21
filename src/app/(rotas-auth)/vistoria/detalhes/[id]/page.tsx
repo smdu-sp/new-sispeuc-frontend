@@ -4,6 +4,7 @@ import Content from "@/components/Content";
 import { Box, Button, Card, Divider, FormControl, FormHelperText, FormLabel, Input, Option, Select, Skeleton, Stack, Textarea, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 import {
     infer as Infer,
     number,
@@ -67,6 +68,7 @@ export default function DetalhesVistorias(props: any) {
     const [dataVistoria, setDataVistoria] = useState<Date>(new Date());
     const [carregando, setCarregando] = useState(true);
     const { id } = props.params;
+    const router = useRouter();
 
     const {
         control,
@@ -138,14 +140,14 @@ export default function DetalhesVistorias(props: any) {
             await vistoriasServices.updateVistoria(id, data)
                 .then((v) => {
                     if (v) {
-                        console.log(v);
+                        router.push('/vistoria?att=0');
                     }
                 })
         } else {
             await vistoriasServices.createVistoria(data)
                 .then((v) => {
                     if (v) {
-                        console.log(v);
+                        router.push('/vistoria?add=0');
                     }
                 })
         }
@@ -164,7 +166,7 @@ export default function DetalhesVistorias(props: any) {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack gap={2}>
                     <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
-                        <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }}>Vistoria</Typography>
+                        <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }} >Vistoria</Typography>
                         <Divider />
                         <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
