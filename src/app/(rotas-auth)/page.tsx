@@ -31,7 +31,7 @@ export default function Home() {
         setNome(response.nome);
       });
 
-    
+
   }, [])
 
   return (
@@ -39,7 +39,6 @@ export default function Home() {
       titulo={'Olá ' + nome + ', boas vindas ao SISPEUC 👋'}
       pagina='/'
     >
-       <MaterialSymbol icon="moving_ministry" size={54} weight={900} color='#1877F2' />
       <Box sx={{ width: '100%', display: 'flex', gap: 2, mb: 2 }}>
         <CardImoveis width='25%' icone={GroupAddOutlinedIcon} titulo="Prospecção" botao='Ver imóveis' corIcon='#283593' />
         <CardImoveis width='25%' icone={LocationCityIcon} titulo="Cadastramento" botao='Ver imóveis' corIcon='#EE1D23' />
