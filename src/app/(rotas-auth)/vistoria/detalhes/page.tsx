@@ -1,7 +1,9 @@
 'use client'
 
-import DetalhesPropriedade from './[id]/page';
+import DetalhesVistorias from './[id]/page';
 
-export default function UsuarioNovo(props: any) {
-    return DetalhesPropriedade(props);
+export const dynamicParams = true
+
+export default function NovaVistoria(props: any) {
+    return DetalhesVistorias(props);
 }
