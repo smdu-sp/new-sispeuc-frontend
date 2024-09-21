@@ -1,10 +1,8 @@
 'use client'
 
 import Content from '@/components/Content';
-import { useSearchParams } from 'next/navigation';
-import * as usuarioServices from '@/shared/services/usuario.services';
 import { IUsuario } from '@/shared/services/usuario.services';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/joy';
 import CardImoveis from '@/components/CardImoveis';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
@@ -18,7 +16,6 @@ import ChartHori from '@/components/ChartHori';
 import FormatTextdirectionRToLIcon from '@mui/icons-material/FormatTextdirectionRToL';
 import { MaterialSymbol } from 'react-material-symbols';
 import 'react-material-symbols/rounded';
-import { getAllAuditorias, getOneAuditoria } from '@/shared/services/auditorias/auditoria.service';
 import { validaUsuario } from '@/shared/services/usuarios/usuarios.service';
 
 export default function Home() {
@@ -30,7 +27,6 @@ export default function Home() {
       .then((response: IUsuario) => {
         setNome(response.nome);
       });
-
 
   }, [])
 
