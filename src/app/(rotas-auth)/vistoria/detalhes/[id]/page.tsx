@@ -19,8 +19,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as vistoriasServices from "@/shared/services/vistorias/vistoria.service";
 
 const schema = object({
-    processoId: z.coerce.number().optional(),
-    imovelId: z.coerce.number().optional(),
+    processoId: string(),
+    imovelId: string(),
     tipoVistoria: string().min(1, "Selecione o tipo de vistoria"),
     tipoTipologia: string().min(1, "Selecione o tipo de tipologia"),
     tipoUso: string().min(1, "Selecione o tipo de uso"),
@@ -45,8 +45,8 @@ type Schema = Infer<typeof schema>;
 
 export default function DetalhesVistorias(props: any) {
 
-    const [processoId, setProcesso] = useState<number>();
-    const [imovelId, setIdImovel] = useState<number>();
+    const [processoId, setProcesso] = useState('');
+    const [imovelId, setIdImovel] = useState('');
     const [tipoVistoria, setTipoVistoria] = useState('');
     const [tipoTipologia, setTipoTipologia] = useState('');
     const [tipoUso, setTipoUso] = useState('');
@@ -175,17 +175,11 @@ export default function DetalhesVistorias(props: any) {
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="processoId"
                                         control={control}
-                                        defaultValue={Number(processoId)}
-                                        render={({ field: { ref, onChange, value, ...field } }) => {
+                                        defaultValue={processoId}
+                                        render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input
-                                                    type="number"
                                                     error={Boolean(errors.processoId)}
-                                                    value={value}
-                                                    onChange={(e) => {
-                                                        const newValue = e.target.value ? Number(e.target.value) : '';
-                                                        onChange(newValue);
-                                                    }}
                                                     {...field}
                                                 />
                                                 {errors.processoId && <FormHelperText color="danger">
@@ -200,17 +194,11 @@ export default function DetalhesVistorias(props: any) {
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="imovelId"
                                         control={control}
-                                        defaultValue={Number(imovelId)}
-                                        render={({ field: { ref, onChange, value, ...field } }) => {
+                                        defaultValue={imovelId}
+                                        render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input
-                                                    type="number"
                                                     error={Boolean(errors.imovelId)}
-                                                    value={value}
-                                                    onChange={(e) => {
-                                                        const newValue = e.target.value ? Number(e.target.value) : '';
-                                                        onChange(newValue);
-                                                    }}
                                                     {...field}
                                                 />
                                                 {errors.imovelId && <FormHelperText color="danger">

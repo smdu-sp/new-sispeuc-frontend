@@ -1,6 +1,6 @@
 export interface VistoriaRequestDTO {
-    processoId?: number
-    imovelId?: number
+    processoId?: string
+    imovelId?: string
     tipoVistoria?: string
     tipoTipologia?: string
     tipoUso?: string
@@ -24,8 +24,8 @@ export interface VistoriaRequestDTO {
 
 export interface VistoriaResponseDTO {
     id: number;
-    processoId: number;
-    imovelId: number;
+    processoId: string;
+    imovelId: string;
     tipoVistoria: string;
     tipoTipologia: string;
     tipoUso: string;
