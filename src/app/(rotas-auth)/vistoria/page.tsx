@@ -2,7 +2,7 @@
 
 import Content from '@/components/Content';
 import { useEffect, useState, useContext, useRef } from 'react';
-import { Box, Button, Input, Tooltip, Typography, useTheme, IconButton, Dropdown, MenuButton, Menu, MenuItem, ListItemDecorator, ListDivider, Checkbox } from '@mui/joy';
+import { Box, Button, Input, Tooltip, Typography, useTheme, IconButton, Dropdown, MenuButton, Menu, MenuItem, ListItemDecorator, ListDivider, Checkbox, Stack, Snackbar } from '@mui/joy';
 import 'react-material-symbols/rounded';
 import * as React from 'react';
 import Table from '@mui/joy/Table';
@@ -25,7 +25,7 @@ import { Check, MoreVert } from '@mui/icons-material';
 import { MenuList } from '@mui/material';
 import ViewWeekSharpIcon from '@mui/icons-material/ViewWeekSharp';
 import { MenuContext } from '@/shared/contexts/MenuContext';
-
+import WarningIcon from '@mui/icons-material/Warning';
 export default function Prospeccao() {
 
   const [processo, setProcesso] = useState<boolean>(true);
@@ -48,6 +48,8 @@ export default function Prospeccao() {
   const [usoEsquadriaBoaCondicao, setUsoEsquadriaBoaCondicao] = useState<boolean>(true);
   const [usoPodaVegetacao, setUsoPodaVegetacao] = useState<boolean>(true);
   const [areaConstruidaNaoComputavel, setAreaConstruidaNaoComputavel] = useState<boolean>(false);
+  const [confirma, setConfirma] = useState(false)
+  const [id, setId] = useState(0)
 
   const theme = useTheme();
   const backgroudLevel1 = theme.palette.background.level1;
@@ -62,7 +64,16 @@ export default function Prospeccao() {
     })
   };
 
-
+  const confirmaOperacao = async () => {
+    await vistoriaServices.deleteVistoria(id)
+      .then((response) => {
+        if (response) {
+          setAlert('Vistoria Deletada!', 'Vistoria deletada com sucesso!', 'warning', 3000, WarningIcon);
+          setConfirma(false)
+          getVistorias()
+        }
+      })
+  }
 
   const tableRef = useRef<HTMLTableElement>(null);
   const [tableSize, setTableSize] = useState(0);
@@ -109,6 +120,33 @@ export default function Prospeccao() {
       titulo="Vistorias"
       pagina="vistoria"
     >
+      <Snackbar
+        variant="solid"
+        color="danger"
+        size="lg"
+        invertedColors
+        open={confirma}
+        onClose={() => {setConfirma(false); setId(0)}}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{ maxWidth: 360 }}
+      >
+        <div>
+          <Typography level="title-lg">Deletar Vistoria!</Typography>
+          <Typography sx={{ mt: 1, mb: 2 }} level="title-md">Tem certeza que desseja deletar esta vistoria?</Typography>
+          <Stack direction="row" spacing={1}>
+            <Button variant="solid" color="primary" onClick={() => confirmaOperacao()}>
+              Sim
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => setConfirma(false)}
+            >
+              Não
+            </Button>
+          </Stack>
+        </div>
+      </Snackbar>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', gap: 3, mb: 5 }}>
         <Button onClick={() => { router.push('/vistoria/detalhes') }} sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }} startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}>Criar ficha em branco</Button>
       </Box>
@@ -122,7 +160,7 @@ export default function Prospeccao() {
             }}
           >
             <Option value={0}>Ativos</Option>
-            <Option value={1}>Inativos</Option>
+            <Option value={1}>Deletados</Option>
           </Select>
           <Input
             startDecorator={<SearchIcon sx={{ width: 20, height: 20 }} />}
@@ -140,14 +178,14 @@ export default function Prospeccao() {
             <Menu placement="bottom-end">
               <MenuList sx={{ fontWeight: 'bold', pl: 2 }}>Tabela Principal</MenuList>
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Box sx={{ width: '50%'}}>
+                <Box sx={{ width: '50%' }}>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProcesso(!processo)} checked={processo} label="Processo" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTipoVistoria(!tipoVistoria)} checked={tipoVistoria} label="Tipo vistoria" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setImovel(!imovel)} checked={imovel} label="Imovel" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTipologia(!tipologia)} checked={tipologia} label="Tipologia" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTipoUso(!tipoUso)} checked={tipoUso} label="Tipo uso" /></MenuList>
                 </Box>
-                <Box sx={{ width: '50%'}}>
+                <Box sx={{ width: '50%' }}>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setDataVistoria(!dataVistoria)} checked={dataVistoria} label="Data vistoria" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaTotalConstatada(!areaConstruidaTotalConstatada)} checked={areaConstruidaTotalConstatada} label="Area construida constatada" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaLoteTotalConstatada(!areaLoteTotalConstatada)} checked={areaLoteTotalConstatada} label="Lote total constatada" /></MenuList>
@@ -223,7 +261,7 @@ export default function Prospeccao() {
                     </td>
                     <td>
                       <IconButton size="sm" variant="soft" color="neutral">
-                        <DeleteForeverIcon sx={{ color: theme.palette.text.primary, width: 25, height: 25 }} />
+                        <DeleteForeverIcon onClick={() => {setId(row.id); setConfirma(true)}} sx={{ color: theme.palette.text.primary, width: 25, height: 25 }} />
                       </IconButton>
                     </td>
                   </tr>
@@ -237,30 +275,30 @@ export default function Prospeccao() {
                       <Table >
                         <thead style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>
                           <tr>
-                            { qtdePavimentos ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Qtde. pavimentos</th> : null }
-                            { familiar ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Familiar</th> : null }
-                            { multifamiliar ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Mult. familiar</th> : null }
-                            { comercio ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Comercio</th> : null }
-                            { servico ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Servico</th> : null }
-                            { industria ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Industria</th> : null }
-                            { usoFachadaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Fach boa condição</th> : null }
-                            { usoEsquadriaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Esqd boa condição</th> : null }
-                            { usoPodaVegetacao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Poda vegetação</th> : null }
-                            { areaConstruidaNaoComputavel ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Area construida não computada</th> : null }
+                            {qtdePavimentos ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Qtde. pavimentos</th> : null}
+                            {familiar ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Familiar</th> : null}
+                            {multifamiliar ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Mult. familiar</th> : null}
+                            {comercio ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Comercio</th> : null}
+                            {servico ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Servico</th> : null}
+                            {industria ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Industria</th> : null}
+                            {usoFachadaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Fach boa condição</th> : null}
+                            {usoEsquadriaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Esqd boa condição</th> : null}
+                            {usoPodaVegetacao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Poda vegetação</th> : null}
+                            {areaConstruidaNaoComputavel ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Area construida não computada</th> : null}
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                          { qtdePavimentos ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.qtdePavimentos}</td> : null }
-                          { familiar ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.unifamiliar ? 'Sim' : 'Não'}</td> : null }
-                          { multifamiliar ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.multifamiliar ? 'Sim' : 'Não'}</td> : null }
-                          { comercio ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.comercio ? 'Sim' : 'Não'}</td> : null }
-                          { servico ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.servico ? 'Sim' : 'Não'}</td> : null }
-                          { industria ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.industria ? 'Sim' : 'Não'}</td> : null }
-                          { usoFachadaBoaCondicao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.usoFachadaBoaCondicao ? 'Sim' : 'Não'}</td> : null }
-                          { usoEsquadriaBoaCondicao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.usoEsquadriaBoaCondicao ? 'Sim' : 'Não'}</td> : null }
-                          { usoPodaVegetacao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.usoPodaVegetacao ? 'Sim' : 'Não'}</td> : null }
-                          { areaConstruidaNaoComputavel ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.areaConstruidaNaoComputavel}</td> : null }
+                            {qtdePavimentos ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.qtdePavimentos}</td> : null}
+                            {familiar ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.unifamiliar ? 'Sim' : 'Não'}</td> : null}
+                            {multifamiliar ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.multifamiliar ? 'Sim' : 'Não'}</td> : null}
+                            {comercio ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.comercio ? 'Sim' : 'Não'}</td> : null}
+                            {servico ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.servico ? 'Sim' : 'Não'}</td> : null}
+                            {industria ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.industria ? 'Sim' : 'Não'}</td> : null}
+                            {usoFachadaBoaCondicao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.usoFachadaBoaCondicao ? 'Sim' : 'Não'}</td> : null}
+                            {usoEsquadriaBoaCondicao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.usoEsquadriaBoaCondicao ? 'Sim' : 'Não'}</td> : null}
+                            {usoPodaVegetacao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.usoPodaVegetacao ? 'Sim' : 'Não'}</td> : null}
+                            {areaConstruidaNaoComputavel ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.areaConstruidaNaoComputavel}</td> : null}
                           </tr>
                         </tbody>
                       </Table>

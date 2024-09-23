@@ -70,7 +70,7 @@ export const updateVistoria = async (
     return data;
 };
 
-export const deleteVistoria = async (id: string): Promise<VistoriaResponseDTO> => {
+export const deleteVistoria = async (id: number): Promise<VistoriaResponseDTO> => {
     const session = await getServerSession(authOptions);
     const response: Response = await fetch(`${api_url}/excluir-vistoria/${id}`, {
         method: 'DELETE',
