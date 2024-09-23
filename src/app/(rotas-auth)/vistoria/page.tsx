@@ -126,7 +126,7 @@ export default function Prospeccao() {
         size="lg"
         invertedColors
         open={confirma}
-        onClose={() => {setConfirma(false); setId(0)}}
+        onClose={() => { setConfirma(false); setId(0) }}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         sx={{ maxWidth: 360 }}
       >
@@ -148,7 +148,12 @@ export default function Prospeccao() {
         </div>
       </Snackbar>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', gap: 3, mb: 5 }}>
-        <Button onClick={() => { router.push('/vistoria/detalhes') }} sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }} startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}>Criar ficha em branco</Button>
+        <Button
+          onClick={() => { router.push('/vistoria/detalhes') }}
+          sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}
+          startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}>
+          Criar vistoria
+        </Button>
       </Box>
       <Sheet sx={{ borderTopLeftRadius: 20, borderTopRightRadius: 20, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, boxShadow: 'xs' }}>
         <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
@@ -237,17 +242,17 @@ export default function Prospeccao() {
               <React.Fragment key={row.id}>
                 <Tooltip title={row.descricao} color="neutral" placement="bottom" variant={'outlined'}>
                   <tr>
-                    <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}># {row.id}</td>
-                    {processo ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.processoId}</td> : null}
-                    {imovel ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.imovelId}</td> : null}
-                    {tipoVistoria ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoVistoria}</td> : null}
-                    {tipologia ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoTipologia}</td> : null}
-                    {tipoUso ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoUso}</td> : null}
-                    {dataVistoria ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.dataVistoria).toLocaleDateString()}</td> : null}
-                    {areaConstruidaTotalConstatada ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaConstruidaTotalConstatada}</td> : null}
-                    {areaLoteTotalConstatada ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaLoteTotalConstatada}</td> : null}
-                    {areaCoberturaTotalConstatada ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaCoberturaTotalConstatada}</td> : null}
-                    {indiceOcupacaoConstatado ? <td onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.indiceOcupacaoConstatado}</td> : null}
+                    <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}># {row.id}</td>
+                    {processo ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.processoId}</td> : null}
+                    {imovel ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.imovelId}</td> : null}
+                    {tipoVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoVistoria}</td> : null}
+                    {tipologia ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoTipologia}</td> : null}
+                    {tipoUso ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoUso}</td> : null}
+                    {dataVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.dataVistoria).toLocaleDateString()}</td> : null}
+                    {areaConstruidaTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaConstruidaTotalConstatada}</td> : null}
+                    {areaLoteTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaLoteTotalConstatada}</td> : null}
+                    {areaCoberturaTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaCoberturaTotalConstatada}</td> : null}
+                    {indiceOcupacaoConstatado ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.indiceOcupacaoConstatado}</td> : null}
                     <td>
                       <IconButton
                         aria-label="expand row"
@@ -261,7 +266,7 @@ export default function Prospeccao() {
                     </td>
                     <td>
                       <IconButton size="sm" variant="soft" color="neutral">
-                        <DeleteForeverIcon onClick={() => {setId(row.id); setConfirma(true)}} sx={{ color: theme.palette.text.primary, width: 25, height: 25 }} />
+                        <DeleteForeverIcon onClick={() => { setId(row.id); setConfirma(true) }} sx={{ color: theme.palette.text.primary, width: 25, height: 25 }} />
                       </IconButton>
                     </td>
                   </tr>

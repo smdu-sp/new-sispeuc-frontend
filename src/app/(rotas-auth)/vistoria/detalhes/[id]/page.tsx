@@ -685,7 +685,7 @@ export default function DetalhesVistorias(props: any) {
                                 </FormControl>
                             </Stack>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                <Button type="submit" disabled={isValid ? false : true} sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}>Enviar Vistoria</Button>
+                                <Button type="submit" sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}>Enviar Vistoria</Button>
                             </Box>
                         </Box>
                     </Card>
