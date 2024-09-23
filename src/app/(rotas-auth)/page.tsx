@@ -19,7 +19,6 @@ import 'react-material-symbols/rounded';
 import { validaUsuario } from '@/shared/services/usuarios/usuarios.service';
 
 export default function Home() {
-
   const [nome, setNome] = useState('');
 
   useEffect(() => {
@@ -27,8 +26,7 @@ export default function Home() {
       .then((response: IUsuario) => {
         setNome(response.nome);
       });
-
-  }, [])
+  }, []);
 
   return (
     <Content
