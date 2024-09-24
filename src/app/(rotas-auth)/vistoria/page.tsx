@@ -50,9 +50,27 @@ export default function Prospeccao() {
   const [areaConstruidaNaoComputavel, setAreaConstruidaNaoComputavel] = useState<boolean>(false);
   const [confirma, setConfirma] = useState(false)
   const [id, setId] = useState(0)
-
   const theme = useTheme();
   const backgroudLevel1 = theme.palette.background.level1;
+
+  const vistorias = new Map<string, number | string | boolean>([
+    ['presencial', 'Presencial'],
+    ["remota", "Remota"],
+    ["NC", 'NC']
+  ]);
+
+  const tipologias = new Map<string, number | string | boolean>([
+    ['naoEdificado', 'Não Edificado'],
+    ["naoUtilizado", 'Não Utilizado'],
+    ["subutilizado", 'Subutizado']
+  ]);
+
+  const tiposUsos = new Map<string, number | string | boolean>([
+    ['residencial', 'Residencial'],
+    ["misto", 'Misto'],
+    ["naoResidencial", 'Não Residencial']
+  ]);
+
   const router = useRouter();
   const [rows, setRows] = useState<VistoriaResponseDTO[]>([]);
   const searchParam = useSearchParams();
@@ -63,6 +81,8 @@ export default function Prospeccao() {
     }).then(() => {
     })
   };
+
+
 
   const confirmaOperacao = async () => {
     await vistoriaServices.deleteVistoria(id)
@@ -245,9 +265,9 @@ export default function Prospeccao() {
                     <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}># {row.id}</td>
                     {processo ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.processoId}</td> : null}
                     {imovel ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.imovelId}</td> : null}
-                    {tipoVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoVistoria}</td> : null}
-                    {tipologia ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoTipologia}</td> : null}
-                    {tipoUso ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.tipoUso}</td> : null}
+                    {tipoVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{vistorias.get(row.tipoVistoria)}</td> : null}
+                    {tipologia ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{tipologias.get(row.tipoTipologia)}</td> : null}
+                    {tipoUso ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{tiposUsos.get(row.tipoUso)}</td> : null}
                     {dataVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.dataVistoria).toLocaleDateString()}</td> : null}
                     {areaConstruidaTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaConstruidaTotalConstatada}</td> : null}
                     {areaLoteTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaLoteTotalConstatada}</td> : null}
