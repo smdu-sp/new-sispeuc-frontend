@@ -1,7 +1,7 @@
 'use client'
 
 import Content from '@/components/Content';
-import { IUsuario } from '@/shared/services/usuario.services';
+import { IUsuario, validaUsuario } from '@/shared/services/usuario.services';
 import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/joy';
 import CardImoveis from '@/components/CardImoveis';
@@ -14,18 +14,25 @@ import Chart from '@/components/Chart';
 import PieArcLabel from '@/components/PieChart';
 import ChartHori from '@/components/ChartHori';
 import FormatTextdirectionRToLIcon from '@mui/icons-material/FormatTextdirectionRToL';
-import { MaterialSymbol } from 'react-material-symbols';
 import 'react-material-symbols/rounded';
-import { validaUsuario } from '@/shared/services/usuarios/usuarios.service';
+import { buscarPorId } from '@/shared/services/buscas/buscas.service';
 
 export default function Home() {
   const [nome, setNome] = useState('');
 
+  const getUsuario = async () => {
+    const user = await validaUsuario();
+    setNome(user.nome);
+  };
+
   useEffect(() => {
-    validaUsuario()
-      .then((response: IUsuario) => {
-        setNome(response.nome);
-      });
+    // validaUsuario()
+    //   .then((response: IUsuario) => {
+    //     setNome(response.nome);
+    //   });
+
+    getUsuario();
+    buscarPorId('imovel', '1').then(response => console.log(response)).catch(e => console.error(e));
   }, []);
 
   return (

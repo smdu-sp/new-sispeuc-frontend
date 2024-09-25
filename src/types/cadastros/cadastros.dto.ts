@@ -67,6 +67,44 @@ export interface ImovelRequestDto {
   usuarioId: string;
 }
 
+export interface ImovelResponseDto {
+  id: number,
+  sqlSetor?: number;
+  sqlQuadra?: number;
+  sqlLote?: number;
+  sqlDigito?: number;
+  sqlPai: number;
+  sqlFilho: number;
+  registroNotasReferencia?: string;
+  enderecoLogradouro?: string;
+  enderecoNumero?: string;
+  enderecoComplemento?: string;
+  enderecoReferencia?: string;
+  enderecoDistrito?: string;
+  enderecoCep?: string;
+  enderecoSubprefeitura?: string;
+  enderecoSubprefeituraSigla?: string;
+  enderecoMacroarea?: string;
+  enderecoMacroareaSigla?: string;
+  enderecoZona?: string;
+  enderecoZonaSigla?: string;
+  areaConstruidaTotalRegistrada?: number;
+  areaLoteTotalRegistrada?: number;
+  areaCoeficienteAproveitamento?: number;
+  areaCoeficienteAproveitamentoMinimo?: number;
+  geoEpsg?: number;
+  decretoNumero?: string;
+  decretoTipo?: string;
+  tombamentoCompresp?: string;
+  tombamentoCondephat?: string;
+  tombamentoIphan?: string;
+  usuarioId: string;
+  criadoEm: Date,
+  atualizadoEm: Date,
+  deletado: boolean,
+  imovelProcessoId: number
+}
+
 export interface CadastrosResponseDTO {
   id: number,
   autuacaoSei: string,

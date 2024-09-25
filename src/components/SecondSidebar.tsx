@@ -11,12 +11,11 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import LogoutIcon from '@mui/icons-material/Logout';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { validaUsuario } from '@/shared/services/usuarios/usuarios.service';
 
 const RenderMenu = (menu: IMenu, pagina?: string) => {
   const [permissao, setPermissao] = useState('USR');
   useEffect(() => {
-    validaUsuario()
+    usuarioServices.validaUsuario()
       .then((response: IUsuario) => {
         setPermissao(response.permissao);
       });
