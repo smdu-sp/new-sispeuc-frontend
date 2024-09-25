@@ -1,7 +1,7 @@
 'use client'
 
 import Content from '@/components/Content';
-import { IUsuario, validaUsuario } from '@/shared/services/usuario.services';
+import { IUsuario, Logout, validaUsuario } from '@/shared/services/usuario.services';
 import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/joy';
 import CardImoveis from '@/components/CardImoveis';
@@ -20,19 +20,11 @@ import { buscarPorId } from '@/shared/services/buscas/buscas.service';
 export default function Home() {
   const [nome, setNome] = useState('');
 
-  const getUsuario = async () => {
-    const user = await validaUsuario();
-    setNome(user.nome);
-  };
-
   useEffect(() => {
-    // validaUsuario()
-    //   .then((response: IUsuario) => {
-    //     setNome(response.nome);
-    //   });
-
-    getUsuario();
-    buscarPorId('imovel', '1').then(response => console.log(response)).catch(e => console.error(e));
+    validaUsuario()
+      .then((response: IUsuario) => {
+        setNome(response.nome);
+      });
   }, []);
 
   return (

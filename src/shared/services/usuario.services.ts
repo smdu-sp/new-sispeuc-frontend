@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { signOut } from "next-auth/react";
 import { authOptions } from "../auth/authOptions";
 
-async function Logout() {
+export async function Logout() {
     await signOut({ redirect: false });
     window.location.href = '/login';
 }
