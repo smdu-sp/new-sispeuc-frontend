@@ -1,7 +1,7 @@
 'use client'
 
 import Content from '@/components/Content';
-import { IUsuario, Logout, validaUsuario } from '@/shared/services/usuario.services';
+import { IUsuario, validaUsuario } from '@/shared/services/usuario.services';
 import { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/joy';
 import CardImoveis from '@/components/CardImoveis';
@@ -15,7 +15,6 @@ import PieArcLabel from '@/components/PieChart';
 import ChartHori from '@/components/ChartHori';
 import FormatTextdirectionRToLIcon from '@mui/icons-material/FormatTextdirectionRToL';
 import 'react-material-symbols/rounded';
-import { buscarPorId } from '@/shared/services/buscas/buscas.service';
 
 export default function Home() {
   const [nome, setNome] = useState('');
