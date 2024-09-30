@@ -2,7 +2,7 @@
 
 const api_url: string = 'http://localhost:3000';
 
-// precisa receber id, entityId, descrição e um arquivo
+// pode receber id, entityId, descrição e um arquivo
 export const enviarArquivo = async (data: FormData): Promise<string> => {
   const url: string = `${api_url}/enviar-arquivo`;
   const response: Response = await fetch(url, {
