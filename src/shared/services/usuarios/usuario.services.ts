@@ -1,8 +1,8 @@
 'use server'
 
+import { authOptions } from "@/shared/auth/authOptions";
 import { getServerSession } from "next-auth";
 import { signOut } from "next-auth/react";
-import { authOptions } from "../auth/authOptions";
 
 export async function Logout() {
     await signOut({ redirect: false });

@@ -1,7 +1,7 @@
 'use client'
 
 import Content from "@/components/Content";
-import { Box, Card, CardCover, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
+import { Card, CardCover, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { useEffect } from "react";
 import map from '@/assets/map.png'
 

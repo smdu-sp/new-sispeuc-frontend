@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import { Box, Card, Chip, ChipPropsColorOverrides, ColorPaletteProp, Divider, FormControl, FormLabel, Input, Option, Select, Stack } from "@mui/joy";
 import { EmailRounded } from "@mui/icons-material";
-import { useRouter } from 'next/navigation';
 import { OverridableStringUnion } from '@mui/types';
 
 import Content from "@/components/Content";
-import { IUsuario } from "@/shared/services/usuario.services";
-import * as usuarioServices from "@/shared/services/usuario.services";
+import { IUsuario } from "@/shared/services/usuarios/usuario.services";
+import * as usuarioServices from "@/shared/services/usuarios/usuario.services";
 
 export default function UsuarioDetalhes() {
     const [usuario, setUsuario] = useState<IUsuario>();

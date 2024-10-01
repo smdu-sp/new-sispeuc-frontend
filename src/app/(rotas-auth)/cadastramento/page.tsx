@@ -20,11 +20,9 @@ import * as cadastroServices from '@/shared/services/cadastros/cadastros.service
 import { CadastrosResponseDTO } from '@/types/cadastros/cadastros.dto';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { AlertsContext } from "@/providers/alertsProvider";
-import { set } from 'zod';
-import { Check, MoreVert } from '@mui/icons-material';
+import { Check } from '@mui/icons-material';
 import { MenuList } from '@mui/material';
 import ViewWeekSharpIcon from '@mui/icons-material/ViewWeekSharp';
-import { MenuContext } from '@/shared/contexts/MenuContext';
 import WarningIcon from '@mui/icons-material/Warning';
 
 export default function Prospeccao() {

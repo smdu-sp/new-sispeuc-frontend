@@ -1,7 +1,7 @@
 'use client'
 
-import { FormEvent, SyntheticEvent, useContext, useEffect, useState } from 'react';
-import { Button, Sheet, FormControl, Input, Snackbar, Typography, Stack, SvgIcon, IconButton } from '@mui/joy';
+import { SyntheticEvent, useContext, useEffect, useState } from 'react';
+import { Button, Sheet, FormControl, Input, SvgIcon, IconButton } from '@mui/joy';
 import Image from 'next/image';
 import logo from '@/assets/logo.png';
 import ThemeToggle from '@/components/ThemeToggle';

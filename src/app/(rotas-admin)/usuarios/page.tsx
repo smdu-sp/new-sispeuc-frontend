@@ -2,10 +2,10 @@
 
 import Content from '@/components/Content';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
-import * as usuarioServices from '@/shared/services/usuario.services';
-import { Autocomplete, AutocompleteOption, Box, Button, Chip, ChipPropsColorOverrides, ColorPaletteProp, FormControl, FormLabel, IconButton, Input, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
-import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
-import { IPaginadoUsuario, IUsuario } from '@/shared/services/usuario.services';
+import * as usuarioServices from '@/shared/services/usuarios/usuario.services';
+import { Box, Button, Chip, ChipPropsColorOverrides, ColorPaletteProp, FormControl, FormLabel, IconButton, Input, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
+import { Add, Cancel, Check, Clear, Refresh, Search, Warning } from '@mui/icons-material';
+import { IPaginadoUsuario, IUsuario } from '@/shared/services/usuarios/usuario.services';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertsContext } from '@/providers/alertsProvider';
 import { TablePagination } from '@mui/material';

@@ -29,7 +29,6 @@ export interface GeosampaPropertiesDTO {
   qt_area_construida: number;
 }
 
-
 export interface GeosampaFeatureDTO {
   type: string;
   id: string;

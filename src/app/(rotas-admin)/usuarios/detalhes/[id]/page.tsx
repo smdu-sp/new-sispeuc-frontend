@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 import { OverridableStringUnion } from '@mui/types';
 
 import Content from "@/components/Content";
-import { IUsuario } from "@/shared/services/usuario.services";
+import { IUsuario } from "@/shared/services/usuarios/usuario.services";
 import { AlertsContext } from "@/providers/alertsProvider";
-import { buscarNovoUsuario, createUsuario, getOneUsuario, updateUsuario } from "@/shared/services/usuarios/usuarios.service";
+import { buscarNovo, criar, buscarPorId, atualizar } from "@/shared/services/usuarios/usuario.services";
 
 export default function UsuarioDetalhes(props: any) {
     const [usuario, setUsuario] = useState<IUsuario>();
@@ -31,7 +31,7 @@ export default function UsuarioDetalhes(props: any) {
 
     useEffect(() => {
         if (id) {
-            getOneUsuario(id)
+            buscarPorId(id)
                 .then((response: IUsuario) => {
                     setUsuario(response);
                     setPermissao(response.permissao);
@@ -42,7 +42,7 @@ export default function UsuarioDetalhes(props: any) {
 
     const submitData = () => {
         if (usuario){
-            updateUsuario(usuario.id, {
+            atualizar(usuario.id, {
                 permissao
             }).then((response) => {
                 if (response.id) {
@@ -51,7 +51,7 @@ export default function UsuarioDetalhes(props: any) {
             })
         } else {
             if (novoUsuario){
-                createUsuario({
+                criar({
                     nome, login, email, permissao
                 }).then((response) => {
                     if (response.id) {
@@ -63,9 +63,9 @@ export default function UsuarioDetalhes(props: any) {
         }
     }
 
-    const buscarNovo = () => {
+    const buscarNovoUsuario = () => {
         if (login)
-            buscarNovoUsuario(login).then((response: any) => {
+            buscarNovo(login).then((response: any) => {
                 if (response.message) setAlert('Erro', response.message, 'warning', 3000, Warning);
                 if (response.id)
                     router.push('/usuarios/detalhes/' + response.id);
@@ -121,10 +121,10 @@ export default function UsuarioDetalhes(props: any) {
                                     value={login} 
                                     onChange={e => setLogin(e.target.value)} 
                                     onKeyDown={e => {
-                                        if (e.key === 'Enter') buscarNovo()
+                                        if (e.key === 'Enter') buscarNovoUsuario()
                                     }}
                                     endDecorator={
-                                    novoUsuario ? <IconButton onClick={limpaUsuario}><Clear /></IconButton> : <Button onClick={buscarNovo} variant="soft">Buscar</Button>}
+                                    novoUsuario ? <IconButton onClick={limpaUsuario}><Clear /></IconButton> : <Button onClick={buscarNovoUsuario} variant="soft">Buscar</Button>}
                                     readOnly={novoUsuario}
                                 />
                             </FormControl>

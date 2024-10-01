@@ -1,17 +1,12 @@
 'use client'
 
 import Content from '@/components/Content';
-import { useSearchParams } from 'next/navigation';
-import * as usuarioServices from '@/shared/services/usuario.services';
-import { IUsuario } from '@/shared/services/usuario.services';
-import { useEffect, useState } from 'react';
 import { Box, Button, Checkbox, Chip, Input, Typography, useTheme } from '@mui/joy';
 import 'react-material-symbols/rounded';
 import * as React from 'react';
 import IconButton from '@mui/joy/IconButton';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Select, { selectClasses } from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
