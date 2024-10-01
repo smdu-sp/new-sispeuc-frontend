@@ -1,7 +1,7 @@
 'use client'
 
 import Content from "@/components/Content";
-import { Box, Button, Card, Divider, FormControl, FormHelperText, FormLabel, Input, Option, Select, Skeleton, Stack, Textarea, Typography } from "@mui/joy";
+import { Box, Button, Card, Divider, FormControl, FormHelperText, FormLabel, Input, Option, Select, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
@@ -40,8 +40,21 @@ const schema = object({
     areaConstruidaNaoComputavel: z.coerce.number(),
     descricao: string(),
     dataVistoria: z.coerce.date(),
+    files: z.instanceof(FileList).optional()
 });
 type Schema = Infer<typeof schema>;
+
+const VisuallyHiddenInput = styled('input')`
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    white-space: nowrap;
+    width: 1px;
+    `;
 
 export default function DetalhesVistorias(props: any) {
 
@@ -67,6 +80,7 @@ export default function DetalhesVistorias(props: any) {
     const [descricao, setDescricao] = useState('');
     const [dataVistoria, setDataVistoria] = useState<Date>(new Date());
     const [carregando, setCarregando] = useState(true);
+    const [files, setFiles] = useState<FileList>();
     const { id } = props.params;
     const router = useRouter();
 
@@ -98,7 +112,8 @@ export default function DetalhesVistorias(props: any) {
             areaCoberturaTotalConstatada,
             areaConstruidaNaoComputavel,
             descricao,
-            dataVistoria
+            dataVistoria,
+            files
         }
     });
 
@@ -144,16 +159,29 @@ export default function DetalhesVistorias(props: any) {
                     }
                 })
         } else {
-            await vistoriasServices.createVistoria(data)
+            const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
+            form ? 
+            await vistoriasServices.createVistoria(new FormData(form))
                 .then((v) => {
                     if (v) {
                         router.push('/vistoria?add=0');
                     }
-                })
+                }) : null;
         }
     };
 
     const theme = useTheme();
+
+    useEffect(() => {
+        console.log(files)
+    }, [files])
+
+    const handleFileChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ): void => {
+        if (event.target.files && event.target.files.length > 0) 
+            setFiles(event.target.files);
+    };
 
     return (
         <Content
@@ -163,7 +191,7 @@ export default function DetalhesVistorias(props: any) {
             titulo={'Cadastro de vitoria'}
             pagina="vistoria"
         >
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form id="form_vistorias" onSubmit={handleSubmit(onSubmit)}>
                 <Stack gap={2}>
                     <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
                         <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }} >Vistoria</Typography>
@@ -635,26 +663,38 @@ export default function DetalhesVistorias(props: any) {
                         <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }}>Finalização</Typography>
                         <Divider />
                         <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'column', xl: 'row' }}>
-                                <FormControl sx={{ width: '100%' }} error={Boolean(errors.descricao)}>
-                                    <FormLabel>Descrição</FormLabel>
-                                    {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
-                                        name="descricao"
-                                        control={control}
-                                        defaultValue={descricao}
-                                        render={({ field: { ref, ...field } }) => {
-                                            return (<>
-                                                <Textarea
-                                                    error={Boolean(errors.descricao)}
-                                                    {...field}
+                            <Stack sx={{ width: '100%', gap: 2, display: 'flex', flexDirection: 'column', alignItems: 'end' }} direction={{ sm: 'column', md: 'column', lg: 'column', xl: 'row' }}>
+                                <Button
+                                    sx={{
+                                        width: { md: '50%', lg: '20%' },
+                                        height: 'fit-content'
+                                    }}
+                                    component="label"
+                                    role={undefined}
+                                    tabIndex={-1}
+                                    variant="outlined"
+                                    color="neutral"
+                                    startDecorator={
+                                        <SvgIcon>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
                                                 />
-                                                {errors.descricao && <FormHelperText color="danger">
-                                                    {errors.descricao?.message}
-                                                </FormHelperText>}
-                                            </>);
-                                        }}
-                                    />}
-                                </FormControl>
+                                            </svg>
+                                        </SvgIcon>
+                                    }
+                                >
+                                    Upload a file
+                                    <VisuallyHiddenInput type="file" multiple onChange={handleFileChange} />
+                                </Button>
                                 <FormControl sx={{ width: '100%' }} error={Boolean(errors.dataVistoria)}>
                                     <FormLabel>Data Vistoria</FormLabel>
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
@@ -678,6 +718,27 @@ export default function DetalhesVistorias(props: any) {
                                                 />
                                                 {errors.dataVistoria && <FormHelperText color="danger">
                                                     {errors.dataVistoria?.message}
+                                                </FormHelperText>}
+                                            </>);
+                                        }}
+                                    />}
+                                </FormControl>
+                            </Stack>
+                            <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'column', xl: 'row' }}>
+                                <FormControl sx={{ width: '100%' }} error={Boolean(errors.descricao)}>
+                                    <FormLabel>Descrição</FormLabel>
+                                    {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                        name="descricao"
+                                        control={control}
+                                        defaultValue={descricao}
+                                        render={({ field: { ref, ...field } }) => {
+                                            return (<>
+                                                <Textarea
+                                                    error={Boolean(errors.descricao)}
+                                                    {...field}
+                                                />
+                                                {errors.descricao && <FormHelperText color="danger">
+                                                    {errors.descricao?.message}
                                                 </FormHelperText>}
                                             </>);
                                         }}

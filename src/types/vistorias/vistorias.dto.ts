@@ -20,6 +20,7 @@ export interface VistoriaRequestDTO {
     areaConstruidaNaoComputavel?: number
     descricao?: string
     dataVistoria?: Date
+    files?: FileList
 }
 
 export interface VistoriaResponseDTO {

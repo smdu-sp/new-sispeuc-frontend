@@ -1,4 +1,4 @@
-import { Business, Handyman, Home, Person } from '@mui/icons-material';
+import { Home, Person } from '@mui/icons-material';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
@@ -15,7 +15,6 @@ export interface IMenu {
     userOptions:    IMenuOption[];
     adminOptions:   IMenuOption[];
 }
-
 
 export const menu: IMenu = {
     userOptions: [

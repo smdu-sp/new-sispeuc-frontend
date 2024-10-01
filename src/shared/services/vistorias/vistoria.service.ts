@@ -7,7 +7,7 @@ import { VistoriaRequestDTO, VistoriaResponseDTO } from "@/types/vistorias/visto
 
 const api_url: string = 'http://localhost:3000/vistorias';
 
-export const createVistoria = async (request: VistoriaRequestDTO): Promise<VistoriaResponseDTO> => {
+export const createVistoria = async (request: FormData): Promise<VistoriaResponseDTO> => {
     const session = await getServerSession(authOptions);
     const response: Response = await fetch(`${api_url}/criar-vistoria`, {
         method: 'POST',
@@ -15,7 +15,7 @@ export const createVistoria = async (request: VistoriaRequestDTO): Promise<Visto
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${session?.access_token}`
         },
-        body: JSON.stringify({ ...request })
+        body: request
     });
     if (response.status != 201) throw new Error('erro ao tentar registrar a vistoria');
     const data: VistoriaResponseDTO = await response.json();
