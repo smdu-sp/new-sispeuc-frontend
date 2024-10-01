@@ -1,5 +1,4 @@
-import { Box, Button, Card, SvgIcon, Typography, useTheme } from "@mui/joy";
-import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
+import { Box, Card, SvgIcon, Typography, useTheme } from "@mui/joy";
 
 interface IPropsCard {
     width?: string

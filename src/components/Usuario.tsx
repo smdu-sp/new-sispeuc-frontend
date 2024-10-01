@@ -2,8 +2,8 @@ import { Box, Button, Card, CardContent, Chip, ChipPropsColorOverrides, ColorPal
 import { OverridableStringUnion } from '@mui/types';
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import * as usuarioServices from "@/shared/services/usuario.services";
-import { IUsuario } from "@/shared/services/usuario.services";
+import * as usuarioServices from "@/shared/services/usuarios/usuario.services";
+import { IUsuario } from "@/shared/services/usuarios/usuario.services";
 import { Logout } from "@mui/icons-material";
 import { signOut } from "next-auth/react";
 

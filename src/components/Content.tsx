@@ -1,7 +1,6 @@
 'use client';
 import { Box, Typography } from '@mui/joy';
 import Header from '@/components/Header';
-import FirstSidebar from '@/components/FirstSidebar';
 import SecondSidebar from '@/components/SecondSidebar';
 import SecondHeader from '@/components/SecondHeader';
 import React, { useEffect } from 'react';

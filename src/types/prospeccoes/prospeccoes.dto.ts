@@ -71,7 +71,7 @@ export interface ProspeccoesResponseDTO {
 }
 
 export interface ProspeccoesQuantificarResponseDTO {
-  "Total": number,
+  Total: number,
   "Em prospecção": number,
   "Em preenchimento": number,
   "Candidato a vistoria": number

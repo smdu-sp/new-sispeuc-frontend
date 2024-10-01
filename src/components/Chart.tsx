@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Typography from '@mui/material/Typography';
 import { BarPlot } from '@mui/x-charts/BarChart';
 import { LineHighlightPlot, LinePlot } from '@mui/x-charts/LineChart';
 import { ResponsiveChartContainer } from '@mui/x-charts/ResponsiveChartContainer';
@@ -7,10 +6,8 @@ import { AllSeriesType } from '@mui/x-charts/models';
 import { ChartsXAxis } from '@mui/x-charts/ChartsXAxis';
 import { ChartsYAxis } from '@mui/x-charts/ChartsYAxis';
 import { ChartsTooltip } from '@mui/x-charts/ChartsTooltip';
-import { ChartsAxisHighlight } from '@mui/x-charts/ChartsAxisHighlight';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import alphabetStock from '@/shared/dataset/GOOGL.json';
-import shadows from '@mui/material/styles/shadows';
 
 const series = [
     {
