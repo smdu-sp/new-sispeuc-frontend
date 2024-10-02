@@ -40,7 +40,7 @@ const schema = object({
     areaConstruidaNaoComputavel: z.coerce.number(),
     descricao: string(),
     dataVistoria: z.coerce.date(),
-    files: z.instanceof(FileList).optional()
+    files: z.optional(z.instanceof(FileList))
 });
 type Schema = Infer<typeof schema>;
 
@@ -54,7 +54,7 @@ const VisuallyHiddenInput = styled('input')`
     left: 0;
     white-space: nowrap;
     width: 1px;
-    `;
+`;
 
 export default function DetalhesVistorias(props: any) {
 
@@ -150,6 +150,16 @@ export default function DetalhesVistorias(props: any) {
     useEffect(() => {
         id ? getById() : setCarregando(false);
     })
+
+    const theme = useTheme();
+
+    const handleFileChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ): void => {
+        if (event.target.files && event.target.files.length > 0) 
+            setFiles(event.target.files);
+    };
+
     const onSubmit = async (data: Schema) => {
         if (id) {
             await vistoriasServices.updateVistoria(id, data)
@@ -160,27 +170,15 @@ export default function DetalhesVistorias(props: any) {
                 })
         } else {
             const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
-            form ? 
-            await vistoriasServices.createVistoria(new FormData(form))
-                .then((v) => {
-                    if (v) {
-                        router.push('/vistoria?add=0');
-                    }
-                }) : null;
+            const formData: FormData = new FormData(form);
+            formData.forEach(d => console.log(d));
+            // await vistoriasServices.createVistoria(formData)
+            //     .then((v) => {
+            //         if (v) {
+            //             router.push('/vistoria?add=0');
+            //         }
+            //     });
         }
-    };
-
-    const theme = useTheme();
-
-    useEffect(() => {
-        console.log(files)
-    }, [files])
-
-    const handleFileChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ): void => {
-        if (event.target.files && event.target.files.length > 0) 
-            setFiles(event.target.files);
     };
 
     return (
@@ -666,8 +664,9 @@ export default function DetalhesVistorias(props: any) {
                             <Stack sx={{ width: '100%', gap: 2, display: 'flex', flexDirection: 'column', alignItems: 'end' }} direction={{ sm: 'column', md: 'column', lg: 'column', xl: 'row' }}>
                                 <Button
                                     sx={{
-                                        width: { md: '50%', lg: '20%' },
-                                        height: 'fit-content'
+                                        width: { xs: '100%', md: '80%', xl: '20%' },
+                                        height: 'fit-content',
+                                        alignSelf: { md: 'center', xl: 'end' }
                                     }}
                                     component="label"
                                     role={undefined}
@@ -693,7 +692,7 @@ export default function DetalhesVistorias(props: any) {
                                     }
                                 >
                                     Upload a file
-                                    <VisuallyHiddenInput type="file" multiple onChange={handleFileChange} />
+                                    <VisuallyHiddenInput name="files" type="file" multiple onChange={handleFileChange} />
                                 </Button>
                                 <FormControl sx={{ width: '100%' }} error={Boolean(errors.dataVistoria)}>
                                     <FormLabel>Data Vistoria</FormLabel>
@@ -714,7 +713,7 @@ export default function DetalhesVistorias(props: any) {
                                                     }}
                                                     onBlur={field.onBlur}
                                                     disabled={field.disabled}
-                                                    name={field.name}
+                                                    name="dataVistoria"
                                                 />
                                                 {errors.dataVistoria && <FormHelperText color="danger">
                                                     {errors.dataVistoria?.message}
