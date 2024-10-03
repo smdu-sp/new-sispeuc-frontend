@@ -41,7 +41,9 @@ export interface ImovelRequestDto {
   sqlDigito?: number;
   sqlPai: number;
   sqlFilho: number;
+
   registroNotasReferencia?: string;
+  
   enderecoLogradouro?: string;
   enderecoNumero?: string;
   enderecoComplemento?: string;
