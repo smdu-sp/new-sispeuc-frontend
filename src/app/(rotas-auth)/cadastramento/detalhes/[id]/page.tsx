@@ -23,6 +23,7 @@ import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { CepResponseDTO } from '@/shared/services/cep/cep.service';
+import * as comum from '@/shared/services/comum/comum.service';
 
 const schema = object({
     autuacaoSei: string(),
@@ -46,7 +47,7 @@ const schema = object({
     enderecoComplemento: string(),
     enderecoReferencia: string(),
     enderecoDistrito: string(),
-    enderecoCep: string(),
+    enderecoCep: z.string().regex(/^\d{5}-\d{3}$/, 'CEP inválido'),
     enderecoSubprefeitura: string(),
     enderecoSubprefeituraSigla: string(),
     enderecoMacroarea: string(),
@@ -194,15 +195,23 @@ export default function DetalhesPropriedade(props: any) {
     })
 
     const buscaCep = (valueCep: string) => {
-        cep.getCep(valueCep)
-            .then((v: CepResponseDTO) => {
-                if (v) {
-                    console.log(v);
-                }
-            })
+        if (valueCep.length === 8) {
+            cep.getCep(valueCep)
+                .then((v: CepResponseDTO) => {
+                    if (v) {
+                        setEnderecoLogradouro(v ? v.logradouro : '');
+                        console.log(v);
+
+                    }
+                })
+        } else {
+            setEnderecoLogradouro('');
+        }
     }
 
     const onSubmit = async (data: Schema) => {
+        console.log(data);
+
         if (id) {
             await cadastroServices.updateProcesso(id, data)
                 .then((v) => {
@@ -239,8 +248,8 @@ export default function DetalhesPropriedade(props: any) {
             pagina="cadastramento"
         >
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Stack gap={2}>
+            <Stack gap={2}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack gap={2}>
                         <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
                             <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }} >Registro de processo</Typography>
@@ -489,66 +498,71 @@ export default function DetalhesPropriedade(props: any) {
                             Inserir Imovel
                         </Button>
                     </Box>
-                    <Stack gap={2} sx={{ display: exibirImovel ? 'flex' : 'none' }}>
-                        <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
-                            <Typography level="h4"
-                                endDecorator={
-                                    <Tooltip title="Clique para visualizar imóveis já registrados" color="neutral" placement="top" variant='soft'>
-                                        <IconButton>
-                                            <VisibilityIcon sx={{ height: 20, width: 20 }} />
-                                        </IconButton>
-                                    </Tooltip>
-                                } sx={{ pl: 3, pt: 2, pb: 1 }} >Imóvel</Typography>
-                            <Divider />
-                            <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.enderecoCep)}>
-                                        <FormLabel>Cep</FormLabel>
-                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
-                                            name="enderecoCep"
-                                            control={control}
-                                            defaultValue={enderecoCep}
-                                            render={({ field: { ref, ...field } }) => {
-                                                return (<>
-                                                    <Input
-                                                        error={Boolean(errors.enderecoCep)}
-                                                        {...field}
-                                                    />
-                                                    {errors.enderecoCep && <FormHelperText color="danger">
-                                                        {errors.enderecoCep?.message}
-                                                    </FormHelperText>}
-                                                </>);
-                                            }}
-                                        />}
-                                    </FormControl>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.enderecoLogradouro)}>
-                                        <FormLabel>Endereco Logradouro</FormLabel>
-                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
-                                            name="enderecoLogradouro"
-                                            control={control}
-                                            defaultValue={enderecoLogradouro}
-                                            render={({ field: { ref, ...field } }) => {
-                                                return (<>
-                                                    <Input
-                                                        error={Boolean(errors.enderecoLogradouro)}
-                                                        {...field}
-                                                    />
-                                                    {errors.enderecoLogradouro && <FormHelperText color="danger">
-                                                        {errors.enderecoLogradouro?.message}
-                                                    </FormHelperText>}
-                                                </>);
-                                            }}
-                                        />}
-                                    </FormControl>
-                                </Stack>
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                    <Button type="submit" sx={{ bgcolor: theme.palette.text.primary, color: 'background.body', '&:hover': { bgcolor: theme.palette.text.primary, color: 'background.body' } }}>Salvar imóvel</Button>
-                                </Box>
+                </form>
+
+                <Stack gap={2} sx={{ display: exibirImovel ? 'flex' : 'none' }}>
+                    <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
+                        <Typography level="h4"
+                            endDecorator={
+                                <Tooltip title="Clique para visualizar imóveis já registrados" color="neutral" placement="top" variant='soft'>
+                                    <IconButton>
+                                        <VisibilityIcon sx={{ height: 20, width: 20 }} />
+                                    </IconButton>
+                                </Tooltip>
+                            } sx={{ pl: 3, pt: 2, pb: 1 }} >Imóvel</Typography>
+                        <Divider />
+                        <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                <FormControl sx={{ width: '100%' }} error={Boolean(errors.enderecoCep)}>
+                                    <FormLabel>Cep</FormLabel>
+                                    {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                        name="enderecoCep"
+                                        control={control}
+                                        defaultValue={comum.formataCep(enderecoCep)}
+                                        render={({ field: { ref, onChange, value, ...field } }) => {
+                                            return (<>
+                                                <Input
+                                                    value={comum.formataCep(enderecoCep)}
+                                                    placeholder="00000-000"
+                                                    onChange={(e) => { setEnderecoCep(e.target.value); buscaCep((e.target.value).replace('-', '')) }}
+                                                    error={Boolean(errors.enderecoCep)}
+                                                    {...field}
+                                                />
+                                                {errors.enderecoCep && <FormHelperText color="danger">
+                                                    {errors.enderecoCep?.message}
+                                                </FormHelperText>}
+                                            </>);
+                                        }}
+                                    />}
+                                </FormControl>
+                                <FormControl sx={{ width: '100%' }} error={Boolean(errors.enderecoLogradouro)}>
+                                    <FormLabel>Endereco Logradouro</FormLabel>
+                                    {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                        name="enderecoLogradouro"
+                                        control={control}
+                                        defaultValue={enderecoLogradouro}
+                                        render={({ field: { ref, onChange, value, ...field } }) => {
+                                            return (<>
+                                                <Input
+                                                    value={enderecoLogradouro}
+                                                    error={Boolean(errors.enderecoLogradouro)}
+                                                    {...field}
+                                                />
+                                                {errors.enderecoLogradouro && <FormHelperText color="danger">
+                                                    {errors.enderecoLogradouro?.message}
+                                                </FormHelperText>}
+                                            </>);
+                                        }}
+                                    />}
+                                </FormControl>
+                            </Stack>
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Button type="submit" sx={{ bgcolor: theme.palette.text.primary, color: 'background.body', '&:hover': { bgcolor: theme.palette.text.primary, color: 'background.body' } }}>Salvar imóvel</Button>
                             </Box>
-                        </Card>
-                    </Stack>
+                        </Box>
+                    </Card>
                 </Stack>
-            </form>
+            </Stack>
         </Content >
     );
 }
