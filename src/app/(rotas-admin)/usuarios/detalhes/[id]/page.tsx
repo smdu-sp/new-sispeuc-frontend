@@ -30,18 +30,16 @@ export default function UsuarioDetalhes(props: any) {
     }
 
     useEffect(() => {
-        if (id) {
-            buscarPorId(id)
-                .then((response: IUsuario) => {
-                    setUsuario(response);
-                    setPermissao(response.permissao);
-                    setEmail(response.email);
-                });
-        }
+        if (id) buscarPorId(id)
+            .then((response: IUsuario) => {
+                setUsuario(response);
+                setPermissao(response.permissao);
+                setEmail(response.email);
+            }).catch(error => setAlert('Erro', `${error}`, 'warning', 3000, Cancel))
     }, [ id ]);
 
     const submitData = () => {
-        if (usuario) {
+        if (usuario) 
             atualizar(usuario.id, {
                 permissao
             }).then((response) => {
@@ -49,8 +47,8 @@ export default function UsuarioDetalhes(props: any) {
                     setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);
                     router.push('/usuarios');
                 }
-            })
-        } else {
+            }).catch(error => setAlert('Erro inesperado!', `${error}`, 'danger', 5000, Cancel));
+        else {
             if (novoUsuario) {
                 criar({
                     nome, login, email, permissao
@@ -68,15 +66,14 @@ export default function UsuarioDetalhes(props: any) {
         if (login)
             buscarNovo(login).then((response: any) => {
                 if (response.message) setAlert('Erro', response.message, 'warning', 3000, Warning);
-                if (response.id)
-                    router.push('/usuarios/detalhes/' + response.id);
-                else if (response.email) {
+                if (response.id) router.push('/usuarios/detalhes/' + response.id);
+                if (response.email) {
                     setNome(response.nome ? response.nome : '');
                     setLogin(response.login ? response.login : '');
                     setEmail(response.email ? response.email : '');
                     setNovoUsuario(true);
                 }
-            })
+            }).catch(error => setAlert('Erro', `${error}`, 'warning', 3000, Cancel))
     }
 
     const limpaUsuario = () => {
@@ -125,7 +122,9 @@ export default function UsuarioDetalhes(props: any) {
                                         if (e.key === 'Enter') buscarNovoUsuario()
                                     }}
                                     endDecorator={
-                                    novoUsuario ? <IconButton onClick={limpaUsuario}><Clear /></IconButton> : <Button onClick={buscarNovoUsuario} variant="soft">Buscar</Button>}
+                                    novoUsuario 
+                                        ? <IconButton onClick={limpaUsuario}><Clear /></IconButton> 
+                                        : <Button onClick={buscarNovoUsuario} variant="soft">Buscar</Button>}
                                     readOnly={novoUsuario}
                                 />
                             </FormControl>
