@@ -58,7 +58,9 @@ async function listaCompleta(): Promise<IUsuario[]> {
     return usuarios;
 }
 
-async function buscarTudo(status: number = 1, pagina: number = 1, limite: number = 10, busca: string = '', permissao: string = '', unidade_id: string = ''): Promise<IPaginadoUsuario> {
+async function buscarTudo(
+    status: number = 1, pagina: number = 1, limite: number = 10, busca: string = '', permissao: string = '', unidade_id: string = ''
+): Promise<IPaginadoUsuario> {
     const session = await getServerSession(authOptions);
     const usuarios = await fetch(`${baseURL}usuarios/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}&permissao=${permissao}&unidade_id=${unidade_id}`, {
         method: "GET",
@@ -106,18 +108,18 @@ async function autorizar(id: string): Promise<{ autorizado: boolean }> {
 
 async function criar(data: ICreateUsuario): Promise<IUsuario> {
     const session = await getServerSession(authOptions);
-    const criado = await fetch(`${baseURL}usuarios/criar`, {
+    const response: Response = await fetch(`${baseURL}usuarios/criar`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${session?.access_token}`
         }, body: JSON.stringify(data)
-    }).then((response) => {
-        if (response.status === 401) Logout();
-        if (response.status !== 200) return;
-        return response.json();
     })
-    return criado;
+    if (response.status === 401) Logout();
+    if (response.status === 403) throw new Error("Usuário já cadastrado.");
+    if (response.status !== 201) throw new Error("Erro inesperado, status de resposta diferente de 201.");
+    const user: IUsuario = await response.json();
+    return user;
 }
 
 async function atualizar(id: string, data: IUpdateUsuario): Promise<IUsuario> {
@@ -177,9 +179,7 @@ async function buscarNovo(login: string): Promise<{ id?: string, login?: string,
         }
     }).then((response) => {
         if (response.status === 401) Logout();
-        if (response.status === 403) {
-            return { message: 'Usuário já cadastrado.'}
-        }
+        if (response.status === 403) return { message: 'Usuário já cadastrado.'}
         if (response.status !== 200) return;
         return response.json();
     })

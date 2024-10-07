@@ -7,8 +7,7 @@ import * as React from 'react';
 import IconButton from '@mui/joy/IconButton';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Select, { selectClasses } from '@mui/joy/Select';
+import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -157,7 +156,7 @@ export default function Prospeccao() {
                       size="sm"
                       onClick={() => handleRowToggle(row.id)}
                     >
-                      <KeyboardArrowUpIcon sx={{ transition: '0.2s', transform: openRows[row.id] ? 'rotate(-180deg)' : 'rotate(0deg)' }} />
+                      <KeyboardArrowDown sx={{ transition: '0.2s', transform: openRows[row.id] ? 'rotate(-180deg)' : 'rotate(0deg)' }} />
                     </IconButton>
                   </td>
                 </tr>
