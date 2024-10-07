@@ -2,7 +2,7 @@
 
 import Content from '@/components/Content';
 import { useEffect, useState, useContext, useRef } from 'react';
-import { Box, Button, Input, Tooltip, Typography, useTheme, IconButton, Dropdown, MenuButton, Menu, MenuItem, ListItemDecorator, ListDivider, Checkbox, Stack, Snackbar } from '@mui/joy';
+import { Box, Button, Input, Tooltip, Typography, useTheme, IconButton, Dropdown, MenuButton, Menu, ListDivider, Checkbox, Stack, Snackbar } from '@mui/joy';
 import 'react-material-symbols/rounded';
 import * as React from 'react';
 import Table from '@mui/joy/Table';
@@ -20,11 +20,9 @@ import * as vistoriaServices from '@/shared/services/vistorias/vistoria.service'
 import { VistoriaResponseDTO } from '@/types/vistorias/vistorias.dto';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { AlertsContext } from "@/providers/alertsProvider";
-import { set } from 'zod';
-import { Check, MoreVert } from '@mui/icons-material';
+import { Check } from '@mui/icons-material';
 import { MenuList } from '@mui/material';
 import ViewWeekSharpIcon from '@mui/icons-material/ViewWeekSharp';
-import { MenuContext } from '@/shared/contexts/MenuContext';
 import WarningIcon from '@mui/icons-material/Warning';
 export default function Prospeccao() {
 
@@ -62,7 +60,7 @@ export default function Prospeccao() {
   const tipologias = new Map<string, number | string | boolean>([
     ['naoEdificado', 'Não Edificado'],
     ["naoUtilizado", 'Não Utilizado'],
-    ["subutilizado", 'Subutizado']
+    ["subutilizado", 'Subutilizado']
   ]);
 
   const tiposUsos = new Map<string, number | string | boolean>([
@@ -81,8 +79,6 @@ export default function Prospeccao() {
     }).then(() => {
     })
   };
-
-
 
   const confirmaOperacao = async () => {
     await vistoriaServices.deleteVistoria(id)

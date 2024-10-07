@@ -57,7 +57,6 @@ const VisuallyHiddenInput = styled('input')`
 `;
 
 export default function DetalhesVistorias(props: any) {
-
     const [processoId, setProcesso] = useState('');
     const [imovelId, setIdImovel] = useState('');
     const [tipoVistoria, setTipoVistoria] = useState('');
@@ -83,6 +82,11 @@ export default function DetalhesVistorias(props: any) {
     const [files, setFiles] = useState<FileList>();
     const { id } = props.params;
     const router = useRouter();
+    const theme = useTheme();
+
+    useEffect(() => {
+        id ? getById() : setCarregando(false);
+    });
 
     const {
         control,
@@ -147,12 +151,6 @@ export default function DetalhesVistorias(props: any) {
             })
     }
 
-    useEffect(() => {
-        id ? getById() : setCarregando(false);
-    })
-
-    const theme = useTheme();
-
     const handleFileChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ): void => {
@@ -161,14 +159,12 @@ export default function DetalhesVistorias(props: any) {
     };
 
     const onSubmit = async (data: Schema) => {
-        if (id) {
+        if (id) 
             await vistoriasServices.updateVistoria(id, data)
                 .then((v) => {
-                    if (v) {
-                        router.push('/vistoria?att=0');
-                    }
+                    if (v) router.push('/vistoria?att=0');
                 })
-        } else {
+        else {
             const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
             const formData: FormData = new FormData(form);
             formData.forEach(d => console.log(d));
