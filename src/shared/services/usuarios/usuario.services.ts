@@ -106,18 +106,20 @@ async function autorizar(id: string): Promise<{ autorizado: boolean }> {
 
 async function criar(data: ICreateUsuario): Promise<IUsuario> {
     const session = await getServerSession(authOptions);
-    const criado = await fetch(`${baseURL}usuarios/criar`, {
+    const response: Response = await fetch(`${baseURL}usuarios/criar`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${session?.access_token}`
         }, body: JSON.stringify(data)
-    }).then((response) => {
-        if (response.status === 401) Logout();
-        if (response.status !== 200) return;
-        return response.json();
     })
-    return criado;
+    if (response.status === 401) Logout();
+    if (response.status === 403) 
+        throw new Error("Usuário já cadastrado.");
+    if (response.status !== 201) 
+        throw new Error("Erro inesperado, status de resposta diferente de 201.");
+    const user: IUsuario = await response.json();
+    return user;
 }
 
 async function atualizar(id: string, data: IUpdateUsuario): Promise<IUsuario> {

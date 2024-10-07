@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, Card, CardActions, CardOverflow, Chip, ChipPropsColorOverrides, ColorPaletteProp, Divider, FormControl, FormLabel, IconButton, Input, Option, Select, Stack } from "@mui/joy";
-import { Badge, Check, Clear, EmailRounded, Warning } from "@mui/icons-material";
+import { Badge, Cancel, Check, Clear, EmailRounded, Warning } from "@mui/icons-material";
 import { useRouter } from 'next/navigation';
 import { OverridableStringUnion } from '@mui/types';
 
@@ -41,24 +41,25 @@ export default function UsuarioDetalhes(props: any) {
     }, [ id ]);
 
     const submitData = () => {
-        if (usuario){
+        if (usuario) {
             atualizar(usuario.id, {
                 permissao
             }).then((response) => {
                 if (response.id) {
-                    setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);              
+                    setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);
+                    router.push('/usuarios');
                 }
             })
         } else {
-            if (novoUsuario){
+            if (novoUsuario) {
                 criar({
                     nome, login, email, permissao
                 }).then((response) => {
-                    if (response.id) {
+                    if (response && response.id) {
                         setAlert('Usuário criado!', 'Dados inseridos com sucesso!', 'success', 3000, Check);
-                        router.push('/usuarios/detalhes/' + response.id);
+                        router.push('/usuarios');
                     }
-                })
+                }).catch(error => setAlert('Erro inesperado!', `${error}`, 'danger', 5000, Cancel))
             }
         }
     }
