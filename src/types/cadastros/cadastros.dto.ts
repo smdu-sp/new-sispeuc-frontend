@@ -7,7 +7,6 @@ export interface CadastrosRequestDTO {
 
 export interface ProcessoRequestDTO {
   autuacaoSei: string,
-  autuacaoData: Date,
   imovelContiguidade: boolean,
   areaConstruidaTotal: number,
   areaLoteTotal: number,
@@ -20,7 +19,6 @@ export interface ProcessoRequestDTO {
 export interface ProcessoResponseDTO {
   id: number,
   autuacaoSei: string,
-  autuacaoData: Date,
   imovelContiguidade: boolean,
   estado: string,
   areaConstruidaTotal: number,
