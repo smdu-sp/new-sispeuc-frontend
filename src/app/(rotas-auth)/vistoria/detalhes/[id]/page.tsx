@@ -1,7 +1,7 @@
 'use client'
 
 import Content from "@/components/Content";
-import { Box, Button, Card, Divider, FormControl, FormHelperText, FormLabel, Input, Option, Select, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
+import { Box, Button, Card, CircularProgress, Divider, FormControl, FormHelperText, FormLabel, Input, Option, Select, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
@@ -40,7 +40,7 @@ const schema = object({
     areaConstruidaNaoComputavel: z.coerce.number(),
     descricao: string(),
     dataVistoria: z.coerce.date(),
-    files: z.optional(z.instanceof(FileList))
+    files: z.optional(z.instanceof(Array<File>))
 });
 type Schema = Infer<typeof schema>;
 
@@ -57,6 +57,7 @@ const VisuallyHiddenInput = styled('input')`
 `;
 
 export default function DetalhesVistorias(props: any) {
+    const [ loading, setLoading ] = useState<boolean>();
     const [processoId, setProcesso] = useState('');
     const [imovelId, setIdImovel] = useState('');
     const [tipoVistoria, setTipoVistoria] = useState('');
@@ -79,7 +80,7 @@ export default function DetalhesVistorias(props: any) {
     const [descricao, setDescricao] = useState('');
     const [dataVistoria, setDataVistoria] = useState<Date>(new Date());
     const [carregando, setCarregando] = useState(true);
-    const [files, setFiles] = useState<FileList>();
+    const [files, setFiles] = useState<File[]>([]);
     const { id } = props.params;
     const router = useRouter();
     const theme = useTheme();
@@ -155,25 +156,25 @@ export default function DetalhesVistorias(props: any) {
         event: React.ChangeEvent<HTMLInputElement>
     ): void => {
         if (event.target.files && event.target.files.length > 0) 
-            setFiles(event.target.files);
+            setFiles(Array.from(event.target.files));
     };
 
     const onSubmit = async (data: Schema) => {
+        setLoading(true);
         if (id) 
             await vistoriasServices.updateVistoria(id, data)
                 .then((v) => {
+                    setLoading(false);
                     if (v) router.push('/vistoria?att=0');
                 })
         else {
             const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
             const formData: FormData = new FormData(form);
-            formData.forEach(d => console.log(d));
-            // await vistoriasServices.createVistoria(formData)
-            //     .then((v) => {
-            //         if (v) {
-            //             router.push('/vistoria?add=0');
-            //         }
-            //     });
+            await vistoriasServices.createVistoria(formData)
+                .then((v) => {
+                    setLoading(false);
+                    if (v) router.push('/vistoria');
+                });
         }
     };
 
@@ -741,7 +742,21 @@ export default function DetalhesVistorias(props: any) {
                                 </FormControl>
                             </Stack>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                <Button type="submit" sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}>Enviar Vistoria</Button>
+                                {
+                                    loading
+                                    &&   <Button 
+                                            startDecorator={<CircularProgress variant="solid" />} 
+                                            sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }} 
+                                        >
+                                            Loading…
+                                        </Button>
+                                    ||   <Button 
+                                            type="submit" 
+                                            sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}
+                                        >
+                                            Enviar Vistoria
+                                        </Button>
+                                }
                             </Box>
                         </Box>
                     </Card>

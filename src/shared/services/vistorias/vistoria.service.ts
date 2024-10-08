@@ -12,7 +12,6 @@ export const createVistoria = async (request: FormData): Promise<VistoriaRespons
     const response: Response = await fetch(`${api_url}/criar-vistoria`, {
         method: 'POST',
         headers: { 
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${session?.access_token}`
         },
         body: request
