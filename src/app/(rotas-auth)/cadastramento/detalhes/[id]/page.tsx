@@ -25,7 +25,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { CepResponseDTO } from '@/shared/services/cep/cep.service';
 import * as comum from '@/shared/services/comum/comum.service';
 
-const schema = object({
+const schemaFormProcesso = object({
     autuacaoSei: string(),
     autuacaoData: date(),
     imovelContiguidade: boolean(),
@@ -35,6 +35,9 @@ const schema = object({
     prospeccaoTipologia: string().min(1, "Selecione o tipo de vistoria"),
     prospeccaoData: date(),
     estado: string(),
+});
+
+const schemaFormImovel = object({
     sqlSetor: z.coerce.number(),
     sqlQuadra: z.coerce.number(),
     sqlLote: z.coerce.number(),
@@ -65,7 +68,9 @@ const schema = object({
     tombamentoCondephat: string(),
     tombamentoIphan: string(),
 });
-type Schema = Infer<typeof schema>;
+
+type SchemaFormProcesso = Infer<typeof schemaFormProcesso>;
+type SchemaFormImovel = Infer<typeof schemaFormImovel>;
 
 export default function DetalhesPropriedade(props: any) {
 
@@ -124,12 +129,13 @@ export default function DetalhesPropriedade(props: any) {
     const router = useRouter();
 
     const {
-        control,
-        handleSubmit,
-        formState: { errors, isValid }
-    } = useForm<Schema>({
+        register: formProcesso,
+        control: controlProcesso,
+        handleSubmit: formProcessoSubmit,
+        formState: { errors: errorsProcesso }
+    } = useForm<SchemaFormProcesso>({
         mode: "onChange",
-        resolver: zodResolver(schema),
+        resolver: zodResolver(schemaFormProcesso),
         values: {
             autuacaoSei,
             autuacaoData,
@@ -140,6 +146,18 @@ export default function DetalhesPropriedade(props: any) {
             prospeccaoTipologia,
             prospeccaoData,
             estado,
+        }
+    });
+
+    const {
+        register: formImovel,
+        control: controlImovel,
+        handleSubmit: formImovelSubmit,
+        formState: { errors: errorsImovel, isValid }
+    } = useForm<SchemaFormImovel>({
+        mode: "onChange",
+        resolver: zodResolver(schemaFormImovel),
+        values: {
             sqlSetor,
             sqlQuadra,
             sqlLote,
@@ -209,7 +227,7 @@ export default function DetalhesPropriedade(props: any) {
         }
     }
 
-    const onSubmit = async (data: Schema) => {
+    const onSubmit = async (data: SchemaFormProcesso) => {
         console.log(data);
 
         if (id) {
@@ -236,6 +254,12 @@ export default function DetalhesPropriedade(props: any) {
         }
     };
 
+    const salvaImovel = (data: SchemaFormImovel) => {
+        console.log(data);
+        
+        // setImoveis([...imoveis, data]);
+    }
+
     const theme = useTheme();
 
     return (
@@ -249,44 +273,44 @@ export default function DetalhesPropriedade(props: any) {
         >
 
             <Stack gap={2}>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={formProcessoSubmit(onSubmit)}>
                     <Stack gap={2}>
                         <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
                             <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }} >Registro de processo</Typography>
                             <Divider />
                             <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.autuacaoSei)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.autuacaoSei)}>
                                         <FormLabel>Atuacao Sei</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="autuacaoSei"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={autuacaoSei}
                                             render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        error={Boolean(errors.autuacaoSei)}
+                                                        error={Boolean(errorsProcesso.autuacaoSei)}
                                                         {...field}
                                                     />
-                                                    {errors.autuacaoSei && <FormHelperText color="danger">
-                                                        {errors.autuacaoSei?.message}
+                                                    {errorsProcesso.autuacaoSei && <FormHelperText color="danger">
+                                                        {errorsProcesso.autuacaoSei?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
                                         />}
                                     </FormControl>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.autuacaoData)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.autuacaoData)}>
                                         <FormLabel>Data autuação</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="autuacaoData"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={new Date(autuacaoData.toLocaleString().split('T')[0])}
                                             render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
                                                         type="date"
                                                         placeholder="Prazo"
-                                                        error={Boolean(errors.autuacaoData)}
+                                                        error={Boolean(errorsProcesso.autuacaoData)}
                                                         value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
                                                         onChange={(event) => {
                                                             const newValue = new Date(event.target.value);
@@ -296,8 +320,8 @@ export default function DetalhesPropriedade(props: any) {
                                                         disabled={field.disabled}
                                                         name={field.name}
                                                     />
-                                                    {errors.autuacaoData && <FormHelperText color="danger">
-                                                        {errors.autuacaoData?.message}
+                                                    {errorsProcesso.autuacaoData && <FormHelperText color="danger">
+                                                        {errorsProcesso.autuacaoData?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
@@ -305,11 +329,11 @@ export default function DetalhesPropriedade(props: any) {
                                     </FormControl>
                                 </Stack>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.imovelContiguidade)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.imovelContiguidade)}>
                                         <FormLabel>Imovel Contibuidade</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="imovelContiguidade"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={imovelContiguidade}
                                             render={({ field: { ref, ...field } }) => {
                                                 return (<>
@@ -320,24 +344,24 @@ export default function DetalhesPropriedade(props: any) {
                                                         <Option value={false}>Não</Option>
                                                         <Option value={true}>Sim</Option>
                                                     </Select>
-                                                    {errors.imovelContiguidade && <FormHelperText>
-                                                        {errors.imovelContiguidade?.message}
+                                                    {errorsProcesso.imovelContiguidade && <FormHelperText>
+                                                        {errorsProcesso.imovelContiguidade?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
                                         />}
                                     </FormControl>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.areaConstruidaTotal)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.areaConstruidaTotal)}>
                                         <FormLabel>Quantidade de Pavimentos</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="areaConstruidaTotal"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={Number(areaConstruidaTotal)}
                                             render={({ field: { ref, onChange, value, ...field } }) => {
                                                 return (<>
                                                     <Input
                                                         type="number"
-                                                        error={Boolean(errors.areaConstruidaTotal)}
+                                                        error={Boolean(errorsProcesso.areaConstruidaTotal)}
                                                         value={value}
                                                         onChange={(e) => {
                                                             const newValue = e.target.value ? Number(e.target.value) : '';
@@ -345,24 +369,24 @@ export default function DetalhesPropriedade(props: any) {
                                                         }}
                                                         {...field}
                                                     />
-                                                    {errors.areaConstruidaTotal && <FormHelperText color="danger">
-                                                        {errors.areaConstruidaTotal?.message}
+                                                    {errorsProcesso.areaConstruidaTotal && <FormHelperText color="danger">
+                                                        {errorsProcesso.areaConstruidaTotal?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
                                         />}
                                     </FormControl>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.areaLoteTotal)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.areaLoteTotal)}>
                                         <FormLabel>Area lote total</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="areaLoteTotal"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={Number(areaLoteTotal)}
                                             render={({ field: { ref, onChange, value, ...field } }) => {
                                                 return (<>
                                                     <Input
                                                         type="number"
-                                                        error={Boolean(errors.areaLoteTotal)}
+                                                        error={Boolean(errorsProcesso.areaLoteTotal)}
                                                         value={value}
                                                         onChange={(e) => {
                                                             const newValue = e.target.value ? Number(e.target.value) : '';
@@ -370,8 +394,8 @@ export default function DetalhesPropriedade(props: any) {
                                                         }}
                                                         {...field}
                                                     />
-                                                    {errors.areaLoteTotal && <FormHelperText color="danger">
-                                                        {errors.areaLoteTotal?.message}
+                                                    {errorsProcesso.areaLoteTotal && <FormHelperText color="danger">
+                                                        {errorsProcesso.areaLoteTotal?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
@@ -380,11 +404,11 @@ export default function DetalhesPropriedade(props: any) {
 
                                 </Stack>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.prospeccaoOrigem)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.prospeccaoOrigem)}>
                                         <FormLabel>Origem Prospecção</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="prospeccaoOrigem"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={prospeccaoOrigem}
                                             render={({ field: { ref, ...field } }) => {
                                                 return (<>
@@ -396,18 +420,18 @@ export default function DetalhesPropriedade(props: any) {
                                                         <Option value={'mapaColaborativo'}>Não</Option>
                                                         <Option value={'outros'}>Sim</Option>
                                                     </Select>
-                                                    {errors.prospeccaoOrigem && <FormHelperText>
-                                                        {errors.prospeccaoOrigem?.message}
+                                                    {errorsProcesso.prospeccaoOrigem && <FormHelperText>
+                                                        {errorsProcesso.prospeccaoOrigem?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
                                         />}
                                     </FormControl>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.prospeccaoTipologia)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.prospeccaoTipologia)}>
                                         <FormLabel>Tipologia Prospecção</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="prospeccaoTipologia"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={prospeccaoTipologia}
                                             render={({ field: { ref, ...field } }) => {
                                                 return (<>
@@ -422,8 +446,8 @@ export default function DetalhesPropriedade(props: any) {
                                                         <Option value={'misto'}>Misto</Option>
                                                         <Option value={'outros'}>Outros</Option>
                                                     </Select>
-                                                    {errors.prospeccaoTipologia && <FormHelperText>
-                                                        {errors.prospeccaoTipologia?.message}
+                                                    {errorsProcesso.prospeccaoTipologia && <FormHelperText>
+                                                        {errorsProcesso.prospeccaoTipologia?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
@@ -431,18 +455,18 @@ export default function DetalhesPropriedade(props: any) {
                                     </FormControl>
                                 </Stack>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.prospeccaoData)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.prospeccaoData)}>
                                         <FormLabel>Data prospecção</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="prospeccaoData"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={new Date(prospeccaoData.toLocaleString().split('T')[0])}
                                             render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
                                                         type="date"
                                                         placeholder="Prazo"
-                                                        error={Boolean(errors.prospeccaoData)}
+                                                        error={Boolean(errorsProcesso.prospeccaoData)}
                                                         value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
                                                         onChange={(event) => {
                                                             const newValue = new Date(event.target.value);
@@ -452,27 +476,27 @@ export default function DetalhesPropriedade(props: any) {
                                                         disabled={field.disabled}
                                                         name={field.name}
                                                     />
-                                                    {errors.prospeccaoData && <FormHelperText color="danger">
-                                                        {errors.autuacaoData?.message}
+                                                    {errorsProcesso.prospeccaoData && <FormHelperText color="danger">
+                                                        {errorsProcesso.autuacaoData?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
                                         />}
                                     </FormControl>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errors.estado)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.estado)}>
                                         <FormLabel>Estado</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="estado"
-                                            control={control}
+                                            control={controlProcesso}
                                             defaultValue={estado}
                                             render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        error={Boolean(errors.estado)}
+                                                        error={Boolean(errorsProcesso.estado)}
                                                         {...field}
                                                     />
-                                                    {errors.estado && <FormHelperText color="danger">
-                                                        {errors.estado?.message}
+                                                    {errorsProcesso.estado && <FormHelperText color="danger">
+                                                        {errorsProcesso.estado?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
@@ -487,7 +511,6 @@ export default function DetalhesPropriedade(props: any) {
                                         }}>Enviar Processo</Button>
                                 </Box>
                             </Box>
-
                         </Card>
                     </Stack>
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'start', gap: 3 }}>
@@ -500,68 +523,70 @@ export default function DetalhesPropriedade(props: any) {
                     </Box>
                 </form>
 
-                <Stack gap={2} sx={{ display: exibirImovel ? 'flex' : 'none' }}>
-                    <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
-                        <Typography level="h4"
-                            endDecorator={
-                                <Tooltip title="Clique para visualizar imóveis já registrados" color="neutral" placement="top" variant='soft'>
-                                    <IconButton>
-                                        <VisibilityIcon sx={{ height: 20, width: 20 }} />
-                                    </IconButton>
-                                </Tooltip>
-                            } sx={{ pl: 3, pt: 2, pb: 1 }} >Imóvel</Typography>
-                        <Divider />
-                        <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
-                                <FormControl sx={{ width: '100%' }} error={Boolean(errors.enderecoCep)}>
-                                    <FormLabel>Cep</FormLabel>
-                                    {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
-                                        name="enderecoCep"
-                                        control={control}
-                                        defaultValue={comum.formataCep(enderecoCep)}
-                                        render={({ field: { ref, onChange, value, ...field } }) => {
-                                            return (<>
-                                                <Input
-                                                    value={comum.formataCep(enderecoCep)}
-                                                    placeholder="00000-000"
-                                                    onChange={(e) => { setEnderecoCep(e.target.value); buscaCep((e.target.value).replace('-', '')) }}
-                                                    error={Boolean(errors.enderecoCep)}
-                                                    {...field}
-                                                />
-                                                {errors.enderecoCep && <FormHelperText color="danger">
-                                                    {errors.enderecoCep?.message}
-                                                </FormHelperText>}
-                                            </>);
-                                        }}
-                                    />}
-                                </FormControl>
-                                <FormControl sx={{ width: '100%' }} error={Boolean(errors.enderecoLogradouro)}>
-                                    <FormLabel>Endereco Logradouro</FormLabel>
-                                    {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
-                                        name="enderecoLogradouro"
-                                        control={control}
-                                        defaultValue={enderecoLogradouro}
-                                        render={({ field: { ref, onChange, value, ...field } }) => {
-                                            return (<>
-                                                <Input
-                                                    value={enderecoLogradouro}
-                                                    error={Boolean(errors.enderecoLogradouro)}
-                                                    {...field}
-                                                />
-                                                {errors.enderecoLogradouro && <FormHelperText color="danger">
-                                                    {errors.enderecoLogradouro?.message}
-                                                </FormHelperText>}
-                                            </>);
-                                        }}
-                                    />}
-                                </FormControl>
-                            </Stack>
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                <Button type="submit" sx={{ bgcolor: theme.palette.text.primary, color: 'background.body', '&:hover': { bgcolor: theme.palette.text.primary, color: 'background.body' } }}>Salvar imóvel</Button>
+                <form onSubmit={formImovelSubmit(salvaImovel)}>
+                    <Stack gap={2} sx={{ display: exibirImovel ? 'flex' : 'none' }}>
+                        <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
+                            <Typography level="h4"
+                                endDecorator={
+                                    <Tooltip title="Clique para visualizar imóveis já registrados" color="neutral" placement="top" variant='soft'>
+                                        <IconButton>
+                                            <VisibilityIcon sx={{ height: 20, width: 20 }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                } sx={{ pl: 3, pt: 2, pb: 1 }}>Imóvel</Typography>
+                            <Divider />
+                            <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoCep)}>
+                                        <FormLabel>Cep</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoCep"
+                                            control={controlImovel}
+                                            defaultValue={comum.formataCep(enderecoCep)}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        value={comum.formataCep(enderecoCep)}
+                                                        placeholder="00000-000"
+                                                        onChange={(e) => { setEnderecoCep(e.target.value); buscaCep((e.target.value).replace('-', '')) }}
+                                                        error={Boolean(errorsImovel.enderecoCep)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoCep && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoCep?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoLogradouro)}>
+                                        <FormLabel>Endereco Logradouro</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoLogradouro"
+                                            control={controlImovel}
+                                            defaultValue={enderecoLogradouro}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        value={enderecoLogradouro}
+                                                        error={Boolean(errorsImovel.enderecoLogradouro)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoLogradouro && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoLogradouro?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <Button type="submit" sx={{ bgcolor: theme.palette.text.primary, color: 'background.body', '&:hover': { bgcolor: theme.palette.text.primary, color: 'background.body' } }}>Salvar imóvel</Button>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Card>
-                </Stack>
+                        </Card>
+                    </Stack>
+                </form>
             </Stack>
         </Content >
     );
