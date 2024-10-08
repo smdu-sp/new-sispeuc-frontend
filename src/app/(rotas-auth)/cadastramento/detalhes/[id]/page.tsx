@@ -13,7 +13,7 @@ import {
     string,
     boolean,
     date,
-    z
+    z,
 } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,10 +24,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { CepResponseDTO } from '@/shared/services/cep/cep.service';
 import * as comum from '@/shared/services/comum/comum.service';
+import {CadastrosRequestDTO} from '@/types/cadastros/cadastros.dto';
+
 
 const schemaFormProcesso = object({
     autuacaoSei: string(),
-    autuacaoData: date(),
     imovelContiguidade: boolean(),
     areaConstruidaTotal: z.coerce.number(),
     areaLoteTotal: z.coerce.number(),
@@ -76,7 +77,6 @@ export default function DetalhesPropriedade(props: any) {
 
     //Dados Processo
     const [autuacaoSei, setAutuacaoSei] = useState('');
-    const [autuacaoData, setAutuacaoData] = useState(new Date());
     const [imovelContiguidade, setImovelContiguidade] = useState(false);
     const [areaConstruidaTotal, setAreaConstruidaTotal] = useState(0);
     const [areaLoteTotal, setAreaLoteTotal] = useState(0);
@@ -94,12 +94,12 @@ export default function DetalhesPropriedade(props: any) {
     const [sqlFilho, setSqlFilho] = useState<number>(0);
     //Endereço
     const [registroNotasReferencia, setRegistroNotasReferencia] = useState('');
-    /*#*/const [enderecoLogradouro, setEnderecoLogradouro] = useState('');
+    const [enderecoLogradouro, setEnderecoLogradouro] = useState('');
     const [enderecoNumero, setEnderecoNumero] = useState('');
     const [enderecoComplemento, setEnderecoComplemento] = useState('');
     const [enderecoReferencia, setEnderecoReferencia] = useState('');
     const [enderecoDistrito, setEnderecoDistrito] = useState('');
-    /*#*/const [enderecoCep, setEnderecoCep] = useState('');
+    const [enderecoCep, setEnderecoCep] = useState('');
     const [enderecoSubprefeitura, setEnderecoSubprefeitura] = useState('');
     const [enderecoSubprefeituraSigla, setEnderecoSubprefeituraSigla] = useState('');
     const [enderecoMacroarea, setEnderecoMacroarea] = useState('');
@@ -122,7 +122,7 @@ export default function DetalhesPropriedade(props: any) {
     /*---------//---------*/
 
     const [exibirImovel, setExibirImovel] = useState(false);
-    const [imoveis, setImoveis] = useState([]);
+    const [imoveis, setImoveis] = useState<SchemaFormImovel[] >([]);
 
     const [carregando, setCarregando] = useState(true);
     const { id } = props.params;
@@ -138,7 +138,6 @@ export default function DetalhesPropriedade(props: any) {
         resolver: zodResolver(schemaFormProcesso),
         values: {
             autuacaoSei,
-            autuacaoData,
             imovelContiguidade,
             areaConstruidaTotal,
             areaLoteTotal,
@@ -150,7 +149,6 @@ export default function DetalhesPropriedade(props: any) {
     });
 
     const {
-        register: formImovel,
         control: controlImovel,
         handleSubmit: formImovelSubmit,
         formState: { errors: errorsImovel, isValid }
@@ -195,7 +193,6 @@ export default function DetalhesPropriedade(props: any) {
             .then((v) => {
                 if (v) {
                     setAutuacaoSei(v.autuacaoSei);
-                    setAutuacaoData(v.autuacaoData);
                     setImovelContiguidade(v.imovelContiguidade);
                     setAreaConstruidaTotal(v.areaConstruidaTotal);
                     setAreaLoteTotal(v.areaLoteTotal);
@@ -218,8 +215,9 @@ export default function DetalhesPropriedade(props: any) {
                 .then((v: CepResponseDTO) => {
                     if (v) {
                         setEnderecoLogradouro(v ? v.logradouro : '');
+                        setEnderecoZona(v ? v.regiao : '');
+                        setEnderecoDistrito(v ? v.bairro : '');
                         console.log(v);
-
                     }
                 })
         } else {
@@ -227,37 +225,49 @@ export default function DetalhesPropriedade(props: any) {
         }
     }
 
-    const onSubmit = async (data: SchemaFormProcesso) => {
-        console.log(data);
 
-        if (id) {
-            await cadastroServices.updateProcesso(id, data)
-                .then((v) => {
-                    if (v) {
-                        router.push('/cadastramento?att=0');
-                    }
-                })
-        } else if (imoveis.length === 0) {
-            await cadastroServices.createProcesso(data)
-                .then((v) => {
-                    if (v) {
-                        router.push('/cadastramento?add=0');
-                    }
-                })
-        } else {
-            // await cadastroServices.createCadastro(data)
-            //     .then((v) => {
-            //         if (v) {
-            //             router.push('/cadastramento?add=0');
-            //         }
-            //     })
+
+    const verificaImovel = async (data2: SchemaFormProcesso) => {
+        if (imoveis.length > 0) {
+            const data = {
+                processo: data2,
+                imovel: imoveis.map((imovel) => ({ ...imovel, usuarioId: 'some-user-id' }))
+              }
+            await cadastroServices.createCadastro(data)
+              .then((v) => {
+                  console.log(v);
+              })
         }
+    }
+
+    const onSubmit = async (data: SchemaFormProcesso) => {
+
+        if (imoveis.length > 0) {
+            verificaImovel(data)
+        } else {
+            if (id) {
+                await cadastroServices.updateProcesso(id, data)
+                    .then((v) => {
+                        if (v) {
+                            router.push('/cadastramento?att=0');
+                        }
+                    })
+            } else if (imoveis.length === 0) {
+                await cadastroServices.createProcesso(data)
+                    .then((v) => {
+                        if (v) {
+                            router.push('/cadastramento?add=0');
+                        }
+                    })
+            }
+        }
+
+
     };
 
     const salvaImovel = (data: SchemaFormImovel) => {
         console.log(data);
-        
-        // setImoveis([...imoveis, data]);
+        setImoveis([...imoveis, data]);
     }
 
     const theme = useTheme();
@@ -294,34 +304,6 @@ export default function DetalhesPropriedade(props: any) {
                                                     />
                                                     {errorsProcesso.autuacaoSei && <FormHelperText color="danger">
                                                         {errorsProcesso.autuacaoSei?.message}
-                                                    </FormHelperText>}
-                                                </>);
-                                            }}
-                                        />}
-                                    </FormControl>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.autuacaoData)}>
-                                        <FormLabel>Data autuação</FormLabel>
-                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
-                                            name="autuacaoData"
-                                            control={controlProcesso}
-                                            defaultValue={new Date(autuacaoData.toLocaleString().split('T')[0])}
-                                            render={({ field: { ref, ...field } }) => {
-                                                return (<>
-                                                    <Input
-                                                        type="date"
-                                                        placeholder="Prazo"
-                                                        error={Boolean(errorsProcesso.autuacaoData)}
-                                                        value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
-                                                        onChange={(event) => {
-                                                            const newValue = new Date(event.target.value);
-                                                            field.onChange(newValue);
-                                                        }}
-                                                        onBlur={field.onBlur}
-                                                        disabled={field.disabled}
-                                                        name={field.name}
-                                                    />
-                                                    {errorsProcesso.autuacaoData && <FormHelperText color="danger">
-                                                        {errorsProcesso.autuacaoData?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
@@ -455,34 +437,6 @@ export default function DetalhesPropriedade(props: any) {
                                     </FormControl>
                                 </Stack>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.prospeccaoData)}>
-                                        <FormLabel>Data prospecção</FormLabel>
-                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
-                                            name="prospeccaoData"
-                                            control={controlProcesso}
-                                            defaultValue={new Date(prospeccaoData.toLocaleString().split('T')[0])}
-                                            render={({ field: { ref, ...field } }) => {
-                                                return (<>
-                                                    <Input
-                                                        type="date"
-                                                        placeholder="Prazo"
-                                                        error={Boolean(errorsProcesso.prospeccaoData)}
-                                                        value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
-                                                        onChange={(event) => {
-                                                            const newValue = new Date(event.target.value);
-                                                            field.onChange(newValue);
-                                                        }}
-                                                        onBlur={field.onBlur}
-                                                        disabled={field.disabled}
-                                                        name={field.name}
-                                                    />
-                                                    {errorsProcesso.prospeccaoData && <FormHelperText color="danger">
-                                                        {errorsProcesso.autuacaoData?.message}
-                                                    </FormHelperText>}
-                                                </>);
-                                            }}
-                                        />}
-                                    </FormControl>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.estado)}>
                                         <FormLabel>Estado</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
@@ -526,18 +480,11 @@ export default function DetalhesPropriedade(props: any) {
                 <form onSubmit={formImovelSubmit(salvaImovel)}>
                     <Stack gap={2} sx={{ display: exibirImovel ? 'flex' : 'none' }}>
                         <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
-                            <Typography level="h4"
-                                endDecorator={
-                                    <Tooltip title="Clique para visualizar imóveis já registrados" color="neutral" placement="top" variant='soft'>
-                                        <IconButton>
-                                            <VisibilityIcon sx={{ height: 20, width: 20 }} />
-                                        </IconButton>
-                                    </Tooltip>
-                                } sx={{ pl: 3, pt: 2, pb: 1 }}>Imóvel</Typography>
+                            <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }}>Endereço</Typography>
                             <Divider />
                             <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
-                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoCep)}>
+                                    <FormControl sx={{ width: '50%' }} error={Boolean(errorsImovel.enderecoCep)}>
                                         <FormLabel>Cep</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="enderecoCep"
@@ -568,12 +515,602 @@ export default function DetalhesPropriedade(props: any) {
                                             render={({ field: { ref, onChange, value, ...field } }) => {
                                                 return (<>
                                                     <Input
+                                                        onChange={(e) => setEnderecoLogradouro(e.target.value)}
                                                         value={enderecoLogradouro}
                                                         error={Boolean(errorsImovel.enderecoLogradouro)}
                                                         {...field}
                                                     />
                                                     {errorsImovel.enderecoLogradouro && <FormHelperText color="danger">
                                                         {errorsImovel.enderecoLogradouro?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '10%' }} error={Boolean(errorsImovel.enderecoNumero)}>
+                                        <FormLabel>Numero</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoNumero"
+                                            control={controlImovel}
+                                            defaultValue={enderecoNumero}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoNumero(e.target.value)}
+                                                        value={enderecoNumero}
+                                                        error={Boolean(errorsImovel.enderecoNumero)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoNumero && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoNumero?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoDistrito)}>
+                                        <FormLabel>Distrito</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoDistrito"
+                                            control={controlImovel}
+                                            defaultValue={enderecoDistrito}
+                                            render={({ field: { ref, value, onChange, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoDistrito(e.target.value)}
+                                                        value={enderecoDistrito}
+                                                        error={Boolean(errorsImovel.enderecoDistrito)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoDistrito && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoDistrito?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoComplemento)}>
+                                        <FormLabel>Complemento</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoComplemento"
+                                            control={controlImovel}
+                                            defaultValue={enderecoComplemento}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoComplemento(e.target.value)}
+                                                        value={enderecoComplemento}
+                                                        error={Boolean(errorsImovel.enderecoComplemento)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoComplemento && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoComplemento?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoReferencia)}>
+                                        <FormLabel>Referencia</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoReferencia"
+                                            control={controlImovel}
+                                            defaultValue={enderecoReferencia}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoReferencia(e.target.value)}
+                                                        value={enderecoReferencia}
+                                                        error={Boolean(errorsImovel.enderecoReferencia)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoReferencia && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoReferencia?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoZona)}>
+                                        <FormLabel>Zona</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoZona"
+                                            control={controlImovel}
+                                            defaultValue={enderecoZona}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoZona(e.target.value)}
+                                                        value={enderecoZona}
+                                                        error={Boolean(errorsImovel.enderecoZona)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoZona && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoZona?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '10%' }} error={Boolean(errorsImovel.enderecoZonaSigla)}>
+                                        <FormLabel>Sigla</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoZonaSigla"
+                                            control={controlImovel}
+                                            defaultValue={enderecoZonaSigla}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoZonaSigla(e.target.value)}
+                                                        value={enderecoZonaSigla}
+                                                        error={Boolean(errorsImovel.enderecoZonaSigla)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoZonaSigla && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoZonaSigla?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoSubprefeitura)}>
+                                        <FormLabel>Subprefeitura</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoSubprefeitura"
+                                            control={controlImovel}
+                                            defaultValue={enderecoSubprefeitura}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoSubprefeitura(e.target.value)}
+                                                        value={enderecoSubprefeitura}
+                                                        error={Boolean(errorsImovel.enderecoSubprefeitura)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoSubprefeitura && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoSubprefeitura?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '10%' }} error={Boolean(errorsImovel.enderecoSubprefeituraSigla)}>
+                                        <FormLabel>Sigla</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoSubprefeituraSigla"
+                                            control={controlImovel}
+                                            defaultValue={enderecoSubprefeituraSigla}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoSubprefeituraSigla(e.target.value)}
+                                                        value={enderecoSubprefeituraSigla}
+                                                        error={Boolean(errorsImovel.enderecoSubprefeituraSigla)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoSubprefeituraSigla && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoSubprefeituraSigla?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoMacroarea)}>
+                                        <FormLabel>Macroarea</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoMacroarea"
+                                            control={controlImovel}
+                                            defaultValue={enderecoMacroarea}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoMacroarea(e.target.value)}
+                                                        value={enderecoMacroarea}
+                                                        error={Boolean(errorsImovel.enderecoMacroarea)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoMacroarea && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoMacroarea?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoMacroareaSigla)}>
+                                        <FormLabel>Macroarea Sigla</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="enderecoMacroareaSigla"
+                                            control={controlImovel}
+                                            defaultValue={enderecoMacroareaSigla}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        onChange={(e) => setEnderecoMacroareaSigla(e.target.value)}
+                                                        value={enderecoMacroareaSigla}
+                                                        error={Boolean(errorsImovel.enderecoMacroareaSigla)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.enderecoMacroareaSigla && <FormHelperText color="danger">
+                                                        {errorsImovel.enderecoMacroareaSigla?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                
+                            </Box>
+                        </Card>
+                        <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
+                            <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }}>SQL</Typography>
+                            <Divider />
+                            <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.sqlSetor)}>
+                                        <FormLabel>SQL Setor</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="sqlSetor"
+                                            control={controlImovel}
+                                            defaultValue={sqlSetor}
+                                            render={({ field: { ref, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.sqlSetor)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.sqlSetor && <FormHelperText color="danger">
+                                                        {errorsImovel.sqlSetor?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.sqlQuadra)}>
+                                        <FormLabel>SQL Quadra</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="sqlQuadra"
+                                            control={controlImovel}
+                                            defaultValue={sqlQuadra}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.sqlQuadra)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.sqlQuadra && <FormHelperText color="danger">
+                                                        {errorsImovel.sqlQuadra?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.sqlLote)}>
+                                        <FormLabel>SQL Lote</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="sqlLote"
+                                            control={controlImovel}
+                                            defaultValue={sqlLote}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.sqlLote)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.sqlLote && <FormHelperText color="danger">
+                                                        {errorsImovel.sqlLote?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.sqlDigito)}>
+                                        <FormLabel>SQL Digito</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="sqlDigito"
+                                            control={controlImovel}
+                                            defaultValue={sqlDigito}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.sqlDigito)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.sqlDigito && <FormHelperText color="danger">
+                                                        {errorsImovel.sqlDigito?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.sqlPai)}>
+                                        <FormLabel>SQL Pai</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="sqlPai"
+                                            control={controlImovel}
+                                            defaultValue={sqlPai}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.sqlPai)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.sqlPai && <FormHelperText color="danger">
+                                                        {errorsImovel.sqlPai?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.sqlFilho)}>
+                                        <FormLabel>SQL Filho</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="sqlFilho"
+                                            control={controlImovel}
+                                            defaultValue={sqlFilho}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.sqlFilho)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.sqlFilho && <FormHelperText color="danger">
+                                                        {errorsImovel.sqlFilho?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                
+                            </Box>
+                        </Card>
+                        <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
+                            <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }}>Area</Typography>
+                            <Divider />
+                            <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.areaConstruidaTotalRegistrada)}>
+                                        <FormLabel>Area Total Construida Registrada</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="areaConstruidaTotalRegistrada"
+                                            control={controlImovel}
+                                            defaultValue={areaConstruidaTotalRegistrada}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.areaConstruidaTotalRegistrada)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.areaConstruidaTotalRegistrada && <FormHelperText color="danger">
+                                                        {errorsImovel.areaConstruidaTotalRegistrada?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.areaLoteTotalRegistrada)}>
+                                        <FormLabel>Area Lote Total Registrada</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="areaLoteTotalRegistrada"
+                                            control={controlImovel}
+                                            defaultValue={areaLoteTotalRegistrada}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.areaLoteTotalRegistrada)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.areaLoteTotalRegistrada && <FormHelperText color="danger">
+                                                        {errorsImovel.areaLoteTotalRegistrada?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.areaCoeficienteAproveitamento)}>
+                                        <FormLabel>Area Coeficiente Aproveitamento</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="areaCoeficienteAproveitamento"
+                                            control={controlImovel}
+                                            defaultValue={areaCoeficienteAproveitamento}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.areaCoeficienteAproveitamento)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.areaCoeficienteAproveitamento && <FormHelperText color="danger">
+                                                        {errorsImovel.areaCoeficienteAproveitamento?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.areaCoeficienteAproveitamentoMinimo)}>
+                                        <FormLabel>Area Coeficiente Aproveitamento Minimo</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="areaCoeficienteAproveitamentoMinimo"
+                                            control={controlImovel}
+                                            defaultValue={areaCoeficienteAproveitamentoMinimo}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.areaCoeficienteAproveitamentoMinimo)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.areaCoeficienteAproveitamentoMinimo && <FormHelperText color="danger">
+                                                        {errorsImovel.areaCoeficienteAproveitamentoMinimo?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                
+                            </Box>
+                        </Card>
+                        <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
+                            <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }}>Finalização</Typography>
+                            <Divider />
+                            <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.geoEpsg)}>
+                                        <FormLabel>Geo Epsg</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="geoEpsg"
+                                            control={controlImovel}
+                                            defaultValue={geoEpsg}
+                                            render={({ field: { ref, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='number'
+                                                        error={Boolean(errorsImovel.geoEpsg)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.geoEpsg && <FormHelperText color="danger">
+                                                        {errorsImovel.geoEpsg?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.decretoNumero)}>
+                                        <FormLabel>Decreto Numero</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="decretoNumero"
+                                            control={controlImovel}
+                                            defaultValue={decretoNumero}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='text'
+                                                        error={Boolean(errorsImovel.decretoNumero)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.decretoNumero && <FormHelperText color="danger">
+                                                        {errorsImovel.decretoNumero?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.decretoTipo)}>
+                                        <FormLabel>Decreto Tipo</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="decretoTipo"
+                                            control={controlImovel}
+                                            defaultValue={decretoTipo}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='text'
+                                                        error={Boolean(errorsImovel.decretoTipo)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.decretoTipo && <FormHelperText color="danger">
+                                                        {errorsImovel.decretoTipo?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                </Stack>
+                                <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.tombamentoCompresp)}>
+                                        <FormLabel>Tombamento Compresp</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="tombamentoCompresp"
+                                            control={controlImovel}
+                                            defaultValue={tombamentoCompresp}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='text'
+                                                        error={Boolean(errorsImovel.tombamentoCompresp)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.tombamentoCompresp && <FormHelperText color="danger">
+                                                        {errorsImovel.tombamentoCompresp?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.tombamentoCondephat)}>
+                                        <FormLabel>Tombamento Condephat</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="tombamentoCondephat"
+                                            control={controlImovel}
+                                            defaultValue={tombamentoCondephat}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='text'
+                                                        error={Boolean(errorsImovel.tombamentoCondephat)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.tombamentoCondephat && <FormHelperText color="danger">
+                                                        {errorsImovel.tombamentoCondephat?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.tombamentoIphan)}>
+                                        <FormLabel>Tombamento Iphan</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="tombamentoIphan"
+                                            control={controlImovel}
+                                            defaultValue={tombamentoIphan}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='text'
+                                                        error={Boolean(errorsImovel.tombamentoIphan)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.tombamentoIphan && <FormHelperText color="danger">
+                                                        {errorsImovel.tombamentoIphan?.message}
+                                                    </FormHelperText>}
+                                                </>);
+                                            }}
+                                        />}
+                                    </FormControl>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.registroNotasReferencia)}>
+                                        <FormLabel>registro Notas Referencia</FormLabel>
+                                        {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
+                                            name="registroNotasReferencia"
+                                            control={controlImovel}
+                                            defaultValue={registroNotasReferencia}
+                                            render={({ field: { ref, value, ...field } }) => {
+                                                return (<>
+                                                    <Input
+                                                        type='text'
+                                                        error={Boolean(errorsImovel.registroNotasReferencia)}
+                                                        {...field}
+                                                    />
+                                                    {errorsImovel.registroNotasReferencia && <FormHelperText color="danger">
+                                                        {errorsImovel.registroNotasReferencia?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
