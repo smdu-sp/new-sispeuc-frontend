@@ -83,6 +83,7 @@ export const createProcesso = async (
     },
     body: JSON.stringify({ ...request })
   });
+  console.log(response);
   if (response.status != 201) throw new Error('erro ao tentar registrar o cadastro');
   const data: ProcessoResponseDTO = await response.json();
   return data;

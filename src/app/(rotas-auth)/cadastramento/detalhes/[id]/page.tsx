@@ -24,7 +24,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { CepResponseDTO } from '@/shared/services/cep/cep.service';
 import * as comum from '@/shared/services/comum/comum.service';
-import {CadastrosRequestDTO} from '@/types/cadastros/cadastros.dto';
+import { CadastrosRequestDTO } from '@/types/cadastros/cadastros.dto';
 
 
 const schemaFormProcesso = object({
@@ -50,7 +50,7 @@ const schemaFormImovel = object({
     enderecoNumero: string(),
     enderecoComplemento: string(),
     enderecoReferencia: string(),
-    enderecoDistrito: string(),
+    enderecoDistrito: string().min(1, "Selecione o distrito"),
     enderecoCep: z.string().regex(/^\d{5}-\d{3}$/, 'CEP inválido'),
     enderecoSubprefeitura: string(),
     enderecoSubprefeituraSigla: string(),
@@ -122,7 +122,7 @@ export default function DetalhesPropriedade(props: any) {
     /*---------//---------*/
 
     const [exibirImovel, setExibirImovel] = useState(false);
-    const [imoveis, setImoveis] = useState<SchemaFormImovel[] >([]);
+    const [imoveis, setImoveis] = useState<SchemaFormImovel[]>([]);
 
     const [carregando, setCarregando] = useState(true);
     const { id } = props.params;
@@ -229,18 +229,26 @@ export default function DetalhesPropriedade(props: any) {
 
     const verificaImovel = async (data2: SchemaFormProcesso) => {
         if (imoveis.length > 0) {
+            console.log(
+                "processo: " + data2,
+                "imovel: " + imoveis.map((imovel) => ({ ...imovel, usuarioId: 'some-user-id' }))
+            );
+            
             const data = {
                 processo: data2,
                 imovel: imoveis.map((imovel) => ({ ...imovel, usuarioId: 'some-user-id' }))
-              }
+            }
+            console.log(data);
+            
             await cadastroServices.createCadastro(data)
-              .then((v) => {
-                  console.log(v);
-              })
+                .then((v) => {
+                    console.log(v);
+                })
         }
     }
 
     const onSubmit = async (data: SchemaFormProcesso) => {
+        console.log(imoveis.length);
 
         if (imoveis.length > 0) {
             verificaImovel(data)
@@ -512,11 +520,9 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoLogradouro"
                                             control={controlImovel}
                                             defaultValue={enderecoLogradouro}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        onChange={(e) => setEnderecoLogradouro(e.target.value)}
-                                                        value={enderecoLogradouro}
                                                         error={Boolean(errorsImovel.enderecoLogradouro)}
                                                         {...field}
                                                     />
@@ -533,11 +539,9 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoNumero"
                                             control={controlImovel}
                                             defaultValue={enderecoNumero}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        onChange={(e) => setEnderecoNumero(e.target.value)}
-                                                        value={enderecoNumero}
                                                         error={Boolean(errorsImovel.enderecoNumero)}
                                                         {...field}
                                                     />
@@ -556,15 +560,21 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoDistrito"
                                             control={controlImovel}
                                             defaultValue={enderecoDistrito}
-                                            render={({ field: { ref, value, onChange, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
-                                                    <Input
-                                                        onChange={(e) => setEnderecoDistrito(e.target.value)}
-                                                        value={enderecoDistrito}
-                                                        error={Boolean(errorsImovel.enderecoDistrito)}
+                                                    <Select
                                                         {...field}
-                                                    />
-                                                    {errorsImovel.enderecoDistrito && <FormHelperText color="danger">
+                                                        onChange={(_, value) => field.onChange(value)}
+                                                    >
+                                                        <Option value={''}></Option>
+                                                        <Option value={'centro'}>Centro</Option>
+                                                        <Option value={'norte'}>Norte</Option>
+                                                        <Option value={'sul'}>Sul</Option>
+                                                        <Option value={'leste'}>Leste</Option>
+                                                        <Option value={'oeste'}>Oeste</Option>
+                                                        <Option value={'NC'}>NC</Option>
+                                                    </Select>
+                                                    {errorsImovel.enderecoDistrito && <FormHelperText>
                                                         {errorsImovel.enderecoDistrito?.message}
                                                     </FormHelperText>}
                                                 </>);
@@ -577,11 +587,9 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoComplemento"
                                             control={controlImovel}
                                             defaultValue={enderecoComplemento}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        onChange={(e) => setEnderecoComplemento(e.target.value)}
-                                                        value={enderecoComplemento}
                                                         error={Boolean(errorsImovel.enderecoComplemento)}
                                                         {...field}
                                                     />
@@ -598,11 +606,9 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoReferencia"
                                             control={controlImovel}
                                             defaultValue={enderecoReferencia}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        onChange={(e) => setEnderecoReferencia(e.target.value)}
-                                                        value={enderecoReferencia}
                                                         error={Boolean(errorsImovel.enderecoReferencia)}
                                                         {...field}
                                                     />
@@ -621,36 +627,40 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoZona"
                                             control={controlImovel}
                                             defaultValue={enderecoZona}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
-                                                    <Input
-                                                        onChange={(e) => setEnderecoZona(e.target.value)}
-                                                        value={enderecoZona}
-                                                        error={Boolean(errorsImovel.enderecoZona)}
+                                                    <Select
                                                         {...field}
-                                                    />
-                                                    {errorsImovel.enderecoZona && <FormHelperText color="danger">
+                                                        onChange={(_, value) => field.onChange(value)}
+                                                    >
+                                                        <Option value={''}></Option>
+                                                        <Option value={'centro'}>Centro</Option>
+                                                        <Option value={'NC'}>NC</Option>
+                                                    </Select>
+                                                    {errorsImovel.enderecoZona && <FormHelperText>
                                                         {errorsImovel.enderecoZona?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
                                         />}
                                     </FormControl>
-                                    <FormControl sx={{ width: '10%' }} error={Boolean(errorsImovel.enderecoZonaSigla)}>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoZonaSigla)}>
                                         <FormLabel>Sigla</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="enderecoZonaSigla"
                                             control={controlImovel}
                                             defaultValue={enderecoZonaSigla}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
-                                                    <Input
-                                                        onChange={(e) => setEnderecoZonaSigla(e.target.value)}
-                                                        value={enderecoZonaSigla}
-                                                        error={Boolean(errorsImovel.enderecoZonaSigla)}
+                                                    <Select
                                                         {...field}
-                                                    />
-                                                    {errorsImovel.enderecoZonaSigla && <FormHelperText color="danger">
+                                                        onChange={(_, value) => field.onChange(value)}
+                                                    >
+                                                        <Option value={''}></Option>
+                                                        <Option value={'cen'}>cen</Option>
+                                                        <Option value={'NC'}>NC</Option>
+                                                    </Select>
+                                                    {errorsImovel.enderecoZonaSigla && <FormHelperText>
                                                         {errorsImovel.enderecoZonaSigla?.message}
                                                     </FormHelperText>}
                                                 </>);
@@ -663,36 +673,40 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoSubprefeitura"
                                             control={controlImovel}
                                             defaultValue={enderecoSubprefeitura}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
-                                                    <Input
-                                                        onChange={(e) => setEnderecoSubprefeitura(e.target.value)}
-                                                        value={enderecoSubprefeitura}
-                                                        error={Boolean(errorsImovel.enderecoSubprefeitura)}
+                                                    <Select
                                                         {...field}
-                                                    />
-                                                    {errorsImovel.enderecoSubprefeitura && <FormHelperText color="danger">
+                                                        onChange={(_, value) => field.onChange(value)}
+                                                    >
+                                                        <Option value={''}></Option>
+                                                        <Option value={'tatuape'}>Tatuape</Option>
+                                                        <Option value={'NC'}>NC</Option>
+                                                    </Select>
+                                                    {errorsImovel.enderecoSubprefeitura && <FormHelperText>
                                                         {errorsImovel.enderecoSubprefeitura?.message}
                                                     </FormHelperText>}
                                                 </>);
                                             }}
                                         />}
                                     </FormControl>
-                                    <FormControl sx={{ width: '10%' }} error={Boolean(errorsImovel.enderecoSubprefeituraSigla)}>
-                                        <FormLabel>Sigla</FormLabel>
+                                    <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoSubprefeituraSigla)}>
+                                        <FormLabel>Subprefeitura Sigla</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="enderecoSubprefeituraSigla"
                                             control={controlImovel}
                                             defaultValue={enderecoSubprefeituraSigla}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
-                                                    <Input
-                                                        onChange={(e) => setEnderecoSubprefeituraSigla(e.target.value)}
-                                                        value={enderecoSubprefeituraSigla}
-                                                        error={Boolean(errorsImovel.enderecoSubprefeituraSigla)}
+                                                    <Select
                                                         {...field}
-                                                    />
-                                                    {errorsImovel.enderecoSubprefeituraSigla && <FormHelperText color="danger">
+                                                        onChange={(_, value) => field.onChange(value)}
+                                                    >
+                                                        <Option value={''}></Option>
+                                                        <Option value={'tat'}>tat</Option>
+                                                        <Option value={'NC'}>NC</Option>
+                                                    </Select>
+                                                    {errorsImovel.enderecoSubprefeituraSigla && <FormHelperText>
                                                         {errorsImovel.enderecoSubprefeituraSigla?.message}
                                                     </FormHelperText>}
                                                 </>);
@@ -707,15 +721,17 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoMacroarea"
                                             control={controlImovel}
                                             defaultValue={enderecoMacroarea}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
-                                                    <Input
-                                                        onChange={(e) => setEnderecoMacroarea(e.target.value)}
-                                                        value={enderecoMacroarea}
-                                                        error={Boolean(errorsImovel.enderecoMacroarea)}
+                                                    <Select
                                                         {...field}
-                                                    />
-                                                    {errorsImovel.enderecoMacroarea && <FormHelperText color="danger">
+                                                        onChange={(_, value) => field.onChange(value)}
+                                                    >
+                                                        <Option value={''}></Option>
+                                                        <Option value={'centro'}>Centro</Option>
+                                                        <Option value={'NC'}>NC</Option>
+                                                    </Select>
+                                                    {errorsImovel.enderecoMacroarea && <FormHelperText>
                                                         {errorsImovel.enderecoMacroarea?.message}
                                                     </FormHelperText>}
                                                 </>);
@@ -728,15 +744,17 @@ export default function DetalhesPropriedade(props: any) {
                                             name="enderecoMacroareaSigla"
                                             control={controlImovel}
                                             defaultValue={enderecoMacroareaSigla}
-                                            render={({ field: { ref, onChange, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
-                                                    <Input
-                                                        onChange={(e) => setEnderecoMacroareaSigla(e.target.value)}
-                                                        value={enderecoMacroareaSigla}
-                                                        error={Boolean(errorsImovel.enderecoMacroareaSigla)}
+                                                    <Select
                                                         {...field}
-                                                    />
-                                                    {errorsImovel.enderecoMacroareaSigla && <FormHelperText color="danger">
+                                                        onChange={(_, value) => field.onChange(value)}
+                                                    >
+                                                        <Option value={''}></Option>
+                                                        <Option value={'cen'}>cen</Option>
+                                                        <Option value={'NC'}>NC</Option>
+                                                    </Select>
+                                                    {errorsImovel.enderecoMacroareaSigla && <FormHelperText>
                                                         {errorsImovel.enderecoMacroareaSigla?.message}
                                                     </FormHelperText>}
                                                 </>);
@@ -744,7 +762,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                 </Stack>
-                                
+
                             </Box>
                         </Card>
                         <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
@@ -758,7 +776,7 @@ export default function DetalhesPropriedade(props: any) {
                                             name="sqlSetor"
                                             control={controlImovel}
                                             defaultValue={sqlSetor}
-                                            render={({ field: { ref, ...field } }) => {
+                                            render={({ field: { ref, value, ...field } }) => {
                                                 return (<>
                                                     <Input
                                                         type='number'
@@ -875,7 +893,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                 </Stack>
-                                
+
                             </Box>
                         </Card>
                         <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
@@ -966,7 +984,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                 </Stack>
-                                
+
                             </Box>
                         </Card>
                         <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
