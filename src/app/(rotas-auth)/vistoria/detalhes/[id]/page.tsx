@@ -1,7 +1,7 @@
 'use client'
 
 import Content from "@/components/Content";
-import { Accordion, AccordionDetails, AccordionGroup, AccordionGroupProps, AccordionSummary, Box, Button, Card, CircularProgress, Divider, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
+import { Accordion, AccordionDetails, AccordionGroup, AccordionGroupProps, AccordionSummary, Box, Button, Card, CircularProgress, Divider, extendTheme, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy";
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
@@ -90,7 +90,9 @@ export default function DetalhesVistorias(props: any) {
     const theme = useTheme();
 
     useEffect(() => {
-        id && !gettedObject ? getById() : setCarregando(false);
+        setTimeout(() => {
+            id && !gettedObject ? getById() : setCarregando(false);            
+        }, 5000);
     });
 
     const {
@@ -153,7 +155,7 @@ export default function DetalhesVistorias(props: any) {
                     setDataVistoria(v.dataVistoria);
                     setVistoriaAssets(v.VistoriaAsset);
                     setCarregando(false);
-                    setGettedObject(false);
+                    setGettedObject(true);
                 }
             })
     }
@@ -678,6 +680,8 @@ export default function DetalhesVistorias(props: any) {
                                         <AccordionSummary>Arquivos já associados</AccordionSummary>
                                         <AccordionDetails>
                                             {
+                                                // carregando && 
+                                                // <Skeleton variant="text" level="h1" /> || 
                                                 vistoriaAssets && vistoriaAssets.map((fileObject, index) => {
                                                     return (
                                                         <Fragment>
@@ -692,13 +696,14 @@ export default function DetalhesVistorias(props: any) {
                                                                     width: 'fit-content',
                                                                     ":hover": {
                                                                         cursor: 'pointer',
-                                                                        bgcolor: '#F0F4F8'
+                                                                        bgcolor: theme.palette.mode === 'light' ? '#F0F4F8' : '#171a1c'
                                                                     }
                                                                 }}
                                                             >
                                                                 { fileObject.nomeArquivo }
                                                             </Typography>
                                                             <Modal
+                                                                key={fileObject.id}
                                                                 aria-labelledby="modal-title"
                                                                 aria-describedby="modal-desc"
                                                                 open={selectedFileIndex === index}
@@ -727,10 +732,12 @@ export default function DetalhesVistorias(props: any) {
                                                                         carregando && 
                                                                         <Button 
                                                                             sx={{ width: 'fit-content', alignSelf: 'center' }} 
-                                                                            loading 
+                                                                            loading loadingPosition="start"
                                                                             variant='solid' 
                                                                             color='danger'
-                                                                        ></Button> ||
+                                                                        >
+                                                                            Deletando o arquivo...
+                                                                        </Button> ||
                                                                         <Button 
                                                                             onClick={() => setCarregando(true)}
                                                                             variant='solid' 
