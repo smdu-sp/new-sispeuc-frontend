@@ -81,7 +81,7 @@ export default function DetalhesVistorias(props: any) {
     const [descricao, setDescricao] = useState('');
     const [dataVistoria, setDataVistoria] = useState<Date>(new Date());
     const [carregando, setCarregando] = useState(true);
-    const [files, setFiles] = useState<File[]>([]);
+    const [files, setFiles] = useState<File[] | undefined>([]);
     const [ vistoriaAssets, setVistoriaAssets ] = useState<any[]>();
     const [size, setSize] = useState<AccordionGroupProps['size']>('md');
     const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>();
@@ -90,9 +90,7 @@ export default function DetalhesVistorias(props: any) {
     const theme = useTheme();
 
     useEffect(() => {
-        setTimeout(() => {
-            id && !gettedObject ? getById() : setCarregando(false);            
-        }, 5000);
+        id && !gettedObject ? getById() : setCarregando(false);
     });
 
     const {
@@ -132,6 +130,8 @@ export default function DetalhesVistorias(props: any) {
         vistoriasServices.getOneVistoria(id)
             .then((v) => {
                 if (v) {
+                    setCarregando(true);
+                    setGettedObject(false);
                     setProcesso(v.processoId);
                     setIdImovel(v.imovelId);
                     setTipoVistoria(v.tipoVistoria);
@@ -163,23 +163,34 @@ export default function DetalhesVistorias(props: any) {
     const handleFileChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ): void => {
-        if (event.target.files && event.target.files.length > 0) 
+        if (event.target.files && event.target.files.length > 0)
             setFiles(Array.from(event.target.files));
     };
 
-    const onSubmit = async (data: Schema) => {
+    const handleDeleteFileOnVistoria = async (id: number) => {
         setLoading(true);
+        await vistoriasServices.deleteFileOnVistoria(id);
+        setVistoriaAssets(undefined);
+        setSelectedFileIndex(null);
+        setGettedObject(false);
+        setLoading(false);
+    }
+
+    const onSubmit = async () => {
+        setLoading(true);
+        const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
+        const formData: FormData = new FormData(form);
+        const f: File = formData.get('files') as File;
+        if (f.name == '' && f.arrayBuffer.length < 1) {
+            formData.delete('files');
+        }
         if (id) {
-          const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
-          const formData: FormData = new FormData(form);
           await vistoriasServices.updateVistoria(id, formData)
           .then((v) => {
               setLoading(false);
               if (v) router.push('/vistoria?att=0');
           })
         } else {
-          const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
-          const formData: FormData = new FormData(form);
           await vistoriasServices.createVistoria(formData)
               .then((v) => {
                   setLoading(false);
@@ -682,7 +693,7 @@ export default function DetalhesVistorias(props: any) {
                                             {
                                                 // carregando && 
                                                 // <Skeleton variant="text" level="h1" /> || 
-                                                vistoriaAssets && vistoriaAssets.map((fileObject, index) => {
+                                                vistoriaAssets && vistoriaAssets.length > 0 && vistoriaAssets.map((fileObject, index) => {
                                                     return (
                                                         <Fragment>
                                                             <Typography
@@ -729,7 +740,7 @@ export default function DetalhesVistorias(props: any) {
                                                                         alt={fileObject.nomeArquivo} 
                                                                     />
                                                                     {
-                                                                        carregando && 
+                                                                        loading && 
                                                                         <Button 
                                                                             sx={{ width: 'fit-content', alignSelf: 'center' }} 
                                                                             loading loadingPosition="start"
@@ -739,7 +750,10 @@ export default function DetalhesVistorias(props: any) {
                                                                             Deletando o arquivo...
                                                                         </Button> ||
                                                                         <Button 
-                                                                            onClick={() => setCarregando(true)}
+                                                                            onClick={() => {
+                                                                                selectedFileIndex !== null && selectedFileIndex !== undefined
+                                                                                && handleDeleteFileOnVistoria(+fileObject.id)
+                                                                            }}
                                                                             variant='solid' 
                                                                             color='danger' 
                                                                             sx={{ width: 'fit-content', alignSelf: 'center' }} 

@@ -3,7 +3,7 @@
 import { authOptions } from "@/shared/auth/authOptions";
 import { getServerSession } from "next-auth";
 
-import { VistoriaRequestDTO, VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
+import { VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
 
 const api_url: string = 'http://localhost:3000/vistorias';
 
@@ -63,7 +63,6 @@ export const updateVistoria = async (
         },
         body: request
     });
-    console.log(response)
     if (response.status != 200) throw new Error('erro ao tentar atualizar a vistoria');
     const data: VistoriaResponseDTO = await response.json();
     return data;
@@ -81,4 +80,18 @@ export const deleteVistoria = async (id: number): Promise<VistoriaResponseDTO> =
     if (response.status != 200) throw new Error('erro ao tentar excluir a vistoria');
     const data: VistoriaResponseDTO = await response.json();
     return data;
+};
+
+export const deleteFileOnVistoria = async (fileId: number) => {
+    const session = await getServerSession(authOptions);
+    const response: Response = await fetch(`${api_url}/excluir-anexo/${fileId}`, {
+        method: 'DELETE',
+        headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${session?.access_token}`
+        },
+    });
+    if (response.status != 200) throw new Error('erro ao tentar excluir o anexo da vistoria');
+    // const data = await response.json();
+    // return data;
 };
