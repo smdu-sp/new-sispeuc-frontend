@@ -10,9 +10,10 @@ const processos_api_url: string = 'http://localhost:3000/processos';
 // cadastros
 export const createCadastro = async (
   request: CadastrosRequestDTO
-): Promise<CadastrosResponseDTO> => {
+): Promise<CadastrosResponseDTO | void> => {
   const session = await getServerSession(authOptions);
-  const response: Response = await fetch(`${cadastros_api_url}/criar-cadastro`, {
+  console.log(request);
+  const response = await fetch(`${cadastros_api_url}/criar-cadastro`, {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
@@ -20,6 +21,8 @@ export const createCadastro = async (
     },
     body: JSON.stringify({ ...request })
   });
+  // console.log(await response.json());
+  
   if (response.status != 201) throw new Error('erro ao tentar registrar o cadastro');
   const data: CadastrosResponseDTO = await response.json();
   return data;

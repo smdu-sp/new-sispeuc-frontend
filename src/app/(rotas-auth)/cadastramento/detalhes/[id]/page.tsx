@@ -225,18 +225,16 @@ export default function DetalhesPropriedade(props: any) {
         }
     }
 
-
-
     const verificaImovel = async (data2: SchemaFormProcesso) => {
         if (imoveis.length > 0) {
-            console.log(
-                "processo: " + data2,
-                "imovel: " + imoveis.map((imovel) => ({ ...imovel, usuarioId: 'some-user-id' }))
-            );
-            
             const data = {
                 processo: data2,
-                imovel: imoveis.map((imovel) => ({ ...imovel, usuarioId: 'some-user-id' }))
+                imovel: imoveis.map((imovel) => ({
+                    ...imovel,
+                    enderecoCep: imovel.enderecoCep.replaceAll('-', ''),
+                    usuarioId: '55d62d48-85e9-4bb3-8339-8eaa78d63def',
+                    enderecoReferencia: 'teste',
+                 }))
             }
             console.log(data);
             
@@ -503,7 +501,7 @@ export default function DetalhesPropriedade(props: any) {
                                                     <Input
                                                         value={comum.formataCep(enderecoCep)}
                                                         placeholder="00000-000"
-                                                        onChange={(e) => { setEnderecoCep(e.target.value); buscaCep((e.target.value).replace('-', '')) }}
+                                                        onChange={(e) => { setEnderecoCep(e.target.value); buscaCep((e.target.value)) }}
                                                         error={Boolean(errorsImovel.enderecoCep)}
                                                         {...field}
                                                     />
