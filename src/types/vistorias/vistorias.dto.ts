@@ -50,5 +50,6 @@ export interface VistoriaResponseDTO {
     criadoEm: Date,
     atualizadoEm: Date,
     deletado: boolean,
-    vistoriaImovelId: number
+    vistoriaImovelId: number;
+    VistoriaAsset: []
 }

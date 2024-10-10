@@ -1,9 +1,9 @@
 'use client'
 
 import Content from "@/components/Content";
-import { Box, Button, Card, CircularProgress, Divider, FormControl, FormHelperText, FormLabel, Input, Option, Select, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
+import { Accordion, AccordionDetails, AccordionGroup, AccordionGroupProps, AccordionSummary, Box, Button, Card, CircularProgress, Divider, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import {
     infer as Infer,
@@ -58,6 +58,7 @@ const VisuallyHiddenInput = styled('input')`
 
 export default function DetalhesVistorias(props: any) {
     const [ loading, setLoading ] = useState<boolean>();
+    const [ gettedObject, setGettedObject ] = useState<boolean>();
     const [processoId, setProcesso] = useState('');
     const [imovelId, setIdImovel] = useState('');
     const [tipoVistoria, setTipoVistoria] = useState('');
@@ -81,12 +82,15 @@ export default function DetalhesVistorias(props: any) {
     const [dataVistoria, setDataVistoria] = useState<Date>(new Date());
     const [carregando, setCarregando] = useState(true);
     const [files, setFiles] = useState<File[]>([]);
+    const [ vistoriaAssets, setVistoriaAssets ] = useState<any[]>();
+    const [size, setSize] = useState<AccordionGroupProps['size']>('md');
+    const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>();
     const { id } = props.params;
     const router = useRouter();
     const theme = useTheme();
 
     useEffect(() => {
-        id ? getById() : setCarregando(false);
+        id && !gettedObject ? getById() : setCarregando(false);
     });
 
     const {
@@ -147,7 +151,9 @@ export default function DetalhesVistorias(props: any) {
                     setAreaConstruidaNaoComputavel(v.areaConstruidaNaoComputavel);
                     setDescricao(v.descricao);
                     setDataVistoria(v.dataVistoria);
+                    setVistoriaAssets(v.VistoriaAsset);
                     setCarregando(false);
+                    setGettedObject(false);
                 }
             })
     }
@@ -660,6 +666,90 @@ export default function DetalhesVistorias(props: any) {
                         <Typography level="h4" sx={{ pl: 3, pt: 2, pb: 1 }}>Finalização</Typography>
                         <Divider />
                         <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            {
+                                id &&
+                                <AccordionGroup size={size}>
+                                    <Accordion
+                                        sx={{
+                                            width: { xs: '100%', md: '50%', lg: '30%' },
+                                            height: 'fit-content'
+                                        }}
+                                    >
+                                        <AccordionSummary>Arquivos já associados</AccordionSummary>
+                                        <AccordionDetails>
+                                            {
+                                                vistoriaAssets && vistoriaAssets.map((fileObject, index) => {
+                                                    return (
+                                                        <Fragment>
+                                                            <Typography
+                                                                onClick={() => setSelectedFileIndex(index)}
+                                                                key={fileObject.id}
+                                                                color='primary'
+                                                                sx={{
+                                                                    marginY: 0.5,
+                                                                    paddingX: 2,
+                                                                    borderRadius: 5,
+                                                                    width: 'fit-content',
+                                                                    ":hover": {
+                                                                        cursor: 'pointer',
+                                                                        bgcolor: '#F0F4F8'
+                                                                    }
+                                                                }}
+                                                            >
+                                                                { fileObject.nomeArquivo }
+                                                            </Typography>
+                                                            <Modal
+                                                                aria-labelledby="modal-title"
+                                                                aria-describedby="modal-desc"
+                                                                open={selectedFileIndex === index}
+                                                                onClose={() => setSelectedFileIndex(null)}
+                                                                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                                            >
+                                                                <Sheet
+                                                                    variant="outlined"
+                                                                    sx={{ 
+                                                                        display: 'flex',
+                                                                        flexDirection: 'column',
+                                                                        width: 'fit-content', 
+                                                                        padding: 1, 
+                                                                        borderRadius: 'md', 
+                                                                        p: 3, 
+                                                                        boxShadow: 'lg' 
+                                                                    }}
+                                                                >
+                                                                    <ModalClose variant="plain" sx={{ mb: 4 }} />
+                                                                    <img 
+                                                                        style={{ width: '800px', padding: 15 }} 
+                                                                        src={fileObject.url} 
+                                                                        alt={fileObject.nomeArquivo} 
+                                                                    />
+                                                                    {
+                                                                        carregando && 
+                                                                        <Button 
+                                                                            sx={{ width: 'fit-content', alignSelf: 'center' }} 
+                                                                            loading 
+                                                                            variant='solid' 
+                                                                            color='danger'
+                                                                        ></Button> ||
+                                                                        <Button 
+                                                                            onClick={() => setCarregando(true)}
+                                                                            variant='solid' 
+                                                                            color='danger' 
+                                                                            sx={{ width: 'fit-content', alignSelf: 'center' }} 
+                                                                        >
+                                                                            Deletar arquivo
+                                                                        </Button>
+                                                                    }
+                                                                </Sheet>
+                                                            </Modal>
+                                                        </Fragment>
+                                                    )
+                                                })
+                                            }
+                                        </AccordionDetails>
+                                    </Accordion>
+                                </AccordionGroup>
+                            }
                             <Stack sx={{ width: '100%', gap: 2, display: 'flex', flexDirection: 'column', alignItems: 'end' }} direction={{ sm: 'column', md: 'column', lg: 'column', xl: 'row' }}>
                                 <Button
                                     sx={{
@@ -698,7 +788,7 @@ export default function DetalhesVistorias(props: any) {
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="dataVistoria"
                                         control={control}
-                                        defaultValue={dataVistoria && new Date(dataVistoria.toDateString().split('T')[0])}
+                                        defaultValue={dataVistoria && new Date(dataVistoria.toString().split('T')[0])}
                                         render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input

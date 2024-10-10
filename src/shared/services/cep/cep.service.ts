@@ -23,4 +23,4 @@ export const getCep = async (cep: string): Promise<CepResponseDTO> => {
     if (response.status != 200) throw new Error(`erro ao tentar buscar o cep: ${cep}`);
     const data: CepResponseDTO = await response.json();
     return data;
-  };
+};
