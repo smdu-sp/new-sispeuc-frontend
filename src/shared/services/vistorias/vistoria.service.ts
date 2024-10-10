@@ -53,17 +53,17 @@ export const getOneVistoria = async (id: string): Promise<VistoriaResponseDTO> =
 };
 
 export const updateVistoria = async (
-    id: string, request: VistoriaRequestDTO
+    id: string, request: FormData
 ): Promise<VistoriaResponseDTO> => {
     const session = await getServerSession(authOptions);
     const response: Response = await fetch(`${api_url}/atualizar-vistoria/${id}`, {
         method: 'PATCH',
         headers: { 
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${session?.access_token}`
         },
-        body: JSON.stringify({ ...request })
+        body: request
     });
+    console.log(response)
     if (response.status != 200) throw new Error('erro ao tentar atualizar a vistoria');
     const data: VistoriaResponseDTO = await response.json();
     return data;

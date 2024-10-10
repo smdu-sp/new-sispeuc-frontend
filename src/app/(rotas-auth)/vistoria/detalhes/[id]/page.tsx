@@ -161,20 +161,22 @@ export default function DetalhesVistorias(props: any) {
 
     const onSubmit = async (data: Schema) => {
         setLoading(true);
-        if (id) 
-            await vistoriasServices.updateVistoria(id, data)
-                .then((v) => {
-                    setLoading(false);
-                    if (v) router.push('/vistoria?att=0');
-                })
-        else {
-            const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
-            const formData: FormData = new FormData(form);
-            await vistoriasServices.createVistoria(formData)
-                .then((v) => {
-                    setLoading(false);
-                    if (v) router.push('/vistoria');
-                });
+        if (id) {
+          const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
+          const formData: FormData = new FormData(form);
+          await vistoriasServices.updateVistoria(id, formData)
+          .then((v) => {
+              setLoading(false);
+              if (v) router.push('/vistoria?att=0');
+          })
+        } else {
+          const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
+          const formData: FormData = new FormData(form);
+          await vistoriasServices.createVistoria(formData)
+              .then((v) => {
+                  setLoading(false);
+                  if (v) router.push('/vistoria');
+              });
         }
     };
 
@@ -696,7 +698,7 @@ export default function DetalhesVistorias(props: any) {
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="dataVistoria"
                                         control={control}
-                                        defaultValue={new Date(dataVistoria.toLocaleString().split('T')[0])}
+                                        defaultValue={dataVistoria && new Date(dataVistoria.toDateString().split('T')[0])}
                                         render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input
