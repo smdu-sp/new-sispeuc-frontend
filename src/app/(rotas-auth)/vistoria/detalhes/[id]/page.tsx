@@ -1,7 +1,7 @@
 'use client'
 
 import Content from "@/components/Content";
-import { Accordion, AccordionDetails, AccordionGroup, AccordionGroupProps, AccordionSummary, Box, Button, Card, CircularProgress, Divider, extendTheme, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
+import { Accordion, accordionClasses, AccordionDetails, accordionDetailsClasses, AccordionGroup, AccordionGroupProps, AccordionSummary, accordionSummaryClasses, Box, Button, Card, CircularProgress, Divider, extendTheme, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy";
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
@@ -186,16 +186,16 @@ export default function DetalhesVistorias(props: any) {
         }
         if (id) {
           await vistoriasServices.updateVistoria(id, formData)
-          .then((v) => {
-              setLoading(false);
-              if (v) router.push('/vistoria?att=0');
-          })
+            .then((v) => {
+                setLoading(false);
+                if (v) router.push('/vistoria?att=0');
+            })
         } else {
-          await vistoriasServices.createVistoria(formData)
-              .then((v) => {
-                  setLoading(false);
-                  if (v) router.push('/vistoria');
-              });
+            await vistoriasServices.createVistoria(formData)
+                .then((v) => {
+                    setLoading(false);
+                    if (v) router.push('/vistoria');
+                });
         }
     };
 
@@ -680,20 +680,30 @@ export default function DetalhesVistorias(props: any) {
                         <Divider />
                         <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                             {
-                                id &&
-                                <AccordionGroup size={size}>
+                                id && vistoriaAssets && vistoriaAssets?.length > 0 &&
+                                <AccordionGroup
+                                    size={size}
+                                    sx={{
+                                        borderRadius: 'md',
+                                        [`& .${accordionDetailsClasses.content}.${accordionDetailsClasses.expanded}`]:
+                                          {
+                                            paddingBlock: '0.5rem',
+                                          },
+                                        [`& .${accordionSummaryClasses.button}`]: {
+                                          paddingBlock: '0.5rem',
+                                        },
+                                      }}
+                                >
                                     <Accordion
                                         sx={{
                                             width: { xs: '100%', md: '50%', lg: '30%' },
-                                            height: 'fit-content'
+                                            height: 'fit-content',
                                         }}
                                     >
-                                        <AccordionSummary>Arquivos já associados</AccordionSummary>
+                                        <AccordionSummary variant='soft'>Arquivos associados</AccordionSummary>
                                         <AccordionDetails>
                                             {
-                                                // carregando && 
-                                                // <Skeleton variant="text" level="h1" /> || 
-                                                vistoriaAssets && vistoriaAssets.length > 0 && vistoriaAssets.map((fileObject, index) => {
+                                                vistoriaAssets.map((fileObject, index) => {
                                                     return (
                                                         <Fragment>
                                                             <Typography
@@ -719,47 +729,67 @@ export default function DetalhesVistorias(props: any) {
                                                                 aria-describedby="modal-desc"
                                                                 open={selectedFileIndex === index}
                                                                 onClose={() => setSelectedFileIndex(null)}
-                                                                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                                                sx={{ 
+                                                                    display: 'flex', 
+                                                                    justifyContent: 'center', 
+                                                                    alignItems: 'center',
+                                                                    alignSelf: 'center',
+                                                                    maxHeight: '80vh'
+                                                                }}
                                                             >
                                                                 <Sheet
                                                                     variant="outlined"
                                                                     sx={{ 
                                                                         display: 'flex',
                                                                         flexDirection: 'column',
+                                                                        justifyContent: 'center',
                                                                         width: 'fit-content', 
                                                                         padding: 1, 
                                                                         borderRadius: 'md', 
                                                                         p: 3, 
-                                                                        boxShadow: 'lg' 
+                                                                        boxShadow: 'lg',
                                                                     }}
                                                                 >
-                                                                    <ModalClose variant="plain" sx={{ mb: 4 }} />
-                                                                    <img 
-                                                                        style={{ width: '800px', padding: 15 }} 
-                                                                        src={fileObject.url} 
-                                                                        alt={fileObject.nomeArquivo} 
-                                                                    />
+                                                                    <Box
+                                                                        sx={{ maxHeight: '80vh', overflowY: 'scroll' }}
+                                                                    >
+                                                                        <img 
+                                                                            style={{ width: '800px', padding: 5 }} 
+                                                                            src={fileObject.url} 
+                                                                            alt={fileObject.nomeArquivo} 
+                                                                        />
+                                                                    </Box>
                                                                     {
                                                                         loading && 
                                                                         <Button 
-                                                                            sx={{ width: 'fit-content', alignSelf: 'center' }} 
+                                                                            sx={{ width: 'fit-content', mt: 2 }} 
                                                                             loading loadingPosition="start"
                                                                             variant='solid' 
                                                                             color='danger'
                                                                         >
                                                                             Deletando o arquivo...
                                                                         </Button> ||
-                                                                        <Button 
-                                                                            onClick={() => {
-                                                                                selectedFileIndex !== null && selectedFileIndex !== undefined
-                                                                                && handleDeleteFileOnVistoria(+fileObject.id)
-                                                                            }}
-                                                                            variant='solid' 
-                                                                            color='danger' 
-                                                                            sx={{ width: 'fit-content', alignSelf: 'center' }} 
-                                                                        >
-                                                                            Deletar arquivo
-                                                                        </Button>
+                                                                        <Box sx={{ mt: 2 }}>
+                                                                            <Button 
+                                                                                onClick={() => {
+                                                                                    selectedFileIndex !== null && selectedFileIndex !== undefined
+                                                                                    && handleDeleteFileOnVistoria(+fileObject.id)
+                                                                                }}
+                                                                                variant='solid' 
+                                                                                color='danger' 
+                                                                                sx={{ width: 'fit-content', mr: 2 }} 
+                                                                            >
+                                                                                Deletar arquivo
+                                                                            </Button>
+                                                                            <Button 
+                                                                                onClick={() => setSelectedFileIndex(null)}
+                                                                                variant='outlined' 
+                                                                                color='neutral' 
+                                                                                sx={{ width: 'fit-content' }} 
+                                                                            >
+                                                                                Cancelar
+                                                                            </Button>
+                                                                        </Box>
                                                                     }
                                                                 </Sheet>
                                                             </Modal>
