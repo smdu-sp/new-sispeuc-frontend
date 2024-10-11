@@ -17,6 +17,8 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as vistoriasServices from "@/shared/services/vistorias/vistoria.service";
+import VistoriaFilesCarousel from "@/components/VistoriaFilesCarousel";
+import { VistoriaAssetDto } from "@/types/vistorias/vistorias.dto";
 
 const schema = object({
     processoId: string(),
@@ -82,9 +84,10 @@ export default function DetalhesVistorias(props: any) {
     const [dataVistoria, setDataVistoria] = useState<Date>(new Date());
     const [carregando, setCarregando] = useState(true);
     const [files, setFiles] = useState<File[] | undefined>([]);
-    const [ vistoriaAssets, setVistoriaAssets ] = useState<any[]>();
+    const [vistoriaAssets, setVistoriaAssets] = useState<VistoriaAssetDto[]>();
     const [size, setSize] = useState<AccordionGroupProps['size']>('md');
-    const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>();
+    const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(0);
+    const [modalFile, setModalFile] = useState<boolean>(false);
     const { id } = props.params;
     const router = useRouter();
     const theme = useTheme();
@@ -170,6 +173,7 @@ export default function DetalhesVistorias(props: any) {
     const handleDeleteFileOnVistoria = async (id: number) => {
         setLoading(true);
         await vistoriasServices.deleteFileOnVistoria(id);
+        setModalFile(false);
         setVistoriaAssets(undefined);
         setSelectedFileIndex(null);
         setGettedObject(false);
@@ -189,7 +193,7 @@ export default function DetalhesVistorias(props: any) {
             .then((v) => {
                 setLoading(false);
                 if (v) router.push('/vistoria?att=0');
-            })
+            });
         } else {
             await vistoriasServices.createVistoria(formData)
                 .then((v) => {
@@ -705,9 +709,12 @@ export default function DetalhesVistorias(props: any) {
                                             {
                                                 vistoriaAssets.map((fileObject, index) => {
                                                     return (
-                                                        <Fragment>
+                                                        <Box>
                                                             <Typography
-                                                                onClick={() => setSelectedFileIndex(index)}
+                                                                onClick={() => {
+                                                                    setModalFile(true);
+                                                                    setSelectedFileIndex(index);
+                                                                }}
                                                                 key={fileObject.id}
                                                                 color='primary'
                                                                 sx={{
@@ -723,80 +730,86 @@ export default function DetalhesVistorias(props: any) {
                                                             >
                                                                 { fileObject.nomeArquivo }
                                                             </Typography>
-                                                            <Modal
-                                                                key={fileObject.id}
-                                                                aria-labelledby="modal-title"
-                                                                aria-describedby="modal-desc"
-                                                                open={selectedFileIndex === index}
-                                                                onClose={() => setSelectedFileIndex(null)}
-                                                                sx={{ 
-                                                                    display: 'flex', 
-                                                                    justifyContent: 'center', 
-                                                                    alignItems: 'center',
-                                                                    alignSelf: 'center',
-                                                                    maxHeight: '80vh'
-                                                                }}
-                                                            >
-                                                                <Sheet
-                                                                    variant="outlined"
-                                                                    sx={{ 
-                                                                        display: 'flex',
-                                                                        flexDirection: 'column',
-                                                                        justifyContent: 'center',
-                                                                        width: 'fit-content', 
-                                                                        padding: 1, 
-                                                                        borderRadius: 'md', 
-                                                                        p: 3, 
-                                                                        boxShadow: 'lg',
-                                                                    }}
-                                                                >
-                                                                    <Box
-                                                                        sx={{ maxHeight: '80vh', overflowY: 'scroll' }}
-                                                                    >
-                                                                        <img 
-                                                                            style={{ width: '800px', padding: 5 }} 
-                                                                            src={fileObject.url} 
-                                                                            alt={fileObject.nomeArquivo} 
-                                                                        />
-                                                                    </Box>
-                                                                    {
-                                                                        loading && 
-                                                                        <Button 
-                                                                            sx={{ width: 'fit-content', mt: 2 }} 
-                                                                            loading loadingPosition="start"
-                                                                            variant='solid' 
-                                                                            color='danger'
-                                                                        >
-                                                                            Deletando o arquivo...
-                                                                        </Button> ||
-                                                                        <Box sx={{ mt: 2 }}>
-                                                                            <Button 
-                                                                                onClick={() => {
-                                                                                    selectedFileIndex !== null && selectedFileIndex !== undefined
-                                                                                    && handleDeleteFileOnVistoria(+fileObject.id)
-                                                                                }}
-                                                                                variant='solid' 
-                                                                                color='danger' 
-                                                                                sx={{ width: 'fit-content', mr: 2 }} 
-                                                                            >
-                                                                                Deletar arquivo
-                                                                            </Button>
-                                                                            <Button 
-                                                                                onClick={() => setSelectedFileIndex(null)}
-                                                                                variant='outlined' 
-                                                                                color='neutral' 
-                                                                                sx={{ width: 'fit-content' }} 
-                                                                            >
-                                                                                Cancelar
-                                                                            </Button>
-                                                                        </Box>
-                                                                    }
-                                                                </Sheet>
-                                                            </Modal>
-                                                        </Fragment>
+                                                        </Box>
                                                     )
                                                 })
                                             }
+                                            <Modal
+                                                key={vistoriaAssets[selectedFileIndex ? selectedFileIndex : 0].id}
+                                                aria-labelledby="modal-title"
+                                                aria-describedby="modal-desc"
+                                                open={modalFile}
+                                                onClose={() => {
+                                                    setModalFile(false);
+                                                    setSelectedFileIndex(null);
+                                                }}
+                                                sx={{ 
+                                                    display: 'flex', 
+                                                    justifyContent: 'center', 
+                                                    alignItems: 'center',
+                                                    alignSelf: 'center',
+                                                    maxHeight: '80vh'
+                                                }}
+                                            >
+                                                <Sheet
+                                                    variant="outlined"
+                                                    sx={{ 
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        justifyContent: 'center',
+                                                        width: 'fit-content', 
+                                                        padding: 1, 
+                                                        borderRadius: 'md', 
+                                                        p: 3, 
+                                                        boxShadow: 'lg',
+                                                    }}
+                                                >
+                                                    <Box>
+                                                        <VistoriaFilesCarousel 
+                                                            vistoriaAssets={vistoriaAssets}
+                                                            selectedIndex={selectedFileIndex ? selectedFileIndex : 0}
+                                                            setSelectedIndex={setSelectedFileIndex}
+                                                        />
+                                                    </Box>
+                                                    {
+                                                        loading && 
+                                                        <Button 
+                                                            sx={{ width: 'fit-content', mt: 2 }} 
+                                                            loading loadingPosition="start"
+                                                            variant='solid' 
+                                                            color='danger'
+                                                        >
+                                                            Deletando o arquivo...
+                                                        </Button> ||
+                                                        <Box sx={{ mt: 2 }}>
+                                                            <Button 
+                                                                onClick={() => {
+                                                                    selectedFileIndex !== null 
+                                                                    && selectedFileIndex !== undefined
+                                                                    && vistoriaAssets[selectedFileIndex].id
+                                                                    && handleDeleteFileOnVistoria(vistoriaAssets[selectedFileIndex].id)
+                                                                }}
+                                                                variant='solid' 
+                                                                color='danger' 
+                                                                sx={{ width: 'fit-content', mr: 2 }} 
+                                                            >
+                                                                Deletar arquivo
+                                                            </Button>
+                                                            <Button 
+                                                                onClick={() => {
+                                                                    setModalFile(false);
+                                                                    setSelectedFileIndex(null);
+                                                                }}
+                                                                variant='outlined' 
+                                                                color='neutral' 
+                                                                sx={{ width: 'fit-content' }} 
+                                                            >
+                                                                Cancelar
+                                                            </Button>
+                                                        </Box>
+                                                    }
+                                                </Sheet>
+                                            </Modal>
                                         </AccordionDetails>
                                     </Accordion>
                                 </AccordionGroup>

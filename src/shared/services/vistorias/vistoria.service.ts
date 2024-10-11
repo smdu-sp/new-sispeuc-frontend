@@ -91,7 +91,6 @@ export const deleteFileOnVistoria = async (fileId: number) => {
             'Authorization': `Bearer ${session?.access_token}`
         },
     });
-    if (response.status != 200) throw new Error('erro ao tentar excluir o anexo da vistoria');
-    // const data = await response.json();
-    // return data;
+    if (response.status != 200) 
+        throw new Error('erro ao tentar excluir o anexo da vistoria');
 };

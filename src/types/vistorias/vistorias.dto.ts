@@ -53,3 +53,13 @@ export interface VistoriaResponseDTO {
     vistoriaImovelId: number;
     VistoriaAsset: []
 }
+
+export interface VistoriaAssetDto {
+    id?: number;
+    nomeArquivo: string;
+    tipo: string;
+    url: string;
+    criadoEm?: Date;
+    usuarioId: string;
+    vistoriaId?: number;     
+}
