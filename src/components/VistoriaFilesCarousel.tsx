@@ -36,7 +36,7 @@ export default function VistoriaFilesCarousel(
   };
 
   return (
-    <Box key={vistoriaAssets[selectedIndex ? selectedIndex : 0].id} sx={{}}>
+    <Box key={vistoriaAssets[selectedIndex ? selectedIndex : 0].id}>
       <Paper
         square
         elevation={0}

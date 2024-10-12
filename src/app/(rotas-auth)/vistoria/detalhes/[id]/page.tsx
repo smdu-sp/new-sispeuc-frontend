@@ -1,9 +1,10 @@
 'use client'
 
 import Content from "@/components/Content";
-import { Accordion, accordionClasses, AccordionDetails, accordionDetailsClasses, AccordionGroup, AccordionGroupProps, AccordionSummary, accordionSummaryClasses, Box, Button, Card, CircularProgress, Divider, extendTheme, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
+import { Accordion, accordionClasses, AccordionDetails, accordionDetailsClasses, AccordionGroup, AccordionGroupProps, AccordionSummary, accordionSummaryClasses, Box, Button, Card, CircularProgress, Divider, extendTheme, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Snackbar, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
+import WarningIcon from '@mui/icons-material/Warning';
 import { useTheme } from "@mui/joy";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import {
     infer as Infer,
@@ -19,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as vistoriasServices from "@/shared/services/vistorias/vistoria.service";
 import VistoriaFilesCarousel from "@/components/VistoriaFilesCarousel";
 import { VistoriaAssetDto } from "@/types/vistorias/vistorias.dto";
+import { AlertsContext } from "@/providers/alertsProvider";
 
 const schema = object({
     processoId: string(),
@@ -88,9 +90,11 @@ export default function DetalhesVistorias(props: any) {
     const [size, setSize] = useState<AccordionGroupProps['size']>('md');
     const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(0);
     const [modalFile, setModalFile] = useState<boolean>(false);
+    const [confirma, setConfirma] = useState(false)
     const { id } = props.params;
     const router = useRouter();
     const theme = useTheme();
+    const { setAlert } = useContext(AlertsContext);
 
     useEffect(() => {
         id && !gettedObject ? getById() : setCarregando(false);
@@ -172,12 +176,16 @@ export default function DetalhesVistorias(props: any) {
 
     const handleDeleteFileOnVistoria = async (id: number) => {
         setLoading(true);
-        await vistoriasServices.deleteFileOnVistoria(id);
-        setModalFile(false);
-        setVistoriaAssets(undefined);
-        setSelectedFileIndex(null);
-        setGettedObject(false);
-        setLoading(false);
+        setTimeout(async () => {
+            await vistoriasServices.deleteFileOnVistoria(id);
+            setConfirma(false);
+            setModalFile(false);
+            setVistoriaAssets(undefined);
+            setSelectedFileIndex(null);
+            setGettedObject(false);
+            setLoading(false);
+            setAlert('Arquivo Deletado!', 'Arquivo deletado com sucesso!', 'success', 3000, WarningIcon);
+        }, 3000);
     }
 
     const onSubmit = async () => {
@@ -211,6 +219,55 @@ export default function DetalhesVistorias(props: any) {
             titulo={'Cadastro de vitoria'}
             pagina="vistoria"
         >
+            <Snackbar
+                variant="solid"
+                color="danger"
+                size="lg"
+                invertedColors
+                open={confirma}
+                onClose={() => setConfirma(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                sx={{ maxWidth: 360 }}
+            >
+                <div>
+                <Typography level="title-lg">Deletar Arquivo!</Typography>
+                <Typography 
+                    sx={{ mt: 1, mb: 2 }} 
+                    level="title-md"
+                >
+                    Tem certeza que desseja deletar o arquivo?
+                    {/* {
+                        vistoriaAssets
+                        && selectedFileIndex !== null 
+                        && selectedFileIndex !== undefined
+                        // && vistoriaAssets[selectedFileIndex].nomeArquivo
+                        && vistoriaAssets[selectedFileIndex ? selectedFileIndex : 0].nomeArquivo || ''
+                    } ? */}
+                </Typography>
+                <Stack direction="row" spacing={1}>
+                    <Button 
+                        variant="solid" 
+                        color="primary" 
+                        onClick={() => {
+                            vistoriaAssets
+                            && selectedFileIndex !== null 
+                            && selectedFileIndex !== undefined
+                            && vistoriaAssets[selectedFileIndex].id
+                            && handleDeleteFileOnVistoria(vistoriaAssets[selectedFileIndex].id)
+                        }}
+                    >
+                        Sim
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => setConfirma(false)}
+                    >
+                        Não
+                    </Button>
+                </Stack>
+                </div>
+            </Snackbar>
             <form id="form_vistorias" onSubmit={handleSubmit(onSubmit)}>
                 <Stack gap={2}>
                     <Card variant="plain" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 20, padding: 0 }}>
@@ -748,16 +805,19 @@ export default function DetalhesVistorias(props: any) {
                                                     justifyContent: 'center', 
                                                     alignItems: 'center',
                                                     alignSelf: 'center',
-                                                    maxHeight: '80vh'
+                                                    maxHeight: '80vh',
                                                 }}
                                             >
                                                 <Sheet
                                                     variant="outlined"
-                                                    sx={{ 
+                                                    sx={{
                                                         display: 'flex',
                                                         flexDirection: 'column',
                                                         justifyContent: 'center',
-                                                        width: 'fit-content', 
+                                                        width: {
+                                                            xs: '90vw',
+                                                            md: 'fit-content'
+                                                        }, 
                                                         padding: 1, 
                                                         borderRadius: 'md', 
                                                         p: 3, 
@@ -787,7 +847,7 @@ export default function DetalhesVistorias(props: any) {
                                                                     selectedFileIndex !== null 
                                                                     && selectedFileIndex !== undefined
                                                                     && vistoriaAssets[selectedFileIndex].id
-                                                                    && handleDeleteFileOnVistoria(vistoriaAssets[selectedFileIndex].id)
+                                                                    && setConfirma(true);
                                                                 }}
                                                                 variant='solid' 
                                                                 color='danger' 

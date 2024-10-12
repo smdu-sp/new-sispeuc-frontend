@@ -51,7 +51,7 @@ export interface VistoriaResponseDTO {
     atualizadoEm: Date,
     deletado: boolean,
     vistoriaImovelId: number;
-    VistoriaAsset: []
+    VistoriaAsset: VistoriaAssetDto[]
 }
 
 export interface VistoriaAssetDto {
