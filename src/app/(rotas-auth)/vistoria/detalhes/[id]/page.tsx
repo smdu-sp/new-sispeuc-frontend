@@ -3,6 +3,7 @@
 import Content from "@/components/Content";
 import { Accordion, accordionClasses, AccordionDetails, accordionDetailsClasses, AccordionGroup, AccordionGroupProps, AccordionSummary, accordionSummaryClasses, Box, Button, Card, CircularProgress, Divider, extendTheme, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Snackbar, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
 import WarningIcon from '@mui/icons-material/Warning';
+import { CheckCircleOutlineTwoTone } from '@mui/icons-material';
 import { useTheme } from "@mui/joy";
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
@@ -175,16 +176,16 @@ export default function DetalhesVistorias(props: any) {
     };
 
     const handleDeleteFileOnVistoria = async (id: number) => {
+        setConfirma(false);
         setLoading(true);
         setTimeout(async () => {
             await vistoriasServices.deleteFileOnVistoria(id);
-            setConfirma(false);
             setModalFile(false);
             setVistoriaAssets(undefined);
             setSelectedFileIndex(null);
             setGettedObject(false);
             setLoading(false);
-            setAlert('Arquivo Deletado!', 'Arquivo deletado com sucesso!', 'success', 3000, WarningIcon);
+            setAlert('Arquivo Deletado!', 'Arquivo deletado com sucesso!', 'success', 3000, CheckCircleOutlineTwoTone);
         }, 3000);
     }
 
