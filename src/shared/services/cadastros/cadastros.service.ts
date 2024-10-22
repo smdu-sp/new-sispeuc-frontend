@@ -1,7 +1,7 @@
 'use server'
 
 import { authOptions } from "@/shared/auth/authOptions";
-import { CadastrosRequestDTO, CadastrosResponseDTO, ProcessoRequestDTO, ProcessoResponseDTO } from "@/types/cadastros/cadastros.dto";
+import { CadastroPaginationDTO, CadastrosRequestDTO, CadastrosResponseDTO, ProcessoRequestDTO, ProcessoResponseDTO } from "@/types/cadastros/cadastros.dto";
 import { getServerSession } from "next-auth";
 
 const cadastros_api_url: string = 'http://localhost:3000/cadastros';
@@ -29,10 +29,10 @@ export const createCadastro = async (
 };
 
 export const getAllCadastros = async (
-  limit: number = 10, offset: number = 0, orderBy: string = '', order: string = ''
-): Promise<CadastrosResponseDTO[]> => {
+  pagina: number = 1, limite: number = 10, busca: string = '', status: string = 'false'
+): Promise<CadastroPaginationDTO> => {
   const session = await getServerSession(authOptions);
-  const request_url: string = `${cadastros_api_url}/buscar-cadastros?limit=${limit}&offset=${offset}&orderBy=${orderBy}&order=${order}`;
+  const request_url: string = `${cadastros_api_url}/buscar-cadastros?pagina=${pagina}&limite=${limite}&busca=${busca}&status=${status}`;
   const response: Response = await fetch(request_url, {
     method: 'GET',
     headers: { 
@@ -41,7 +41,7 @@ export const getAllCadastros = async (
     }
   });
   if (response.status != 200) throw new Error('erro ao tentar buscar os cadastros');
-  const data: CadastrosResponseDTO[] = await response.json();
+  const data: CadastroPaginationDTO = await response.json();
   return data;
 };
 

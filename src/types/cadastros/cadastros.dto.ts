@@ -160,3 +160,10 @@ export interface CadastrosResponseDTO {
     imovelProcessoId: number
   }[]
 }
+
+export interface CadastroPaginationDTO {
+  total: number,
+  pagina: number,
+  limite: number,
+  data: CadastrosResponseDTO[]
+}

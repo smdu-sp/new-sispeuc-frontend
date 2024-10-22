@@ -17,7 +17,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as cadastroServices from '@/shared/services/cadastros/cadastros.service';
-import { CadastrosResponseDTO } from '@/types/cadastros/cadastros.dto';
+import { CadastroPaginationDTO, CadastrosResponseDTO } from '@/types/cadastros/cadastros.dto';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { AlertsContext } from "@/providers/alertsProvider";
 import { Check } from '@mui/icons-material';
@@ -50,16 +50,23 @@ export default function Prospeccao() {
   const [id, setId] = useState('')
   const theme = useTheme();
   const backgroudLevel1 = theme.palette.background.level1;
+  const searchParams = useSearchParams();
+  const [pagina, setPagina] = useState(searchParams.get('pagina') ? Number(searchParams.get('pagina')) : 1);
+  const [limite, setLimite] = useState(searchParams.get('limite') ? Number(searchParams.get('limite')) : 10);
+  const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
+  const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'false');
+  const [busca, setBusca] = useState(searchParams.get('busca') || '');
 
   const router = useRouter();
   const [rows, setRows] = useState<CadastrosResponseDTO[]>([]);
   const searchParam = useSearchParams();
   const { setAlert } = useContext(AlertsContext);
 
+
   const getProcessos = async () => {
-    await cadastroServices.getAllProcessos().then((response) => {
-      console.log(response);
-    }).then(() => {
+    await cadastroServices.getAllProcessos(pagina, limite, busca, status).then((response: CadastroPaginationDTO) => {
+      setRows(response.data);
+      setTotal(response.total);
     })
   };
 
@@ -320,15 +327,23 @@ export default function Prospeccao() {
           </tbody>
         </Table>
         <Box sx={{ display: 'flex', gap: 2, p: 2, justifyContent: 'end', alignItems: 'center' }}>
-          <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>Linhas por página:</Typography>
-          <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>5</Typography>
-          <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>1-5 de 20</Typography>
+          <Typography level="body-sm" sx={{ fontWeight: 'bold', mr: -2 }}>Linhas por página:</Typography>
+          <Select
+            variant='plain'
+            value={limite}
+            onChange={(_, value) => {setLimite(value ? parseInt(value.toString()) : 0), getProcessos()}}
+          >
+            <Option value={10}>10</Option>
+            <Option value={20}>20</Option>
+            <Option value={30}>30</Option>
+          </Select>
+          <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>{pagina} de {(total / limite) > 0 ? Math.ceil(total / limite) : 1}</Typography>
           <Box>
-            <IconButton>
+            <IconButton disabled={pagina === 1} onClick={() => setPagina(pagina - 1)}>
               <KeyboardArrowLeftIcon />
             </IconButton>
-            <IconButton>
-              <KeyboardArrowRightIcon />
+            <IconButton  disabled={pagina === Math.ceil(total / limite)} onClick={() => setPagina(pagina + 1)} >
+              <KeyboardArrowRightIcon/>
             </IconButton>
           </Box>
         </Box>
