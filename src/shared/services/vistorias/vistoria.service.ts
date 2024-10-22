@@ -3,7 +3,7 @@
 import { authOptions } from "@/shared/auth/authOptions";
 import { getServerSession } from "next-auth";
 
-import { VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
+import { VistoriaPaginationDTO, VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
 
 const api_url: string = 'http://localhost:3000/vistorias';
 
@@ -22,10 +22,10 @@ export const createVistoria = async (request: FormData): Promise<VistoriaRespons
 };
 
 export const getAllVistorias = async (
-    limit: number = 10, offset: number = 0, orderBy: string = '', order: string = ''
-): Promise<VistoriaResponseDTO[]> => {
+    pagina: number = 1, limite: number = 10, busca: string = '', status: string = 'false'
+): Promise<VistoriaPaginationDTO> => {
     const session = await getServerSession(authOptions);
-    const request_url: string = `${api_url}/buscar-vistorias?limit=${limit}&offset=${offset}&orderBy=${orderBy}&order=${order}`;
+    const request_url: string = `${api_url}/buscar-vistorias?pagina=${pagina}&limite=${limite}&busca=${busca}&status=${status}`;
     const response: Response = await fetch(request_url, {
         method: 'GET',
         headers: { 
@@ -34,7 +34,7 @@ export const getAllVistorias = async (
         }
     });
     if (response.status != 200) throw new Error('erro ao tentar buscar as vistorias');
-    const data: VistoriaResponseDTO[] = await response.json();
+    const data: VistoriaPaginationDTO = await response.json();
     return data;
 };
 

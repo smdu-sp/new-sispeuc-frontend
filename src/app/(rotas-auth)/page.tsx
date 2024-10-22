@@ -56,7 +56,7 @@ export default function Home() {
         }}
         >
           <Box sx={{ pl: 5, pt: 3, mb: 3 }}>
-            <Typography level='h3'>Deúncias</Typography>
+            <Typography level='h3'>Denúncias</Typography>
             <Typography sx={{ color: '#637381' }} level="body-md" >(+43%) do que o ano passado</Typography>
           </Box>
           <Chart />

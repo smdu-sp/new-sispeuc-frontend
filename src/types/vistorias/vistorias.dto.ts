@@ -54,6 +54,13 @@ export interface VistoriaResponseDTO {
     VistoriaAsset: VistoriaAssetDto[]
 }
 
+export interface VistoriaPaginationDTO {
+    total: number,
+    pagina: number,
+    limite: number,
+    data: VistoriaResponseDTO[]
+}
+
 export interface VistoriaAssetDto {
     id?: number;
     nomeArquivo: string;

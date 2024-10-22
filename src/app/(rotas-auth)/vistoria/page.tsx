@@ -17,7 +17,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as vistoriaServices from '@/shared/services/vistorias/vistoria.service';
-import { VistoriaResponseDTO } from '@/types/vistorias/vistorias.dto';
+import { VistoriaPaginationDTO, VistoriaResponseDTO } from '@/types/vistorias/vistorias.dto';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { AlertsContext } from "@/providers/alertsProvider";
 import { Check } from '@mui/icons-material';
@@ -50,6 +50,12 @@ export default function Prospeccao() {
   const [id, setId] = useState(0)
   const theme = useTheme();
   const backgroudLevel1 = theme.palette.background.level1;
+  const searchParams = useSearchParams();
+  const [pagina, setPagina] = useState(searchParams.get('pagina') ? Number(searchParams.get('pagina')) : 1);
+  const [limite, setLimite] = useState(searchParams.get('limite') ? Number(searchParams.get('limite')) : 10);
+  const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
+  const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'false');
+  const [busca, setBusca] = useState(searchParams.get('busca') || '');
 
   const vistorias = new Map<string, number | string | boolean>([
     ['presencial', 'Presencial'],
@@ -74,9 +80,8 @@ export default function Prospeccao() {
   const searchParam = useSearchParams();
   const { setAlert } = useContext(AlertsContext);
   const getVistorias = async () => {
-    await vistoriaServices.getAllVistorias().then((response) => {
-      setRows(response);
-    }).then(() => {
+    await vistoriaServices.getAllVistorias(pagina, limite, busca, status).then((response: VistoriaPaginationDTO) => {
+      setRows(response.data);
     })
   };
 
@@ -176,17 +181,24 @@ export default function Prospeccao() {
           <Select
             placeholder="Selecione um tipo"
             indicator={<KeyboardArrowDown />}
+            onChange={(_, newValue) => {
+              setStatus(newValue as string);
+              getVistorias();
+            }}
             sx={{
               width: 350,
             }}
           >
-            <Option value={0}>Ativos</Option>
-            <Option value={1}>Deletados</Option>
+            <Option value={'true'}>Ativos</Option>
+            <Option value={'false'}>Deletados</Option>
           </Select>
           <Input
             startDecorator={<SearchIcon sx={{ width: 20, height: 20 }} />}
             placeholder={'Pesquise por SQL'}
             sx={{ width: '100%' }}
+            value={busca}
+            onChange={(e) => { setBusca(e.target.value) }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { getVistorias() } }}
           />
           <Dropdown>
             <MenuButton
@@ -254,7 +266,7 @@ export default function Prospeccao() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row: VistoriaResponseDTO) => (
+            {rows && rows.length > 0 && rows.map((row: VistoriaResponseDTO) => (
               <React.Fragment key={row.id}>
                 <Tooltip title={row.descricao} color="neutral" placement="bottom" variant={'outlined'}>
                   <tr>
@@ -331,15 +343,23 @@ export default function Prospeccao() {
           </tbody>
         </Table>
         <Box sx={{ display: 'flex', gap: 2, p: 2, justifyContent: 'end', alignItems: 'center' }}>
-          <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>Linhas por página:</Typography>
-          <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>5</Typography>
-          <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>1-5 de 20</Typography>
+          <Typography level="body-sm" sx={{ fontWeight: 'bold', mr: -2 }}>Linhas por página:</Typography>
+          <Select
+            variant='plain'
+            value={limite}
+            onChange={(_, value) => {setLimite(value ? parseInt(value.toString()) : 0), getVistorias()}}
+          >
+            <Option value={10}>10</Option>
+            <Option value={20}>20</Option>
+            <Option value={30}>30</Option>
+          </Select>
+          <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>{pagina} de {(total / limite) > 0 ? Math.ceil(total / limite) : 1}</Typography>
           <Box>
-            <IconButton>
+            <IconButton disabled={pagina === 1} onClick={() => setPagina(pagina - 1)}>
               <KeyboardArrowLeftIcon />
             </IconButton>
-            <IconButton>
-              <KeyboardArrowRightIcon />
+            <IconButton  disabled={pagina === Math.ceil(total / limite)} onClick={() => setPagina(pagina + 1)} >
+              <KeyboardArrowRightIcon/>
             </IconButton>
           </Box>
         </Box>
