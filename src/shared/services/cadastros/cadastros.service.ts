@@ -93,10 +93,10 @@ export const createProcesso = async (
 };
 
 export const getAllProcessos = async (
-  limit: number = 10, offset: number = 0, orderBy: string = '', order: string = ''
-): Promise<ProcessoResponseDTO[]> => {
+    pagina: number = 1, limite: number = 10, busca: string = '', status: string = 'false'
+): Promise<CadastroPaginationDTO> => {
   const session = await getServerSession(authOptions);
-  const request_url: string = `${processos_api_url}/buscar-processos?limit=${limit}&offset=${offset}&orderBy=${orderBy}&order=${order}`;
+  const request_url: string = `${processos_api_url}/buscar-processos?pagina=${pagina}&limite=${limite}&busca=${busca}&status=${status}`;
   const response: Response = await fetch(request_url, {
     method: 'GET',
     headers: { 
@@ -105,7 +105,7 @@ export const getAllProcessos = async (
     }
   });
   if (response.status != 200) throw new Error('erro ao tentar buscar os cadastros');
-  const data: ProcessoResponseDTO[] = await response.json();
+  const data: CadastroPaginationDTO = await response.json();
   return data;
 };
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useContext } from 'react';
 import Content from "@/components/Content";
 import { Box, Button, Card, Divider, FormControl, FormHelperText, FormLabel, IconButton, Input, Option, Select, Skeleton, Stack, Textarea, Tooltip, Typography } from "@mui/joy";
 import { useTheme } from "@mui/joy";
@@ -25,6 +25,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { CepResponseDTO } from '@/shared/services/cep/cep.service';
 import * as comum from '@/shared/services/comum/comum.service';
 import { CadastrosRequestDTO } from '@/types/cadastros/cadastros.dto';
+import { AlertsContext } from '@/providers/alertsProvider';
+import { Check } from '@mui/icons-material';
 
 
 const schemaFormProcesso = object({
@@ -124,6 +126,8 @@ export default function DetalhesPropriedade(props: any) {
     const [exibirImovel, setExibirImovel] = useState(false);
     const [imoveis, setImoveis] = useState<SchemaFormImovel[]>([]);
 
+    const { setAlert } = useContext(AlertsContext);
+
     const [carregando, setCarregando] = useState(true);
     const { id } = props.params;
     const router = useRouter();
@@ -209,22 +213,6 @@ export default function DetalhesPropriedade(props: any) {
         id ? getById() : setCarregando(false);
     })
 
-    const buscaCep = (valueCep: string) => {
-        if (valueCep.length === 8) {
-            cep.getCep(valueCep)
-                .then((v: CepResponseDTO) => {
-                    if (v) {
-                        setEnderecoLogradouro(v ? v.logradouro : '');
-                        setEnderecoZona(v ? v.regiao : '');
-                        setEnderecoDistrito(v ? v.bairro : '');
-                        console.log(v);
-                    }
-                })
-        } else {
-            setEnderecoLogradouro('');
-        }
-    }
-
     const verificaImovel = async (data2: SchemaFormProcesso) => {
         if (imoveis.length > 0) {
             const data = {
@@ -233,21 +221,18 @@ export default function DetalhesPropriedade(props: any) {
                     ...imovel,
                     enderecoCep: imovel.enderecoCep.replaceAll('-', ''),
                     usuarioId: '55d62d48-85e9-4bb3-8339-8eaa78d63def',
-                    enderecoReferencia: 'teste',
-                 }))
+                }))
             }
-            console.log(data);
-            
             await cadastroServices.createCadastro(data)
                 .then((v) => {
-                    console.log(v);
+                    if (v) {
+                        router.push('/cadastramento?att=0');
+                    }
                 })
         }
     }
 
     const onSubmit = async (data: SchemaFormProcesso) => {
-        console.log(imoveis.length);
-
         if (imoveis.length > 0) {
             verificaImovel(data)
         } else {
@@ -274,6 +259,7 @@ export default function DetalhesPropriedade(props: any) {
     const salvaImovel = (data: SchemaFormImovel) => {
         console.log(data);
         setImoveis([...imoveis, data]);
+        setAlert('Imovel inserido!', 'Imovel inserido no processo com sucesso!', 'success', 3000, Check);
     }
 
     const theme = useTheme();
@@ -340,7 +326,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.areaConstruidaTotal)}>
-                                        <FormLabel>Quantidade de Pavimentos</FormLabel>
+                                        <FormLabel>Area Total Construida</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="areaConstruidaTotal"
                                             control={controlProcesso}
@@ -349,6 +335,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type="number"
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 1
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsProcesso.areaConstruidaTotal)}
                                                         value={value}
                                                         onChange={(e) => {
@@ -374,6 +365,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type="number"
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 1
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsProcesso.areaLoteTotal)}
                                                         value={value}
                                                         onChange={(e) => {
@@ -501,7 +497,7 @@ export default function DetalhesPropriedade(props: any) {
                                                     <Input
                                                         value={comum.formataCep(enderecoCep)}
                                                         placeholder="00000-000"
-                                                        onChange={(e) => { setEnderecoCep(e.target.value); buscaCep((e.target.value)) }}
+                                                        onChange={(e) => { setEnderecoCep(e.target.value); }}
                                                         error={Boolean(errorsImovel.enderecoCep)}
                                                         {...field}
                                                     />
@@ -778,6 +774,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.sqlSetor)}
                                                         {...field}
                                                     />
@@ -798,6 +799,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.sqlQuadra)}
                                                         {...field}
                                                     />
@@ -818,6 +824,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.sqlLote)}
                                                         {...field}
                                                     />
@@ -841,6 +852,11 @@ export default function DetalhesPropriedade(props: any) {
                                                     <Input
                                                         type='number'
                                                         error={Boolean(errorsImovel.sqlDigito)}
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         {...field}
                                                     />
                                                     {errorsImovel.sqlDigito && <FormHelperText color="danger">
@@ -860,6 +876,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.sqlPai)}
                                                         {...field}
                                                     />
@@ -880,6 +901,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.sqlFilho)}
                                                         {...field}
                                                     />
@@ -909,6 +935,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.areaConstruidaTotalRegistrada)}
                                                         {...field}
                                                     />
@@ -929,6 +960,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.areaLoteTotalRegistrada)}
                                                         {...field}
                                                     />
@@ -951,6 +987,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.areaCoeficienteAproveitamento)}
                                                         {...field}
                                                     />
@@ -971,6 +1012,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.areaCoeficienteAproveitamentoMinimo)}
                                                         {...field}
                                                     />
@@ -1000,6 +1046,11 @@ export default function DetalhesPropriedade(props: any) {
                                                 return (<>
                                                     <Input
                                                         type='number'
+                                                        slotProps={{
+                                                            input: {
+                                                                min: 0
+                                                            },
+                                                        }}
                                                         error={Boolean(errorsImovel.geoEpsg)}
                                                         {...field}
                                                     />

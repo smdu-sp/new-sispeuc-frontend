@@ -2,7 +2,7 @@
 
 import Content from '@/components/Content';
 import { useEffect, useState, useContext, useRef } from 'react';
-import { Box, Button, Input, Tooltip, Typography, useTheme, IconButton, Dropdown, MenuButton, Menu, MenuItem, ListItemDecorator, ListDivider, Checkbox, Stack, Snackbar } from '@mui/joy';
+import { Box, Button, Input, Tooltip, Typography, useTheme, IconButton, Dropdown, MenuButton, Menu, MenuItem, ListItemDecorator, ListDivider, Checkbox, Stack, Snackbar, Divider } from '@mui/joy';
 import 'react-material-symbols/rounded';
 import * as React from 'react';
 import Table from '@mui/joy/Table';
@@ -20,32 +20,56 @@ import * as cadastroServices from '@/shared/services/cadastros/cadastros.service
 import { CadastroPaginationDTO, CadastrosResponseDTO } from '@/types/cadastros/cadastros.dto';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { AlertsContext } from "@/providers/alertsProvider";
-import { Check } from '@mui/icons-material';
+import { Check, DeleteForever, Edit, MoreVert } from '@mui/icons-material';
 import { MenuList } from '@mui/material';
 import ViewWeekSharpIcon from '@mui/icons-material/ViewWeekSharp';
 import WarningIcon from '@mui/icons-material/Warning';
+import FindInPageIcon from '@mui/icons-material/FindInPage';
+import { set } from 'zod';
 
 export default function Prospeccao() {
-  const [processo, setProcesso] = useState<boolean>(true);
-  const [imovel, setImovel] = useState<boolean>(true);
-  const [tipoVistoria, setTipoVistoria] = useState<boolean>(true);
-  const [tipologia, setTipologia] = useState<boolean>(true);
-  const [tipoUso, setTipoUso] = useState<boolean>(true);
-  const [dataVistoria, setDataVistoria] = useState<boolean>(true);
-  const [areaConstruidaTotalConstatada, setAreaConstruidaTotalConstatada] = useState<boolean>(false);
-  const [areaLoteTotalConstatada, setAreaLoteTotalConstatada] = useState<boolean>(false);
-  const [areaCoberturaTotalConstatada, setAreaCoberturaTotalConstatada] = useState<boolean>(false);
-  const [indiceOcupacaoConstatado, setIndiceOcupacaoConstatado] = useState<boolean>(false);
-  const [qtdePavimentos, setQtdePavimentos] = useState<boolean>(true);
-  const [familiar, setFamiliar] = useState<boolean>(true);
-  const [multifamiliar, setMultifamiliar] = useState<boolean>(true);
-  const [comercio, setComercio] = useState<boolean>(true);
-  const [servico, setServico] = useState<boolean>(true);
-  const [industria, setIndustria] = useState<boolean>(true);
-  const [usoFachadaBoaCondicao, setUsoFachadaBoaCondicao] = useState<boolean>(true);
-  const [usoEsquadriaBoaCondicao, setUsoEsquadriaBoaCondicao] = useState<boolean>(true);
-  const [usoPodaVegetacao, setUsoPodaVegetacao] = useState<boolean>(true);
-  const [areaConstruidaNaoComputavel, setAreaConstruidaNaoComputavel] = useState<boolean>(false);
+  const [autuacaoSei, setAutuacaoSei] = useState<boolean>(true);
+  const [imovelContiguidade, setImovelContiguidade] = useState<boolean>(true);
+  const [areaConstruidaTotal, setAreaConstruidaTotal] = useState<boolean>(true);
+  const [areaLoteTotal, setAreaLoteTotal] = useState<boolean>(true);
+  const [prospeccaoOrigem, setProspeccaoOrigem] = useState<boolean>(true);
+  const [prospeccaoTipologia, setProspeccaoTipologia] = useState<boolean>(true);
+  const [prospeccaoData, setProspeccaoData] = useState<boolean>(false);
+  const [estado, setEstado] = useState<boolean>(false);
+
+  const [sqlSetor, setSqlSetor] = useState<boolean>(true);
+  const [sqlQuadra, setSqlQuadra] = useState<boolean>(true);
+  const [sqlLote, setSqlLote] = useState<boolean>(true);
+  const [sqlDigito, setSqlDigito] = useState<boolean>(false);
+  const [sqlPai, setSqlPai] = useState<boolean>(false);
+  const [sqlFilho, setSqlFilho] = useState<boolean>(false);
+
+  const [registroNotasReferencia, setRegistroNotasReferencia] = useState<boolean>(false);
+  const [enderecoLogradouro, setEnderecoLogradouro] = useState<boolean>(true);
+  const [enderecoNumero, setEnderecoNumero] = useState<boolean>(true);
+  const [enderecoComplemento, setEnderecoComplemento] = useState<boolean>(true);
+  const [enderecoReferencia, setEnderecoReferencia] = useState<boolean>(false);
+  const [enderecoDistrito, setEnderecoDistrito] = useState<boolean>(false);
+  const [enderecoCep, setEnderecoCep] = useState<boolean>(true);
+  const [enderecoSubprefeitura, setEnderecoSubprefeitura] = useState<boolean>(false);
+  const [enderecoSubprefeituraSigla, setEnderecoSubprefeituraSigla] = useState<boolean>(false);
+  const [enderecoMacroarea, setEnderecoMacroarea] = useState<boolean>(false);
+  const [enderecoMacroareaSigla, setEnderecoMacroareaSigla] = useState<boolean>(false);
+  const [enderecoZona, setEnderecoZona] = useState<boolean>(false);
+  const [enderecoZonaSigla, setEnderecoZonaSigla] = useState<boolean>(false);
+
+  const [areaConstruidaTotalRegistrada, setAreaConstruidaTotalRegistrada] = useState<boolean>(false);
+  const [areaLoteTotalRegistrada, setAreaLoteTotalRegistrada] = useState<boolean>(false);
+  const [areaCoeficienteAproveitamento, setAreaCoeficienteAproveitamento] = useState<boolean>(false);
+  const [areaCoeficienteAproveitamentoMinimo, setAreaCoeficienteAproveitamentoMinimo] = useState<boolean>(false);
+
+  const [geoEpsg, setGeoEpsg] = useState<boolean>(false);
+  const [decretoNumero, setDecretoNumero] = useState<boolean>(true);
+  const [decretoTipo, setDecretoTipo] = useState<boolean>(true);
+  const [tombamentoCompresp, setTombamentoCompresp] = useState<boolean>(false);
+  const [tombamentoCondephat, setTombamentoCondephat] = useState<boolean>(false);
+  const [tombamentoIphan, setTombamentoIphan] = useState<boolean>(false);
+
   const [confirma, setConfirma] = useState(false)
   const [id, setId] = useState('')
   const theme = useTheme();
@@ -164,7 +188,7 @@ export default function Prospeccao() {
       </Box>
       <Sheet sx={{ borderTopLeftRadius: 20, borderTopRightRadius: 20, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, boxShadow: 'xs' }}>
         <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
-          <Select
+          {/* <Select
             placeholder="Selecione um tipo"
             indicator={<KeyboardArrowDown />}
             sx={{
@@ -173,11 +197,14 @@ export default function Prospeccao() {
           >
             <Option value={0}>Ativos</Option>
             <Option value={1}>Deletados</Option>
-          </Select>
+          </Select> */}
           <Input
             startDecorator={<SearchIcon sx={{ width: 20, height: 20 }} />}
             placeholder={'Pesquise por SQL'}
             sx={{ width: '100%' }}
+            value={busca}
+            onChange={(e) => { setBusca(e.target.value) }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { getProcessos() } }}
           />
           <Dropdown>
             <MenuButton
@@ -191,36 +218,55 @@ export default function Prospeccao() {
               <MenuList sx={{ fontWeight: 'bold', pl: 2 }}>Tabela Principal</MenuList>
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box sx={{ width: '50%' }}>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProcesso(!processo)} checked={processo} label="Processo" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTipoVistoria(!tipoVistoria)} checked={tipoVistoria} label="Tipo vistoria" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setImovel(!imovel)} checked={imovel} label="Imovel" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTipologia(!tipologia)} checked={tipologia} label="Tipologia" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTipoUso(!tipoUso)} checked={tipoUso} label="Tipo uso" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAutuacaoSei(!autuacaoSei)} checked={autuacaoSei} label="Autuação SEI" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setImovelContiguidade(!imovelContiguidade)} checked={imovelContiguidade} label="Imovel contiguidade" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaTotal(!areaConstruidaTotal)} checked={areaConstruidaTotal} label="Area construida total" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaLoteTotal(!areaLoteTotal)} checked={areaLoteTotal} label="Area lote total" /></MenuList>
                 </Box>
                 <Box sx={{ width: '50%' }}>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setDataVistoria(!dataVistoria)} checked={dataVistoria} label="Data vistoria" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaTotalConstatada(!areaConstruidaTotalConstatada)} checked={areaConstruidaTotalConstatada} label="Area construida constatada" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaLoteTotalConstatada(!areaLoteTotalConstatada)} checked={areaLoteTotalConstatada} label="Lote total constatada" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaCoberturaTotalConstatada(!areaCoberturaTotalConstatada)} checked={areaCoberturaTotalConstatada} label="Cober. total constatada" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setIndiceOcupacaoConstatado(!indiceOcupacaoConstatado)} checked={indiceOcupacaoConstatado} label="Indice Ocupacao" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProspeccaoTipologia(!prospeccaoTipologia)} checked={prospeccaoTipologia} label="Tipologia prospecção" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProspeccaoData(!prospeccaoData)} checked={prospeccaoData} label="Data prospeccão" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEstado(!estado)} checked={estado} label="Estado" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProspeccaoOrigem(!prospeccaoOrigem)} checked={prospeccaoOrigem} label="Origem prospeccao" /></MenuList>
                 </Box>
               </Box>
               <ListDivider />
               <MenuList sx={{ p: 2, fontWeight: 'bold' }}>Tabela de Informações</MenuList>
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setQtdePavimentos(!qtdePavimentos)} checked={qtdePavimentos} label="Quantidade de pavimentos" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setFamiliar(!familiar)} checked={familiar} label="Familiar" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setMultifamiliar(!multifamiliar)} checked={multifamiliar} label="Multi familiar" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setComercio(!comercio)} checked={comercio} label="Comercio" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setServico(!servico)} checked={servico} label="Servico" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setSqlSetor(!sqlSetor)} checked={sqlSetor} label="SQL Setor" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setSqlQuadra(!sqlQuadra)} checked={sqlQuadra} label="SQL Quadra" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setSqlLote(!sqlLote)} checked={sqlLote} label="SQL Lote" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setSqlDigito(!sqlDigito)} checked={sqlDigito} label="SQL Digito" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setSqlPai(!sqlPai)} checked={sqlPai} label="SQL Pai" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setSqlFilho(!sqlFilho)} checked={sqlFilho} label="SQL Filho" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setRegistroNotasReferencia(!registroNotasReferencia)} checked={registroNotasReferencia} label="Notas Referencia" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoLogradouro(!enderecoLogradouro)} checked={enderecoLogradouro} label="Logradouro" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoNumero(!enderecoNumero)} checked={enderecoNumero} label="Numero" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoComplemento(!enderecoComplemento)} checked={enderecoComplemento} label="Complemento" /></MenuList>
                 </Box>
                 <Box>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setIndustria(!industria)} checked={industria} label="Industria" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setUsoFachadaBoaCondicao(!usoFachadaBoaCondicao)} checked={usoFachadaBoaCondicao} label="Fachada boa condição" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setUsoEsquadriaBoaCondicao(!usoEsquadriaBoaCondicao)} checked={usoEsquadriaBoaCondicao} label="Esquadria boa condição" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setUsoPodaVegetacao(!usoPodaVegetacao)} checked={usoPodaVegetacao} label="Poda Vegetação" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaNaoComputavel(!areaConstruidaNaoComputavel)} checked={areaConstruidaNaoComputavel} label="Area construida não computada" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoReferencia(!enderecoReferencia)} checked={enderecoReferencia} label="Endereco Referencia" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoDistrito(!enderecoDistrito)} checked={enderecoDistrito} label="Endereco Distrito" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoCep(!enderecoCep)} checked={enderecoCep} label="CEP" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoSubprefeitura(!enderecoSubprefeitura)} checked={enderecoSubprefeitura} label="Endereco Subprefeitura" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoSubprefeituraSigla(!enderecoSubprefeituraSigla)} checked={enderecoSubprefeituraSigla} label="Subprefeitura Sigla" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoMacroarea(!enderecoMacroarea)} checked={enderecoMacroarea} label="Endereco Macroarea" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoMacroareaSigla(!enderecoMacroareaSigla)} checked={enderecoMacroareaSigla} label="Macroarea Sigla" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoZona(!enderecoZona)} checked={enderecoZona} label="Endereco Zona" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEnderecoZonaSigla(!enderecoZonaSigla)} checked={enderecoZonaSigla} label="Zona Sigla" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaTotalRegistrada(!areaConstruidaTotalRegistrada)} checked={areaConstruidaTotalRegistrada} label="Area Construida Total Registrada" /></MenuList>
+                </Box>
+                <Box>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaLoteTotalRegistrada(!areaLoteTotalRegistrada)} checked={areaLoteTotalRegistrada} label="Area Lote Total Registrada" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaCoeficienteAproveitamento(!areaCoeficienteAproveitamento)} checked={areaCoeficienteAproveitamento} label="Area Coeficiente Aproveitamento" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaCoeficienteAproveitamentoMinimo(!areaCoeficienteAproveitamentoMinimo)} checked={areaCoeficienteAproveitamentoMinimo} label="Area Coeficiente Aproveitamento Minimo" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setGeoEpsg(!geoEpsg)} checked={geoEpsg} label="EPSG" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setDecretoNumero(!decretoNumero)} checked={decretoNumero} label="Numero Decreto" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setDecretoTipo(!decretoTipo)} checked={decretoTipo} label="Tipo Decreto" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTombamentoCompresp(!tombamentoCompresp)} checked={tombamentoCompresp} label="Compresp Tombamento" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTombamentoCondephat(!tombamentoCondephat)} checked={tombamentoCondephat} label="Condephat Tombamento" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setTombamentoIphan(!tombamentoIphan)} checked={tombamentoIphan} label="Iphan Tombamento" /></MenuList>
                 </Box>
               </Box>
             </Menu>
@@ -230,41 +276,32 @@ export default function Prospeccao() {
           <thead>
             <tr>
               <th style={{ backgroundColor: backgroudLevel1 }}>ID</th>
-              {processo ? <th style={{ backgroundColor: backgroudLevel1 }}>Atuação Sei</th> : null}
-              {imovel ? <th style={{ backgroundColor: backgroudLevel1 }}>Data Atuação</th> : null}
-              {tipoVistoria ? <th style={{ backgroundColor: backgroudLevel1 }}>Imovel Contiguidade</th> : null}
-              {tipologia ? <th style={{ backgroundColor: backgroudLevel1 }}>Area Total Construida</th> : null}
-              {tipoUso ? <th style={{ backgroundColor: backgroudLevel1 }}>Area Lote Total</th> : null}
-              {dataVistoria ? <th style={{ backgroundColor: backgroudLevel1 }}>Origem prospequição</th> : null}
-              {areaConstruidaTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Area construida constatada</th> : null}
-              {areaLoteTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Lote total constatada</th> : null}
-              {areaCoberturaTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Origem prospecção</th> : null}
-              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: backgroudLevel1 }}>Tipologia prospecção</th> : null}
-              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: backgroudLevel1 }}>Data Prospecção</th> : null}
-              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: backgroudLevel1 }}>Estado</th> : null}
-              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: backgroudLevel1 }}>Usuario</th> : null}
-              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: backgroudLevel1 }}>Criado</th> : null}
+              {autuacaoSei ? <th style={{ backgroundColor: backgroudLevel1 }}>Atuação Sei</th> : null}
+              {imovelContiguidade ? <th style={{ backgroundColor: backgroudLevel1 }}>Imovel Contiguidade</th> : null}
+              {areaConstruidaTotal ? <th style={{ backgroundColor: backgroudLevel1 }}>Area Total Construida</th> : null}
+              {areaLoteTotal ? <th style={{ backgroundColor: backgroudLevel1 }}>Area Lote Total</th> : null}
+              {prospeccaoOrigem ? <th style={{ backgroundColor: backgroudLevel1 }}>Origem prospequição</th> : null}
+              {prospeccaoTipologia ? <th style={{ backgroundColor: backgroudLevel1 }}>Prospecção Tipologia</th> : null}
+              {prospeccaoData ? <th style={{ backgroundColor: backgroudLevel1 }}>Prospeccão Data</th> : null}
+              {estado ? <th style={{ backgroundColor: backgroudLevel1 }}>Estado</th> : null}
               <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
               <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
             </tr>
           </thead>
           <tbody>
-            {rows.map((row: CadastrosResponseDTO) => (
+            {rows && rows.length > 0 ? rows.map((row: CadastrosResponseDTO) => (
               <React.Fragment key={row.id}>
                 <Tooltip title={row.autuacaoSei} color="neutral" placement="bottom" variant={'outlined'}>
                   <tr>
-                    <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}># {row.id}</td>
-                    {processo ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.autuacaoSei}</td> : null}
-                    {imovel ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.autuacaoData).toLocaleDateString()}</td> : null}
-                    {tipoVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.imovelContiguidade}</td> : null}
-                    {tipologia ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaConstruidaTotal}</td> : null}
-                    {tipoUso ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaLoteTotal}</td> : null}
-                    {dataVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.prospeccaoOrigem).toLocaleDateString()}</td> : null}
-                    {areaConstruidaTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.prospeccaoTipologia}</td> : null}
-                    {areaLoteTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.prospeccaoData).toLocaleDateString()}</td> : null}
-                    {areaCoberturaTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.estado}</td> : null}
-                    {indiceOcupacaoConstatado ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.usuarioId}</td> : null}
-                    {indiceOcupacaoConstatado ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.criadoEm).toLocaleDateString()}</td> : null}
+                    <td style={{ cursor: 'pointer' }}># {row.id}</td>
+                    {autuacaoSei ? <td style={{ cursor: 'pointer' }}>{row.autuacaoSei}</td> : null}
+                    {imovelContiguidade ? <td style={{ cursor: 'pointer' }}>{row.imovelContiguidade ? 'Contiguidade' : 'Não Contiguidade'}</td> : null}
+                    {areaConstruidaTotal ? <td style={{ cursor: 'pointer' }}>{row.areaConstruidaTotal}</td> : null}
+                    {areaLoteTotal ? <td style={{ cursor: 'pointer' }}>{row.areaLoteTotal}</td> : null}
+                    {prospeccaoOrigem ? <td style={{ cursor: 'pointer' }}>{row.prospeccaoOrigem}</td> : null}
+                    {prospeccaoTipologia ? <td style={{ cursor: 'pointer' }}>{row.prospeccaoTipologia}</td> : null}
+                    {prospeccaoData ? <td style={{ cursor: 'pointer' }}>{new Date(row.prospeccaoData).toLocaleDateString()}</td> : null}
+                    {estado ? <td style={{ cursor: 'pointer' }}>{row.estado}</td> : null}
                     <td>
                       <IconButton
                         aria-label="expand row"
@@ -277,53 +314,121 @@ export default function Prospeccao() {
                       </IconButton>
                     </td>
                     <td>
-                      <IconButton size="sm" variant="soft" color="neutral">
-                        <DeleteForeverIcon onClick={() => { setConfirma(true) }} sx={{ color: theme.palette.text.primary, width: 25, height: 25 }} />
-                      </IconButton>
+                      <Dropdown>
+                        <MenuButton
+                          slots={{ root: IconButton }}
+                          slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+                        >
+                          <MoreVert />
+                        </MenuButton>
+                        <Menu placement="bottom-end">
+                          <MenuItem onClick={() => { router.push('/cadastramento/detalhes/' + row.id) }}>
+                            <ListItemDecorator>
+                              <Edit />
+                            </ListItemDecorator>{' '}
+                            Editar Cadastro
+                          </MenuItem>
+                          <ListDivider />
+                          <MenuItem variant="soft" color="danger">
+                            <ListItemDecorator sx={{ color: 'inherit' }}>
+                              <DeleteForever />
+                            </ListItemDecorator>{' '}
+                            Deletar
+                          </MenuItem>
+                        </Menu>
+                      </Dropdown>
                     </td>
                   </tr>
                 </Tooltip>
                 {openRows[row.id] && (
-                  <Sheet variant="soft" sx={{ p: 1.6, height: '152px', width: tableSize }}>
+                  <Sheet variant="soft" sx={{ p: 1.6, height: '100%', width: tableSize }}>
                     <Box sx={{ bgcolor: 'background.body', p: 1, borderRadius: 10, height: '100%' }}>
                       <Typography sx={{ fontWeight: 900, fontSize: '14px', lineHeight: '22px', pb: 1, pl: 1 }}>
                         Imovel | Imoves vinculados
                       </Typography>
                       <Table >
-                        <thead style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>
+                        <thead>
                           <tr>
-                            {qtdePavimentos ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>ID</th> : null}
-                            {familiar ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Id Sei</th> : null}
-                            {multifamiliar ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Id sql</th> : null}
-                            {comercio ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>SQL Setor</th> : null}
-                            {servico ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>SQL Quadra</th> : null}
-                            {industria ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>SQL Lote</th> : null}
-                            {usoFachadaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>SQL digito</th> : null}
-                            {usoEsquadriaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>SQL Pai</th> : null}
-                            {usoPodaVegetacao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>SQL Filho</th> : null}
-                            {areaConstruidaNaoComputavel ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Registro Notas Referencia</th> : null}
+                            <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>ID</th>
+                            {sqlSetor ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Setor</th> : null}
+                            {sqlQuadra ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Quadra</th> : null}
+                            {sqlLote ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Lote</th> : null}
+                            {sqlDigito ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL digito</th> : null}
+                            {sqlPai ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Pai</th> : null}
+                            {sqlFilho ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Filho</th> : null}
+                            {registroNotasReferencia ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Registro Notas Referencia</th> : null}
+                            {enderecoLogradouro ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Logradouro</th> : null}
+                            {enderecoNumero ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Numero</th> : null}
+                            {enderecoComplemento ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Complemento</th> : null}
+                            {enderecoReferencia ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Referencia</th> : null}
+                            {enderecoDistrito ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Distrito</th> : null}
+                            {enderecoCep ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>CEP</th> : null}
+                            {enderecoSubprefeitura ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Subprefeitura</th> : null}
+                            {enderecoSubprefeituraSigla ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Subprefeitura sigla</th> : null}
+                            {enderecoMacroarea ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Macroarea</th> : null}
+                            {enderecoMacroareaSigla ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Macroarea sigla</th> : null}
+                            {enderecoZona ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Zona</th> : null}
+                            {enderecoZonaSigla ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Zona sigla</th> : null}
+                            {areaConstruidaTotalRegistrada ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Area Construida Total Registrada</th> : null}
+                            {areaLoteTotalRegistrada ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Area Lote Total Registrada</th> : null}
+                            {areaCoeficienteAproveitamento ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Area Coeficiente Aproveitamento</th> : null}
+                            {areaCoeficienteAproveitamentoMinimo ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Area Coeficiente Aproveitamento Minimo</th> : null}
+                            {geoEpsg ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Geo EPSG</th> : null}
+                            {decretoNumero ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Numero Decreto</th> : null}
+                            {decretoTipo ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Tipo Decreto</th> : null}
+                            {tombamentoCompresp ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Tombamento Compresp</th> : null}
+                            {tombamentoCondephat ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Tombamento Condephat</th> : null}
+                            {tombamentoIphan ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Tombamento Iphan</th> : null}
+                            <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            {qtdePavimentos ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].id}</td> : null}
-                            {familiar ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].seiId}</td> : null}
-                            {multifamiliar ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].sqlId}</td> : null}
-                            {comercio ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].sqlSetor}</td> : null}
-                            {servico ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].sqlQuadra}</td> : null}
-                            {industria ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].sqlLote}</td> : null}
-                            {usoFachadaBoaCondicao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].sqlDigito}</td> : null}
-                            {usoEsquadriaBoaCondicao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].sqlPai}</td> : null}
-                            {usoPodaVegetacao ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].sqlFilho}</td> : null}
-                            {areaConstruidaNaoComputavel ? <td style={{ padding: 0, height: 5, paddingLeft: 8 }}>{row.ProcessoImovel[0].registroNotasReferencia}</td> : null}
-                          </tr>
+                          {row.ProcessoImovel && row.ProcessoImovel.length > 0 && row.ProcessoImovel.map((row) => (
+                            <tr key={row.id}>
+                              <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.id}</td>
+                              {sqlSetor ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.sqlSetor}</td> : null}
+                              {sqlQuadra ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.sqlQuadra}</td> : null}
+                              {sqlLote ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.sqlLote}</td> : null}
+                              {sqlDigito ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.sqlDigito}</td> : null}
+                              {sqlPai ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.sqlPai}</td> : null}
+                              {sqlFilho ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.sqlFilho}</td> : null}
+                              {registroNotasReferencia ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.registroNotasReferencia}</td> : null}
+                              {enderecoLogradouro ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoLogradouro}</td> : null}
+                              {enderecoNumero ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoNumero}</td> : null}
+                              {enderecoComplemento ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoComplemento}</td> : null}
+                              {enderecoReferencia ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoReferencia}</td> : null}
+                              {enderecoDistrito ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoDistrito}</td> : null}
+                              {enderecoCep ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoCep}</td> : null}
+                              {enderecoSubprefeitura ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoSubprefeitura}</td> : null}
+                              {enderecoSubprefeituraSigla ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoSubprefeitura}</td> : null}
+                              {enderecoMacroarea ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoMacroarea}</td> : null}
+                              {enderecoMacroareaSigla ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoMacroareaSigla}</td> : null}
+                              {enderecoZona ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoZona}</td> : null}
+                              {enderecoZonaSigla ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.enderecoZonaSigla}</td> : null}
+                              {areaConstruidaTotalRegistrada ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.areaConstruidaTotalRegistrada}</td> : null}
+                              {areaLoteTotalRegistrada ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.areaLoteTotalRegistrada}</td> : null}
+                              {areaCoeficienteAproveitamento ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.areaCoeficienteAproveitamento}</td> : null}
+                              {areaCoeficienteAproveitamentoMinimo ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.areaCoeficienteAproveitamentoMinimo}</td> : null}
+                              {geoEpsg ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.geoEpsg}</td> : null}
+                              {decretoNumero ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.decretoNumero}</td> : null}
+                              {decretoTipo ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.decretoTipo}</td> : null}
+                              {tombamentoCompresp ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.tombamentoCompresp}</td> : null}
+                              {tombamentoCondephat ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.tombamentoCondephat}</td> : null}
+                              {tombamentoIphan ? <td style={{ padding: 6, height: 5, paddingLeft: 8 }}>{row.tombamentoIphan}</td> : null}
+                              <td style={{ padding: 6, height: 5, paddingLeft: 8 }}><IconButton onClick={() => { router.push(`/vistoria/detalhes?imovelId=${row.id}`) }}><FindInPageIcon /></IconButton></td>
+                            </tr>
+                          ))}
                         </tbody>
                       </Table>
                     </Box>
                   </Sheet>
                 )}
               </React.Fragment>
-            ))}
+            )) : <tr style={{ textAlign: 'center', width: tableSize, padding: 1, fontWeight: 'bold' }}>
+              <td style={{ textAlign: 'center', width: tableSize, padding: 1, fontWeight: 'bold' }}>
+                Nenhum registro encontrado
+              </td>
+            </tr>}
           </tbody>
         </Table>
         <Box sx={{ display: 'flex', gap: 2, p: 2, justifyContent: 'end', alignItems: 'center' }}>
@@ -331,7 +436,7 @@ export default function Prospeccao() {
           <Select
             variant='plain'
             value={limite}
-            onChange={(_, value) => {setLimite(value ? parseInt(value.toString()) : 0), getProcessos()}}
+            onChange={(_, value) => { setLimite(value ? parseInt(value.toString()) : 0), getProcessos() }}
           >
             <Option value={10}>10</Option>
             <Option value={20}>20</Option>
@@ -342,8 +447,8 @@ export default function Prospeccao() {
             <IconButton disabled={pagina === 1} onClick={() => setPagina(pagina - 1)}>
               <KeyboardArrowLeftIcon />
             </IconButton>
-            <IconButton  disabled={pagina === Math.ceil(total / limite)} onClick={() => setPagina(pagina + 1)} >
-              <KeyboardArrowRightIcon/>
+            <IconButton disabled={pagina === Math.ceil(total / limite)} onClick={() => setPagina(pagina + 1)} >
+              <KeyboardArrowRightIcon />
             </IconButton>
           </Box>
         </Box>
