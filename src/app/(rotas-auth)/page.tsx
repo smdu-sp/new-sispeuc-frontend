@@ -91,7 +91,7 @@ export default function Home() {
       }}
       >
         <Box sx={{ pl: 5, pt: 3 }}>
-          <Typography level='h3'>Deúncias por fonte</Typography>
+          <Typography level='h3'>Denúncias por fonte</Typography>
           <Typography sx={{ color: '#637381' }} level="body-md" >(+43%) than last year</Typography>
         </Box>
         <Box sx={{ width: '100%', display: 'flex', mt: -2 }}>
