@@ -20,9 +20,7 @@ export const createCadastro = async (
       'Authorization': `Bearer ${session?.access_token}`
     },
     body: JSON.stringify({ ...request })
-  });
-  // console.log(await response.json());
-  
+  });  
   if (response.status != 201) throw new Error('erro ao tentar registrar o cadastro');
   const data: CadastrosResponseDTO = await response.json();
   return data;

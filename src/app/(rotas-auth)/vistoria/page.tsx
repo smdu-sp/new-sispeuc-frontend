@@ -24,6 +24,7 @@ import { Check } from '@mui/icons-material';
 import { MenuList } from '@mui/material';
 import ViewWeekSharpIcon from '@mui/icons-material/ViewWeekSharp';
 import WarningIcon from '@mui/icons-material/Warning';
+import ModalImovelId from '@/components/modal-imovel-id';
 export default function Prospeccao() {
 
   const [processo, setProcesso] = useState<boolean>(true);
@@ -55,6 +56,8 @@ export default function Prospeccao() {
   const [limite, setLimite] = useState(searchParams.get('limite') ? Number(searchParams.get('limite')) : 10);
   const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'false');
+  const [openImovel, setOpenImovel] = useState<boolean>(false);
+
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
 
   const vistorias = new Map<string, number | string | boolean>([
@@ -141,6 +144,10 @@ export default function Prospeccao() {
       titulo="Vistorias"
       pagina="vistoria"
     >
+      <ModalImovelId 
+        open={openImovel} 
+        setOpen={setOpenImovel} 
+      />
       <Snackbar
         variant="solid"
         color="danger"
@@ -170,9 +177,10 @@ export default function Prospeccao() {
       </Snackbar>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', gap: 3, mb: 5 }}>
         <Button
-          onClick={() => { router.push('/vistoria/detalhes') }}
+          onClick={() => setOpenImovel(true)}
           sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}
-          startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}>
+          startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}
+        >
           Criar vistoria
         </Button>
       </Box>
