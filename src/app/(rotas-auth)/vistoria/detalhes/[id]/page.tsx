@@ -94,19 +94,17 @@ export default function DetalhesVistorias(props: any) {
     const theme = useTheme();
     const { setAlert } = useContext(AlertsContext);
 
-    useEffect(() => {
-        id && !gettedObject ? getById() : setCarregando(false);
-
-        window.location.href.split('?')[1]
-        && window.location.href.split('?')[1].split('=')[0] 
-        && window.location.href.split('?')[1].split('=')[0] === 'imovelId'
-        ? handleImovelId() : null;
-    }, []);
-
     const handleImovelId = () =>  {
         setIdImovel(window.location.href.split('?')[1].split('=')[1]);
         window.history.replaceState({}, '', `${window.location.pathname}`);
     };
+    
+    useEffect(() => {
+        id && !gettedObject ? getById() : setCarregando(false);
+        window.location.href.split('?')[1]?.split('=')[0] 
+        && (window.location.href.split('?')[1].split('=')[0] === 'imovelId')
+        ? handleImovelId() : null;
+    }, []);
 
     const {
         control,
