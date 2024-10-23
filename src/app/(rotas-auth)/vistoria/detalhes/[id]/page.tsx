@@ -19,6 +19,8 @@ import * as vistoriasServices from "@/shared/services/vistorias/vistoria.service
 import VistoriaFilesCarousel from "@/components/VistoriaFilesCarousel";
 import { VistoriaAssetDto } from "@/types/vistorias/vistorias.dto";
 import { AlertsContext } from "@/providers/alertsProvider";
+import { getOneProspeccao } from "@/shared/services/prospeccoes/prospeccoes.service";
+import { getOneProcesso } from "@/shared/services/cadastros/cadastros.service";
 
 const schema = object({
     processoId: string(),
@@ -63,6 +65,8 @@ export default function DetalhesVistorias(props: any) {
     const [ gettedObject, setGettedObject ] = useState<boolean>();
     const [processoId, setProcesso] = useState('');
     const [imovelId, setIdImovel] = useState('');
+    const [ imovel, setImovel ] = useState();
+    const [ processo, setProcessoA ] = useState();
     const [tipoVistoria, setTipoVistoria] = useState('');
     const [tipoTipologia, setTipoTipologia] = useState('');
     const [tipoUso, setTipoUso] = useState('');
@@ -98,13 +102,28 @@ export default function DetalhesVistorias(props: any) {
         setIdImovel(window.location.href.split('?')[1].split('=')[1]);
         window.history.replaceState({}, '', `${window.location.pathname}`);
     };
-    
+
     useEffect(() => {
         id && !gettedObject ? getById() : setCarregando(false);
+
         window.location.href.split('?')[1]?.split('=')[0] 
         && (window.location.href.split('?')[1].split('=')[0] === 'imovelId')
+        && !imovelId
         ? handleImovelId() : null;
-    }, []);
+
+        !id && imovelId && !imovel
+        && getOneProspeccao(imovelId)
+            .then((r: any) => {
+                setImovel(r);
+                console.log(r)
+                setIdImovel(r.enderecoLogradouro + ', ' + r.enderecoNumero);
+                getOneProcesso(r.imovelProcessoId).then((r: any) => {
+                    setProcessoA(r.autuacaoSei);
+                    setProcesso(r.autuacaoSei)
+                })
+            })
+            .catch(e => console.error(e));
+    }, [imovelId]);
 
     const {
         control,
@@ -246,7 +265,7 @@ export default function DetalhesVistorias(props: any) {
                         vistoriaAssets
                         && selectedFileIndex !== null 
                         && selectedFileIndex !== undefined
-                        && vistoriaAssets[selectedFileIndex ? selectedFileIndex : 0].nomeArquivo || ''
+                        && vistoriaAssets[selectedFileIndex ? selectedFileIndex : 0]?.nomeArquivo || ''
                     } ?
                 </Typography>
                 <Stack direction="row" spacing={1}>
@@ -281,7 +300,7 @@ export default function DetalhesVistorias(props: any) {
                         <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
                                 <FormControl sx={{ width: '100%' }} error={Boolean(errors.processoId)}>
-                                    <FormLabel>ID Processo</FormLabel>
+                                    <FormLabel>SEI Processo</FormLabel>
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="processoId"
                                         control={control}
@@ -300,11 +319,12 @@ export default function DetalhesVistorias(props: any) {
                                     />}
                                 </FormControl>
                                 <FormControl sx={{ width: '100%' }} error={Boolean(errors.imovelId)}>
-                                    <FormLabel>ID imovel</FormLabel>
+                                    <FormLabel>Imóvel</FormLabel>
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="imovelId"
                                         control={control}
                                         defaultValue={imovelId}
+                                        // disabled
                                         render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input
