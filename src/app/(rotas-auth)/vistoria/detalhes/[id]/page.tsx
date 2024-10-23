@@ -1,19 +1,16 @@
 'use client'
 
 import Content from "@/components/Content";
-import { Accordion, accordionClasses, AccordionDetails, accordionDetailsClasses, AccordionGroup, AccordionGroupProps, AccordionSummary, accordionSummaryClasses, Box, Button, Card, CircularProgress, Divider, extendTheme, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Sheet, Skeleton, Snackbar, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
-import WarningIcon from '@mui/icons-material/Warning';
+import { Accordion, AccordionDetails, accordionDetailsClasses, AccordionGroup, AccordionGroupProps, AccordionSummary, accordionSummaryClasses, Box, Button, Card, CircularProgress, Divider, FormControl, FormHelperText, FormLabel, Input, Modal, Option, Select, Sheet, Skeleton, Snackbar, Stack, styled, SvgIcon, Textarea, Typography } from "@mui/joy";
 import { CheckCircleOutlineTwoTone } from '@mui/icons-material';
 import { useTheme } from "@mui/joy";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import {
     infer as Infer,
-    number,
     object,
     string,
     boolean,
-    date,
     z
 } from "zod";
 import { Controller, useForm } from "react-hook-form";
@@ -97,9 +94,17 @@ export default function DetalhesVistorias(props: any) {
     const theme = useTheme();
     const { setAlert } = useContext(AlertsContext);
 
+    const handleImovelId = () =>  {
+        setIdImovel(window.location.href.split('?')[1].split('=')[1]);
+        window.history.replaceState({}, '', `${window.location.pathname}`);
+    };
+    
     useEffect(() => {
         id && !gettedObject ? getById() : setCarregando(false);
-    });
+        window.location.href.split('?')[1]?.split('=')[0] 
+        && (window.location.href.split('?')[1].split('=')[0] === 'imovelId')
+        ? handleImovelId() : null;
+    }, []);
 
     const {
         control,
@@ -236,14 +241,13 @@ export default function DetalhesVistorias(props: any) {
                     sx={{ mt: 1, mb: 2 }} 
                     level="title-md"
                 >
-                    Tem certeza que desseja deletar o arquivo?
-                    {/* {
+                    Tem certeza que deseja deletar o arquivo { " " }
+                    {
                         vistoriaAssets
                         && selectedFileIndex !== null 
                         && selectedFileIndex !== undefined
-                        // && vistoriaAssets[selectedFileIndex].nomeArquivo
                         && vistoriaAssets[selectedFileIndex ? selectedFileIndex : 0].nomeArquivo || ''
-                    } ? */}
+                    } ?
                 </Typography>
                 <Stack direction="row" spacing={1}>
                     <Button 

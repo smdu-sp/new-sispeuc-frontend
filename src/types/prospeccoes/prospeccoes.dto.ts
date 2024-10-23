@@ -37,6 +37,7 @@ export interface ProspeccoesRequestEmMassaDTO {
 }
 
 export interface ProspeccoesResponseDTO {
+  id: number,
   seiId: number,
   sqlId: number,
   sqlSetor: number,

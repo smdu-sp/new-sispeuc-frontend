@@ -58,6 +58,21 @@ export const getAllProspeccoes = async (
   return data;
 };
 
+export const getAllNoPagProspeccoes = async (): Promise<ProspeccoesResponseDTO[]> => {
+  const session = await getServerSession(authOptions);
+  const request_url: string = `${api_url}/buscar-todos-imoveis`;
+  const response: Response = await fetch(request_url, {
+    method: 'GET',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session?.access_token}`
+    }
+  });
+  if (response.status != 200) throw new Error('erro ao tentar buscar as prospecções');
+  const data: ProspeccoesResponseDTO[] = await response.json();
+  return data;
+};
+
 export const getOneProspeccao = async (id: string): Promise<ProspeccoesResponseDTO> => {
   const session = await getServerSession(authOptions);
   const response: Response = await fetch(`${api_url}/buscar-imovel/${id}`, {

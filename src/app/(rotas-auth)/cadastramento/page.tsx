@@ -182,7 +182,8 @@ export default function Prospeccao() {
         <Button
           onClick={() => { router.push('/cadastramento/detalhes') }}
           sx={{ bgcolor: theme.palette.text.primary, color: 'background.body', '&:hover': { bgcolor: theme.palette.text.primary, color: 'background.body' } }}
-          startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}>
+          startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}
+        >
           Criar Cadastro
         </Button>
       </Box>
