@@ -108,14 +108,12 @@ export default function DetalhesVistorias(props: any) {
 
         window.location.href.split('?')[1]?.split('=')[0] 
         && (window.location.href.split('?')[1].split('=')[0] === 'imovelId')
-        && !imovelId
-        ? handleImovelId() : null;
+        && !imovelId ? handleImovelId() : null;
 
-        !id && imovelId && !imovel
-        && getOneProspeccao(imovelId)
+        !id && imovelId && !imovel && getOneProspeccao(imovelId)
             .then((r: any) => {
                 setImovel(r);
-                console.log(r)
+                // console.log(r)
                 setIdImovel(r.enderecoLogradouro + ', ' + r.enderecoNumero);
                 getOneProcesso(r.imovelProcessoId).then((r: any) => {
                     setProcessoA(r.autuacaoSei);
