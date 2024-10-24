@@ -17,7 +17,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as vistoriasServices from "@/shared/services/vistorias/vistoria.service";
 import VistoriaFilesCarousel from "@/components/VistoriaFilesCarousel";
-import { VistoriaAssetDto } from "@/types/vistorias/vistorias.dto";
+import { VistoriaAssetDto, VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
 import { AlertsContext } from "@/providers/alertsProvider";
 import { getOneProspeccao } from "@/shared/services/prospeccoes/prospeccoes.service";
 import { getOneProcesso } from "@/shared/services/cadastros/cadastros.service";
@@ -199,21 +199,19 @@ export default function DetalhesVistorias(props: any) {
             setFiles(Array.from(event.target.files));
     };
 
-    const handleDeleteFileOnVistoria = async (id: number) => {
+    const handleDeleteFileOnVistoria = async (id: number): Promise<void> => {
         setConfirma(false);
         setLoading(true);
-        setTimeout(async () => {
-            await vistoriasServices.deleteFileOnVistoria(id);
-            setModalFile(false);
-            setVistoriaAssets(undefined);
-            setSelectedFileIndex(null);
-            setGettedObject(false);
-            setLoading(false);
-            setAlert('Arquivo Deletado!', 'Arquivo deletado com sucesso!', 'success', 3000, CheckCircleOutlineTwoTone);
-        }, 3000);
+        await vistoriasServices.deleteFileOnVistoria(id);
+        setModalFile(false);
+        setVistoriaAssets(undefined);
+        setSelectedFileIndex(null);
+        setGettedObject(false);
+        setLoading(false);
+        setAlert('Arquivo Deletado!', 'Arquivo deletado com sucesso!', 'success', 3000, CheckCircleOutlineTwoTone);
     }
 
-    const onSubmit = async () => {
+    const onSubmit = async (): Promise<VistoriaResponseDTO | void> => {
         setLoading(true);
         const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
         const formData: FormData = new FormData(form);
@@ -221,19 +219,16 @@ export default function DetalhesVistorias(props: any) {
         if (f.name == '' && f.arrayBuffer.length < 1) {
             formData.delete('files');
         }
-        if (id) {
-          await vistoriasServices.updateVistoria(id, formData)
-            .then((v) => {
+        if (id) return await vistoriasServices.updateVistoria(id, formData)
+            .then(v => {
                 setLoading(false);
                 if (v) router.push('/vistoria?att=0');
             });
-        } else {
-            await vistoriasServices.createVistoria(formData)
-                .then((v) => {
-                    setLoading(false);
-                    if (v) router.push('/vistoria');
-                });
-        }
+        return await vistoriasServices.createVistoria(formData)
+            .then(v => {
+                setLoading(false);
+                if (v) router.push('/vistoria');
+            });
     };
 
     return (
