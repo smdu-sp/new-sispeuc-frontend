@@ -59,8 +59,8 @@ const VisuallyHiddenInput = styled('input')`
 `;
 
 export default function DetalhesVistorias(props: any) {
-    const [ loading, setLoading ] = useState<boolean>();
-    const [ gettedObject, setGettedObject ] = useState<boolean>();
+    const [loading, setLoading] = useState<boolean>();
+    const [gettedObject, setGettedObject] = useState<boolean>();
     const [processoId, setProcesso] = useState('');
     const [imovelId, setIdImovel] = useState('');
     const [tipoVistoria, setTipoVistoria] = useState('');
@@ -94,16 +94,16 @@ export default function DetalhesVistorias(props: any) {
     const theme = useTheme();
     const { setAlert } = useContext(AlertsContext);
 
-    const handleImovelId = () =>  {
+    const handleImovelId = () => {
         setIdImovel(window.location.href.split('?')[1].split('=')[1]);
         window.history.replaceState({}, '', `${window.location.pathname}`);
     };
-    
+
     useEffect(() => {
         id && !gettedObject ? getById() : setCarregando(false);
-        window.location.href.split('?')[1]?.split('=')[0] 
-        && (window.location.href.split('?')[1].split('=')[0] === 'imovelId')
-        ? handleImovelId() : null;
+        window.location.href.split('?')[1]?.split('=')[0]
+            && (window.location.href.split('?')[1].split('=')[0] === 'imovelId')
+            ? handleImovelId() : null;
     }, []);
 
     const {
@@ -203,11 +203,11 @@ export default function DetalhesVistorias(props: any) {
             formData.delete('files');
         }
         if (id) {
-          await vistoriasServices.updateVistoria(id, formData)
-            .then((v) => {
-                setLoading(false);
-                if (v) router.push('/vistoria?att=0');
-            });
+            await vistoriasServices.updateVistoria(id, formData)
+                .then((v) => {
+                    setLoading(false);
+                    if (v) router.push('/vistoria?att=0');
+                });
         } else {
             await vistoriasServices.createVistoria(formData)
                 .then((v) => {
@@ -236,41 +236,49 @@ export default function DetalhesVistorias(props: any) {
                 sx={{ maxWidth: 360 }}
             >
                 <div>
-                <Typography level="title-lg">Deletar Arquivo!</Typography>
-                <Typography 
-                    sx={{ mt: 1, mb: 2 }} 
-                    level="title-md"
-                >
-                    Tem certeza que deseja deletar o arquivo { " " }
-                    {
-                        vistoriaAssets
-                        && selectedFileIndex !== null 
-                        && selectedFileIndex !== undefined
-                        && vistoriaAssets[selectedFileIndex ? selectedFileIndex : 0].nomeArquivo || ''
-                    } ?
-                </Typography>
-                <Stack direction="row" spacing={1}>
-                    <Button 
-                        variant="solid" 
-                        color="primary" 
-                        onClick={() => {
+                    <Typography level="title-lg">Deletar Arquivo!</Typography>
+                    <Typography
+                        sx={{ mt: 1, mb: 2 }}
+                        level="title-md"
+                    >
+                        Tem certeza que deseja deletar o arquivo {" "}
+                        {
                             vistoriaAssets
-                            && selectedFileIndex !== null 
+                            && selectedFileIndex !== null
                             && selectedFileIndex !== undefined
-                            && vistoriaAssets[selectedFileIndex].id
-                            && handleDeleteFileOnVistoria(vistoriaAssets[selectedFileIndex].id)
-                        }}
-                    >
-                        Sim
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => setConfirma(false)}
-                    >
-                        Não
-                    </Button>
-                </Stack>
+                            && vistoriaAssets[selectedFileIndex ? selectedFileIndex : 0].nomeArquivo || ''
+                        } ?
+                    </Typography>
+                    <Stack direction="row" spacing={1}>
+                        <Button
+                            variant="solid"
+                            color="primary"
+                            onClick={() => {
+                                // Verifica se `vistoriaAssets` e `selectedFileIndex` são válidos
+                                if (
+                                    vistoriaAssets &&
+                                    selectedFileIndex !== null &&
+                                    selectedFileIndex !== undefined
+                                ) {
+                                    const id = vistoriaAssets[selectedFileIndex]?.id;
+                                    // Verifica se o ID é um número antes de chamar a função
+                                    if (typeof id === 'number') {
+                                        handleDeleteFileOnVistoria(id);
+                                    }
+                                }
+                            }}
+                        >
+                            Sim
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => setConfirma(false)}
+                        >
+                            Não
+                        </Button>
+                    </Stack>
                 </div>
             </Snackbar>
             <form id="form_vistorias" onSubmit={handleSubmit(onSubmit)}>
@@ -752,13 +760,13 @@ export default function DetalhesVistorias(props: any) {
                                     sx={{
                                         borderRadius: 'md',
                                         [`& .${accordionDetailsClasses.content}.${accordionDetailsClasses.expanded}`]:
-                                          {
+                                        {
                                             paddingBlock: '0.5rem',
-                                          },
-                                        [`& .${accordionSummaryClasses.button}`]: {
-                                          paddingBlock: '0.5rem',
                                         },
-                                      }}
+                                        [`& .${accordionSummaryClasses.button}`]: {
+                                            paddingBlock: '0.5rem',
+                                        },
+                                    }}
                                 >
                                     <Accordion
                                         sx={{
@@ -771,7 +779,7 @@ export default function DetalhesVistorias(props: any) {
                                             {
                                                 vistoriaAssets.map((fileObject, index) => {
                                                     return (
-                                                        <Box>
+                                                        <Box key={index}>
                                                             <Typography
                                                                 onClick={() => {
                                                                     setModalFile(true);
@@ -790,7 +798,7 @@ export default function DetalhesVistorias(props: any) {
                                                                     }
                                                                 }}
                                                             >
-                                                                { fileObject.nomeArquivo }
+                                                                {fileObject.nomeArquivo}
                                                             </Typography>
                                                         </Box>
                                                     )
@@ -805,9 +813,9 @@ export default function DetalhesVistorias(props: any) {
                                                     setModalFile(false);
                                                     setSelectedFileIndex(null);
                                                 }}
-                                                sx={{ 
-                                                    display: 'flex', 
-                                                    justifyContent: 'center', 
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
                                                     alignItems: 'center',
                                                     alignSelf: 'center',
                                                     maxHeight: '80vh',
@@ -822,52 +830,52 @@ export default function DetalhesVistorias(props: any) {
                                                         width: {
                                                             xs: '90vw',
                                                             md: 'fit-content'
-                                                        }, 
-                                                        padding: 1, 
-                                                        borderRadius: 'md', 
-                                                        p: 3, 
+                                                        },
+                                                        padding: 1,
+                                                        borderRadius: 'md',
+                                                        p: 3,
                                                         boxShadow: 'lg',
                                                     }}
                                                 >
                                                     <Box>
-                                                        <VistoriaFilesCarousel 
+                                                        <VistoriaFilesCarousel
                                                             vistoriaAssets={vistoriaAssets}
                                                             selectedIndex={selectedFileIndex ? selectedFileIndex : 0}
                                                             setSelectedIndex={setSelectedFileIndex}
                                                         />
                                                     </Box>
                                                     {
-                                                        loading && 
-                                                        <Button 
-                                                            sx={{ width: 'fit-content', mt: 2 }} 
+                                                        loading &&
+                                                        <Button
+                                                            sx={{ width: 'fit-content', mt: 2 }}
                                                             loading loadingPosition="start"
-                                                            variant='solid' 
+                                                            variant='solid'
                                                             color='danger'
                                                         >
                                                             Deletando o arquivo...
                                                         </Button> ||
                                                         <Box sx={{ mt: 2 }}>
-                                                            <Button 
+                                                            <Button
                                                                 onClick={() => {
-                                                                    selectedFileIndex !== null 
-                                                                    && selectedFileIndex !== undefined
-                                                                    && vistoriaAssets[selectedFileIndex].id
-                                                                    && setConfirma(true);
+                                                                    selectedFileIndex !== null
+                                                                        && selectedFileIndex !== undefined
+                                                                        && vistoriaAssets[selectedFileIndex].id
+                                                                        && setConfirma(true);
                                                                 }}
-                                                                variant='solid' 
-                                                                color='danger' 
-                                                                sx={{ width: 'fit-content', mr: 2 }} 
+                                                                variant='solid'
+                                                                color='danger'
+                                                                sx={{ width: 'fit-content', mr: 2 }}
                                                             >
                                                                 Deletar arquivo
                                                             </Button>
-                                                            <Button 
+                                                            <Button
                                                                 onClick={() => {
                                                                     setModalFile(false);
                                                                     setSelectedFileIndex(null);
                                                                 }}
-                                                                variant='outlined' 
-                                                                color='neutral' 
-                                                                sx={{ width: 'fit-content' }} 
+                                                                variant='outlined'
+                                                                color='neutral'
+                                                                sx={{ width: 'fit-content' }}
                                                             >
                                                                 Cancelar
                                                             </Button>
@@ -965,18 +973,18 @@ export default function DetalhesVistorias(props: any) {
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                 {
                                     loading
-                                    &&   <Button 
-                                            startDecorator={<CircularProgress variant="solid" />} 
-                                            sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }} 
-                                        >
-                                            Loading…
-                                        </Button>
-                                    ||   <Button 
-                                            type="submit" 
-                                            sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}
-                                        >
-                                            Enviar Vistoria
-                                        </Button>
+                                    && <Button
+                                        startDecorator={<CircularProgress variant="solid" />}
+                                        sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}
+                                    >
+                                        Loading…
+                                    </Button>
+                                    || <Button
+                                        type="submit"
+                                        sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}
+                                    >
+                                        Enviar Vistoria
+                                    </Button>
                                 }
                             </Box>
                         </Box>

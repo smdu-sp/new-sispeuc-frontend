@@ -283,7 +283,7 @@ export default function DetalhesPropriedade(props: any) {
                             <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.autuacaoSei)}>
-                                        <FormLabel>Atuacao Sei</FormLabel>
+                                        <FormLabel>Autuação Sei</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="autuacaoSei"
                                             control={controlProcesso}
@@ -304,7 +304,7 @@ export default function DetalhesPropriedade(props: any) {
                                 </Stack>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.imovelContiguidade)}>
-                                        <FormLabel>Imovel Contibuidade</FormLabel>
+                                        <FormLabel>Imóvel Contibuidade</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="imovelContiguidade"
                                             control={controlProcesso}
