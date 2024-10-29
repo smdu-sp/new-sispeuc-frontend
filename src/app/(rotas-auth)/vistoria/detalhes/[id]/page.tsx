@@ -17,8 +17,10 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as vistoriasServices from "@/shared/services/vistorias/vistoria.service";
 import VistoriaFilesCarousel from "@/components/VistoriaFilesCarousel";
-import { VistoriaAssetDto } from "@/types/vistorias/vistorias.dto";
+import { VistoriaAssetDto, VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
 import { AlertsContext } from "@/providers/alertsProvider";
+import { getOneProspeccao } from "@/shared/services/prospeccoes/prospeccoes.service";
+import { getOneProcesso } from "@/shared/services/cadastros/cadastros.service";
 
 const schema = object({
     processoId: string(),
@@ -63,6 +65,8 @@ export default function DetalhesVistorias(props: any) {
     const [gettedObject, setGettedObject] = useState<boolean>();
     const [processoId, setProcesso] = useState('');
     const [imovelId, setIdImovel] = useState('');
+    const [imovel, setImovel] = useState();
+    const [processo, setProcessoA] = useState();
     const [tipoVistoria, setTipoVistoria] = useState('');
     const [tipoTipologia, setTipoTipologia] = useState('');
     const [tipoUso, setTipoUso] = useState('');
@@ -180,21 +184,19 @@ export default function DetalhesVistorias(props: any) {
             setFiles(Array.from(event.target.files));
     };
 
-    const handleDeleteFileOnVistoria = async (id: number) => {
+    const handleDeleteFileOnVistoria = async (id: number): Promise<void> => {
         setConfirma(false);
         setLoading(true);
-        setTimeout(async () => {
-            await vistoriasServices.deleteFileOnVistoria(id);
-            setModalFile(false);
-            setVistoriaAssets(undefined);
-            setSelectedFileIndex(null);
-            setGettedObject(false);
-            setLoading(false);
-            setAlert('Arquivo Deletado!', 'Arquivo deletado com sucesso!', 'success', 3000, CheckCircleOutlineTwoTone);
-        }, 3000);
+        await vistoriasServices.deleteFileOnVistoria(id);
+        setModalFile(false);
+        setVistoriaAssets(undefined);
+        setSelectedFileIndex(null);
+        setGettedObject(false);
+        setLoading(false);
+        setAlert('Arquivo Deletado!', 'Arquivo deletado com sucesso!', 'success', 3000, CheckCircleOutlineTwoTone);
     }
 
-    const onSubmit = async () => {
+    const onSubmit = async (): Promise<VistoriaResponseDTO | void> => {
         setLoading(true);
         const form: HTMLFormElement | null = document.getElementById('form_vistorias') as HTMLFormElement;
         const formData: FormData = new FormData(form);
@@ -254,14 +256,12 @@ export default function DetalhesVistorias(props: any) {
                             variant="solid"
                             color="primary"
                             onClick={() => {
-                                // Verifica se `vistoriaAssets` e `selectedFileIndex` são válidos
                                 if (
                                     vistoriaAssets &&
                                     selectedFileIndex !== null &&
                                     selectedFileIndex !== undefined
                                 ) {
                                     const id = vistoriaAssets[selectedFileIndex]?.id;
-                                    // Verifica se o ID é um número antes de chamar a função
                                     if (typeof id === 'number') {
                                         handleDeleteFileOnVistoria(id);
                                     }
@@ -270,7 +270,6 @@ export default function DetalhesVistorias(props: any) {
                         >
                             Sim
                         </Button>
-
                         <Button
                             variant="outlined"
                             color="primary"
@@ -289,7 +288,7 @@ export default function DetalhesVistorias(props: any) {
                         <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
                                 <FormControl sx={{ width: '100%' }} error={Boolean(errors.processoId)}>
-                                    <FormLabel>ID Processo</FormLabel>
+                                    <FormLabel>SEI Processo</FormLabel>
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="processoId"
                                         control={control}
@@ -308,11 +307,12 @@ export default function DetalhesVistorias(props: any) {
                                     />}
                                 </FormControl>
                                 <FormControl sx={{ width: '100%' }} error={Boolean(errors.imovelId)}>
-                                    <FormLabel>ID imovel</FormLabel>
+                                    <FormLabel>Imóvel</FormLabel>
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="imovelId"
                                         control={control}
                                         defaultValue={imovelId}
+                                        // disabled
                                         render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input
