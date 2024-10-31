@@ -116,7 +116,7 @@ export const getOneProcesso = async (id: string): Promise<ProcessoResponseDTO> =
       'Authorization': `Bearer ${session?.access_token}`
     }
   });
-  if (response.status != 200) throw new Error('erro ao tentar buscar o cadastro');
+  if (response.status != 200) throw new Error('erro ao tentar buscar o processo');
   const data: ProcessoResponseDTO = await response.json();
   return data;
 };

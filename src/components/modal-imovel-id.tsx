@@ -15,9 +15,11 @@ import { getAllNoPagProspeccoes } from '@/shared/services/prospeccoes/prospeccoe
 import { useRouter } from 'next/navigation';
 import { Typography } from '@mui/material';
 import { InfoOutlined } from '@mui/icons-material';
+import { ImovelResponseDto } from '@/types/cadastros/cadastros.dto';
 
 export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpen: Function }) {
   const [ imoveisLabel, setImoveisLabel ] = React.useState<any>();
+  const [ imovel, setImovel ] = React.useState<ImovelResponseDto | null>();
   const [ imovelId, setImovelId ] = React.useState<number | null>();
   const [ loading, setLoading ] = React.useState<boolean>(false);
   const [ errror, setError ] = React.useState<boolean>(false);
@@ -29,7 +31,7 @@ export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpe
       getAllNoPagProspeccoes().then(r => {
         const lbl: any = [];
         r.forEach(r => {
-          lbl.push({ label: r.enderecoLogradouro + ', ' + r.enderecoNumero, value: r.id });
+          lbl.push({ label: r.enderecoLogradouro + ', ' + r.enderecoNumero, value: r.id, imovel: r });
         });
         setImoveisLabel(lbl);
         setLoading(false);
@@ -63,8 +65,8 @@ export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpe
                     options={imoveisLabel}
                     onChange={(e: any) => {
                       imoveisLabel[e.target.value]?.value 
-                      ? setImovelId(imoveisLabel[e.target.value].value)
-                      : setImovelId(null);
+                      ? setImovel(imoveisLabel[e.target.value].imovel)
+                      : setImovel(null);
                       setError(false);
                     }}
                   />
@@ -83,11 +85,11 @@ export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpe
                 type="submit" 
                 onClick={(e) => {
                   e.preventDefault();
-                  if (!imovelId) {
+                  if (!imovel) {
                     setError(true);
                     return
                   };
-                  router.push('/vistoria/detalhes' + `?imovelId=${imovelId}`);
+                  router.push('/vistoria/detalhes' + `?imovelId=${imovel?.id}`);
                 }}
               >
                 Associar

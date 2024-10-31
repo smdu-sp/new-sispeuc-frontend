@@ -1,3 +1,5 @@
+import { boolean } from "zod"
+
 export interface ProspeccoesRequestDTO {
   seiId: number,
   sqlId: number,
@@ -68,7 +70,12 @@ export interface ProspeccoesResponseDTO {
   decretoTipo: string,
   tombamentoCompresp: string,
   tombamentoCondephat: string,
-  tombamentoIphan: string
+  tombamentoIphan: string,
+  usuarioId: string,
+  criadoEm: Date,
+  atualizadoEm: Date,
+  deletado: boolean,
+  imovelProcessoId: number
 }
 
 export interface ProspeccoesQuantificarResponseDTO {

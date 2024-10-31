@@ -82,7 +82,7 @@ export const getOneProspeccao = async (id: string): Promise<ProspeccoesResponseD
       'Authorization': `Bearer ${session?.access_token}`
     }
   });
-  // if (response.status != 200) throw new Error('erro ao tentar buscar a prospecção');
+  if (response.status != 200) throw new Error('erro ao tentar buscar a prospecção');
   const data: ProspeccoesResponseDTO = await response.json();
   return data;
 };

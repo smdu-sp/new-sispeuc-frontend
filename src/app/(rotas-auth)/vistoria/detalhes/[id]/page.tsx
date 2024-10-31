@@ -19,8 +19,10 @@ import * as vistoriasServices from "@/shared/services/vistorias/vistoria.service
 import VistoriaFilesCarousel from "@/components/VistoriaFilesCarousel";
 import { VistoriaAssetDto, VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
 import { AlertsContext } from "@/providers/alertsProvider";
-import { getOneProspeccao } from "@/shared/services/prospeccoes/prospeccoes.service";
 import { getOneProcesso } from "@/shared/services/cadastros/cadastros.service";
+import { ProcessoResponseDTO } from "@/types/cadastros/cadastros.dto";
+import { getOneProspeccao } from "@/shared/services/prospeccoes/prospeccoes.service";
+import { ProspeccoesResponseDTO } from "@/types/prospeccoes/prospeccoes.dto";
 
 const schema = object({
     processoId: string(),
@@ -63,10 +65,10 @@ const VisuallyHiddenInput = styled('input')`
 export default function DetalhesVistorias(props: any) {
     const [loading, setLoading] = useState<boolean>();
     const [gettedObject, setGettedObject] = useState<boolean>();
-    const [processoId, setProcesso] = useState('');
+    const [processoId, setProcessoId] = useState('');
     const [imovelId, setIdImovel] = useState('');
-    const [imovel, setImovel] = useState();
-    const [processo, setProcessoA] = useState();
+    const [ sei, setSei ] = useState<string>('');
+    const [imovel, setImovel] = useState<ProspeccoesResponseDTO>();
     const [tipoVistoria, setTipoVistoria] = useState('');
     const [tipoTipologia, setTipoTipologia] = useState('');
     const [tipoUso, setTipoUso] = useState('');
@@ -98,17 +100,30 @@ export default function DetalhesVistorias(props: any) {
     const theme = useTheme();
     const { setAlert } = useContext(AlertsContext);
 
-    const handleImovelId = () => {
-        setIdImovel(window.location.href.split('?')[1].split('=')[1]);
-        window.history.replaceState({}, '', `${window.location.pathname}`);
-    };
-
     useEffect(() => {
         id && !gettedObject ? getById() : setCarregando(false);
         window.location.href.split('?')[1]?.split('=')[0]
             && (window.location.href.split('?')[1].split('=')[0] === 'imovelId')
             ? handleImovelId() : null;
     }, []);
+
+    const getProcesso = async (id: string) => {
+        const processo = await getOneProcesso(id);
+        setSei(processo.autuacaoSei);
+        setProcessoId('' + processo.id);
+    }
+
+    const getImovel = async (id: string) => {
+        const imovel: ProspeccoesResponseDTO = await getOneProspeccao(id);
+        setImovel(imovel);
+        await getProcesso(''+ imovel.imovelProcessoId);
+    };
+
+    const handleImovelId = async () => {
+        setIdImovel(window.location.href.split('?')[1].split('=')[1]);
+        await getImovel(window.location.href.split('?')[1].split('=')[1]);
+        window.history.replaceState({}, '', `${window.location.pathname}`);
+    };
 
     const {
         control,
@@ -149,7 +164,7 @@ export default function DetalhesVistorias(props: any) {
                 if (v) {
                     setCarregando(true);
                     setGettedObject(false);
-                    setProcesso(v.processoId);
+                    setProcessoId(v.processoId);
                     setIdImovel(v.imovelId);
                     setTipoVistoria(v.tipoVistoria);
                     setTipoTipologia(v.tipoTipologia);
@@ -211,6 +226,7 @@ export default function DetalhesVistorias(props: any) {
                     if (v) router.push('/vistoria?att=0');
                 });
         } else {
+            // formData.set('processoId', )
             await vistoriasServices.createVistoria(formData)
                 .then((v) => {
                     setLoading(false);
@@ -292,10 +308,11 @@ export default function DetalhesVistorias(props: any) {
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="processoId"
                                         control={control}
-                                        defaultValue={processoId}
-                                        render={({ field: { ref, ...field } }) => {
+                                        render={({ field: { ref, value, ...field } }) => {
                                             return (<>
                                                 <Input
+                                                    readOnly
+                                                    value={sei}
                                                     error={Boolean(errors.processoId)}
                                                     {...field}
                                                 />
@@ -312,10 +329,10 @@ export default function DetalhesVistorias(props: any) {
                                         name="imovelId"
                                         control={control}
                                         defaultValue={imovelId}
-                                        // disabled
                                         render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input
+                                                    readOnly
                                                     error={Boolean(errors.imovelId)}
                                                     {...field}
                                                 />
