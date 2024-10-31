@@ -226,7 +226,7 @@ export default function DetalhesVistorias(props: any) {
                     if (v) router.push('/vistoria?att=0');
                 });
         } else {
-            // formData.set('processoId', )
+            formData.set('processoId', processoId.toString());
             await vistoriasServices.createVistoria(formData)
                 .then((v) => {
                     setLoading(false);
