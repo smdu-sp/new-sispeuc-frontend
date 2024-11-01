@@ -311,8 +311,8 @@ export default function DetalhesVistorias(props: any) {
                                         render={({ field: { ref, value, ...field } }) => {
                                             return (<>
                                                 <Input
-                                                    readOnly
-                                                    value={sei}
+                                                    // readOnly
+                                                    value={processoId}
                                                     error={Boolean(errors.processoId)}
                                                     {...field}
                                                 />
@@ -332,7 +332,7 @@ export default function DetalhesVistorias(props: any) {
                                         render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input
-                                                    readOnly
+                                                    // readOnly
                                                     error={Boolean(errors.imovelId)}
                                                     {...field}
                                                 />
