@@ -607,7 +607,7 @@ export default function DetalhesVistorias(props: any) {
                                     />}
                                 </FormControl>
                                 <FormControl sx={{ width: '100%' }} error={Boolean(errors.usoPodaVegetacao)}>
-                                    <FormLabel>Uso poda Vegertação</FormLabel>
+                                    <FormLabel>Uso poda Vegetação</FormLabel>
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="usoPodaVegetacao"
                                         control={control}

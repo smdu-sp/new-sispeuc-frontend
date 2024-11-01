@@ -160,7 +160,7 @@ export default function Prospeccao() {
       >
         <div>
           <Typography level="title-lg">Deletar Vistoria!</Typography>
-          <Typography sx={{ mt: 1, mb: 2 }} level="title-md">Tem certeza que desseja deletar esta vistoria?</Typography>
+          <Typography sx={{ mt: 1, mb: 2 }} level="title-md">Tem certeza que deseja deletar esta vistoria?</Typography>
           <Stack direction="row" spacing={1}>
             <Button variant="solid" color="primary" onClick={() => confirmaOperacao()}>
               Sim
@@ -231,7 +231,7 @@ export default function Prospeccao() {
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaTotalConstatada(!areaConstruidaTotalConstatada)} checked={areaConstruidaTotalConstatada} label="Area construida constatada" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaLoteTotalConstatada(!areaLoteTotalConstatada)} checked={areaLoteTotalConstatada} label="Lote total constatada" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaCoberturaTotalConstatada(!areaCoberturaTotalConstatada)} checked={areaCoberturaTotalConstatada} label="Cober. total constatada" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setIndiceOcupacaoConstatado(!indiceOcupacaoConstatado)} checked={indiceOcupacaoConstatado} label="Indice Ocupacao" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setIndiceOcupacaoConstatado(!indiceOcupacaoConstatado)} checked={indiceOcupacaoConstatado} label="Índice Ocupacao" /></MenuList>
                 </Box>
               </Box>
               <ListDivider />
@@ -242,14 +242,14 @@ export default function Prospeccao() {
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setFamiliar(!familiar)} checked={familiar} label="Familiar" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setMultifamiliar(!multifamiliar)} checked={multifamiliar} label="Multi familiar" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setComercio(!comercio)} checked={comercio} label="Comercio" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setServico(!servico)} checked={servico} label="Servico" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setServico(!servico)} checked={servico} label="Serviço" /></MenuList>
                 </Box>
                 <Box>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setIndustria(!industria)} checked={industria} label="Industria" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setUsoFachadaBoaCondicao(!usoFachadaBoaCondicao)} checked={usoFachadaBoaCondicao} label="Fachada boa condição" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setUsoEsquadriaBoaCondicao(!usoEsquadriaBoaCondicao)} checked={usoEsquadriaBoaCondicao} label="Esquadria boa condição" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setUsoPodaVegetacao(!usoPodaVegetacao)} checked={usoPodaVegetacao} label="Poda Vegetação" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaNaoComputavel(!areaConstruidaNaoComputavel)} checked={areaConstruidaNaoComputavel} label="Area construida não computada" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaNaoComputavel(!areaConstruidaNaoComputavel)} checked={areaConstruidaNaoComputavel} label="Area construída não computada" /></MenuList>
                 </Box>
               </Box>
             </Menu>
@@ -265,10 +265,10 @@ export default function Prospeccao() {
               {tipologia ? <th style={{ backgroundColor: backgroudLevel1 }}>Tipologia</th> : null}
               {tipoUso ? <th style={{ backgroundColor: backgroudLevel1 }}>Tipo uso</th> : null}
               {dataVistoria ? <th style={{ backgroundColor: backgroudLevel1 }}>Data vistoria</th> : null}
-              {areaConstruidaTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Area construida constatada</th> : null}
+              {areaConstruidaTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Area construída constatada</th> : null}
               {areaLoteTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Lote total constatada</th> : null}
               {areaCoberturaTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Cober. total constatada</th> : null}
-              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: backgroudLevel1 }}>Indice Ocupacao</th> : null}
+              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: backgroudLevel1 }}>Índice Ocupacao</th> : null}
               <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
               <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
             </tr>
@@ -320,12 +320,12 @@ export default function Prospeccao() {
                             {familiar ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Familiar</th> : null}
                             {multifamiliar ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Mult. familiar</th> : null}
                             {comercio ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Comercio</th> : null}
-                            {servico ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Servico</th> : null}
+                            {servico ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Serviço</th> : null}
                             {industria ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Industria</th> : null}
-                            {usoFachadaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Fach boa condição</th> : null}
-                            {usoEsquadriaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Esqd boa condição</th> : null}
+                            {usoFachadaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Fachada boa condição</th> : null}
+                            {usoEsquadriaBoaCondicao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Esqd. boa condição</th> : null}
                             {usoPodaVegetacao ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Poda vegetação</th> : null}
-                            {areaConstruidaNaoComputavel ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Area construida não computada</th> : null}
+                            {areaConstruidaNaoComputavel ? <th style={{ backgroundColor: 'transparent', borderBottomColor: 'transparent' }}>Area construída não computada</th> : null}
                           </tr>
                         </thead>
                         <tbody>

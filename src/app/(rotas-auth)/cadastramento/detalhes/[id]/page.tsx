@@ -304,7 +304,7 @@ export default function DetalhesPropriedade(props: any) {
                                 </Stack>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.imovelContiguidade)}>
-                                        <FormLabel>Imóvel Contibuidade</FormLabel>
+                                        <FormLabel>Imóvel Contiguidade</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="imovelContiguidade"
                                             control={controlProcesso}
@@ -674,7 +674,7 @@ export default function DetalhesPropriedade(props: any) {
                                                         onChange={(_, value) => field.onChange(value)}
                                                     >
                                                         <Option value={''}></Option>
-                                                        <Option value={'tatuape'}>Tatuape</Option>
+                                                        <Option value={'tatuape'}>Tatuapé</Option>
                                                         <Option value={'NC'}>NC</Option>
                                                     </Select>
                                                     {errorsImovel.enderecoSubprefeitura && <FormHelperText>

@@ -163,7 +163,7 @@ export default function Prospeccao() {
       >
         <div>
           <Typography level="title-lg">Deletar Vistoria!</Typography>
-          <Typography sx={{ mt: 1, mb: 2 }} level="title-md">Tem certeza que desseja deletar esta vistoria?</Typography>
+          <Typography sx={{ mt: 1, mb: 2 }} level="title-md">Tem certeza que deseja deletar esta vistoria?</Typography>
           <Stack direction="row" spacing={1}>
             <Button variant="solid" color="primary" onClick={() => confirmaOperacao()}>
               Sim
@@ -220,13 +220,13 @@ export default function Prospeccao() {
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box sx={{ width: '50%' }}>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAutuacaoSei(!autuacaoSei)} checked={autuacaoSei} label="Autuação SEI" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setImovelContiguidade(!imovelContiguidade)} checked={imovelContiguidade} label="Imovel contiguidade" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaTotal(!areaConstruidaTotal)} checked={areaConstruidaTotal} label="Area construida total" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setImovelContiguidade(!imovelContiguidade)} checked={imovelContiguidade} label="Imóvel contiguidade" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaConstruidaTotal(!areaConstruidaTotal)} checked={areaConstruidaTotal} label="Area construída total" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setAreaLoteTotal(!areaLoteTotal)} checked={areaLoteTotal} label="Area lote total" /></MenuList>
                 </Box>
                 <Box sx={{ width: '50%' }}>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProspeccaoTipologia(!prospeccaoTipologia)} checked={prospeccaoTipologia} label="Tipologia prospecção" /></MenuList>
-                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProspeccaoData(!prospeccaoData)} checked={prospeccaoData} label="Data prospeccão" /></MenuList>
+                  <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProspeccaoData(!prospeccaoData)} checked={prospeccaoData} label="Data prospecção" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setEstado(!estado)} checked={estado} label="Estado" /></MenuList>
                   <MenuList sx={{ px: 2 }}><Checkbox onChange={() => setProspeccaoOrigem(!prospeccaoOrigem)} checked={prospeccaoOrigem} label="Origem prospeccao" /></MenuList>
                 </Box>
@@ -277,13 +277,13 @@ export default function Prospeccao() {
           <thead>
             <tr>
               <th style={{ backgroundColor: backgroudLevel1 }}>ID</th>
-              {autuacaoSei ? <th style={{ backgroundColor: backgroudLevel1 }}>Atuação Sei</th> : null}
-              {imovelContiguidade ? <th style={{ backgroundColor: backgroudLevel1 }}>Imovel Contiguidade</th> : null}
+              {autuacaoSei ? <th style={{ backgroundColor: backgroudLevel1 }}>Autuação Sei</th> : null}
+              {imovelContiguidade ? <th style={{ backgroundColor: backgroudLevel1 }}>Imóvel Contiguidade</th> : null}
               {areaConstruidaTotal ? <th style={{ backgroundColor: backgroudLevel1 }}>Area Total Construida</th> : null}
               {areaLoteTotal ? <th style={{ backgroundColor: backgroudLevel1 }}>Area Lote Total</th> : null}
-              {prospeccaoOrigem ? <th style={{ backgroundColor: backgroudLevel1 }}>Origem prospequição</th> : null}
+              {prospeccaoOrigem ? <th style={{ backgroundColor: backgroudLevel1 }}>Origem prospecção</th> : null}
               {prospeccaoTipologia ? <th style={{ backgroundColor: backgroudLevel1 }}>Prospecção Tipologia</th> : null}
-              {prospeccaoData ? <th style={{ backgroundColor: backgroudLevel1 }}>Prospeccão Data</th> : null}
+              {prospeccaoData ? <th style={{ backgroundColor: backgroudLevel1 }}>Prospecção Data</th> : null}
               {estado ? <th style={{ backgroundColor: backgroudLevel1 }}>Estado</th> : null}
               <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
               <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
@@ -345,7 +345,7 @@ export default function Prospeccao() {
                   <Sheet variant="soft" sx={{ p: 1.6, height: '100%', width: tableSize }}>
                     <Box sx={{ bgcolor: 'background.body', p: 1, borderRadius: 10, height: '100%' }}>
                       <Typography sx={{ fontWeight: 900, fontSize: '14px', lineHeight: '22px', pb: 1, pl: 1 }}>
-                        Imovel | Imoves vinculados
+                        Imóvel | Imoves vinculados
                       </Typography>
                       <Table >
                         <thead>
