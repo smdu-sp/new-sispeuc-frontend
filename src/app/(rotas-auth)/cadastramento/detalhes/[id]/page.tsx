@@ -332,7 +332,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.areaConstruidaTotal)}>
-                                        <FormLabel>Area Total Construida</FormLabel>
+                                        <FormLabel>Área Total Construida</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="areaConstruidaTotal"
                                             control={controlProcesso}
@@ -362,7 +362,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsProcesso.areaLoteTotal)}>
-                                        <FormLabel>Area lote total</FormLabel>
+                                        <FormLabel>Área lote total</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="areaLoteTotal"
                                             control={controlProcesso}
@@ -480,7 +480,7 @@ export default function DetalhesPropriedade(props: any) {
                             onClick={() => { setExibirImovel(!exibirImovel) }}
                             sx={{ bgcolor: 'transparent', '&:hover': { bgcolor: 'transparent' }, color: 'text.primary' }}
                             startDecorator={!exibirImovel ? <AddIcon sx={{ height: 20, width: 20 }} /> : <RemoveIcon sx={{ height: 20, width: 20 }} />}>
-                            Inserir Imovel
+                            Inserir Imóvel
                         </Button>
                     </Box>
                 </form>
@@ -534,7 +534,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                     <FormControl sx={{ width: '10%' }} error={Boolean(errorsImovel.enderecoNumero)}>
-                                        <FormLabel>Numero</FormLabel>
+                                        <FormLabel>Número</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="enderecoNumero"
                                             control={controlImovel}
@@ -601,7 +601,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoReferencia)}>
-                                        <FormLabel>Referencia</FormLabel>
+                                        <FormLabel>Referência</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="enderecoReferencia"
                                             control={controlImovel}
@@ -716,7 +716,7 @@ export default function DetalhesPropriedade(props: any) {
                                 </Stack>
                                 <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoMacroarea)}>
-                                        <FormLabel>Macroarea</FormLabel>
+                                        <FormLabel>Macroárea</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="enderecoMacroarea"
                                             control={controlImovel}
@@ -739,7 +739,7 @@ export default function DetalhesPropriedade(props: any) {
                                         />}
                                     </FormControl>
                                     <FormControl sx={{ width: '100%' }} error={Boolean(errorsImovel.enderecoMacroareaSigla)}>
-                                        <FormLabel>Macroarea Sigla</FormLabel>
+                                        <FormLabel>Macroárea Sigla</FormLabel>
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="enderecoMacroareaSigla"
                                             control={controlImovel}
