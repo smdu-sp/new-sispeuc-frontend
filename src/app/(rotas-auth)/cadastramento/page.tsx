@@ -129,6 +129,8 @@ export default function Cadastramento() {
     }
   }
 
+
+
   useEffect(() => {
     getProcessos();
     notificacao();
@@ -298,7 +300,7 @@ export default function Cadastramento() {
                     {imovelContiguidade ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.imovelContiguidade ? 'Contiguidade' : 'Não Contiguidade'}</td> : null}
                     {areaConstruidaTotal ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.areaConstruidaTotal}</td> : null}
                     {areaLoteTotal ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.areaLoteTotal}</td> : null}
-                    {prospeccaoOrigem ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.prospeccaoOrigem}</td> : null}
+                    {prospeccaoOrigem ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.prospeccaoOrigem == 'mapaColaborativo' ? 'Mapa Colaborativo' : row.prospeccaoOrigem}</td> : null}
                     {prospeccaoTipologia ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.prospeccaoTipologia}</td> : null}
                     {prospeccaoData ? <td style={{ backgroundColor: theme.palette.background.surface }}>{new Date(row.prospeccaoData).toLocaleDateString()}</td> : null}
                     {estado ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.estado}</td> : null}

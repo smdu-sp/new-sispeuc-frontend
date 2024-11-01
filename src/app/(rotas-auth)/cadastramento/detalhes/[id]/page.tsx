@@ -41,19 +41,19 @@ const schemaFormProcesso = object({
 });
 
 const schemaFormImovel = object({
-    sqlSetor: z.coerce.number(),
-    sqlQuadra: z.coerce.number(),
-    sqlLote: z.coerce.number(),
-    sqlDigito: z.coerce.number(),
-    sqlPai: z.coerce.number(),
-    sqlFilho: z.coerce.number(),
+    sqlSetor: z.string().min(0, "Campo obrigatório"),
+    sqlQuadra: z.string().min(0, "Campo obrigatório"),
+    sqlLote: z.string().min(0, "Campo obrigatório"),
+    sqlDigito: z.string().min(0, "Campo obrigatório"),
+    sqlPai: z.string().min(0, "Campo obrigatório"),
+    sqlFilho: z.string().min(0, "Campo obrigatório"),
     registroNotasReferencia: string(),
     enderecoLogradouro: string(),
     enderecoNumero: string(),
     enderecoComplemento: string(),
     enderecoReferencia: string(),
     enderecoDistrito: string().min(1, "Selecione o distrito"),
-    enderecoCep: z.string().regex(/^\d{5}-\d{3}$/, 'CEP inválido'),
+    enderecoCep: z.string().min(1, "Selecione o distrito"),
     enderecoSubprefeitura: string(),
     enderecoSubprefeituraSigla: string(),
     enderecoMacroarea: string(),
@@ -88,12 +88,12 @@ export default function DetalhesPropriedade(props: any) {
     const [estado, setEstado] = useState('');
 
     //Dados imoveis
-    const [sqlSetor, setSqlSetor] = useState<number>(0);
-    const [sqlQuadra, setSqlQuadra] = useState<number>(0);
-    const [sqlLote, setSqlLote] = useState<number>(0);
-    const [sqlDigito, setSqlDigito] = useState<number>(0);
-    const [sqlPai, setSqlPai] = useState<number>(0);
-    const [sqlFilho, setSqlFilho] = useState<number>(0);
+    const [sqlSetor, setSqlSetor] = useState<string>('');
+    const [sqlQuadra, setSqlQuadra] = useState<string>('');
+    const [sqlLote, setSqlLote] = useState<string>('');
+    const [sqlDigito, setSqlDigito] = useState<string>('');
+    const [sqlPai, setSqlPai] = useState<string>('');
+    const [sqlFilho, setSqlFilho] = useState<string>('');
     //Endereço
     const [registroNotasReferencia, setRegistroNotasReferencia] = useState('');
     const [enderecoLogradouro, setEnderecoLogradouro] = useState('');
@@ -220,6 +220,12 @@ export default function DetalhesPropriedade(props: any) {
                 imovel: imoveis.map((imovel) => ({
                     ...imovel,
                     enderecoCep: imovel.enderecoCep.replaceAll('-', ''),
+                    sqlSetor: parseInt(imovel.sqlSetor),
+                    sqlQuadra: parseInt(imovel.sqlQuadra),
+                    sqlLote: parseInt(imovel.sqlLote),
+                    sqlDigito: parseInt(imovel.sqlDigito),
+                    sqlPai: parseInt(imovel.sqlPai.replaceAll('-', '').replaceAll('.', '')),                    
+                    sqlFilho: parseInt(imovel.sqlFilho.replaceAll('-', '').replaceAll('.', '')),
                     usuarioId: '55d62d48-85e9-4bb3-8339-8eaa78d63def',
                 }))
             }
@@ -770,14 +776,14 @@ export default function DetalhesPropriedade(props: any) {
                                             name="sqlSetor"
                                             control={controlImovel}
                                             defaultValue={sqlSetor}
-                                            render={({ field: { ref, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        type='number'
+                                                        type='text'
                                                         slotProps={{
                                                             input: {
-                                                                min: 0
-                                                            },
+                                                                maxLength: 3
+                                                            }
                                                         }}
                                                         error={Boolean(errorsImovel.sqlSetor)}
                                                         {...field}
@@ -795,14 +801,14 @@ export default function DetalhesPropriedade(props: any) {
                                             name="sqlQuadra"
                                             control={controlImovel}
                                             defaultValue={sqlQuadra}
-                                            render={({ field: { ref, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        type='number'
+                                                        type='text'
                                                         slotProps={{
                                                             input: {
-                                                                min: 0
-                                                            },
+                                                                maxLength: 3
+                                                            }
                                                         }}
                                                         error={Boolean(errorsImovel.sqlQuadra)}
                                                         {...field}
@@ -820,14 +826,14 @@ export default function DetalhesPropriedade(props: any) {
                                             name="sqlLote"
                                             control={controlImovel}
                                             defaultValue={sqlLote}
-                                            render={({ field: { ref, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        type='number'
+                                                        type='text'
                                                         slotProps={{
                                                             input: {
-                                                                min: 0
-                                                            },
+                                                                maxLength: 4
+                                                            }
                                                         }}
                                                         error={Boolean(errorsImovel.sqlLote)}
                                                         {...field}
@@ -847,16 +853,16 @@ export default function DetalhesPropriedade(props: any) {
                                             name="sqlDigito"
                                             control={controlImovel}
                                             defaultValue={sqlDigito}
-                                            render={({ field: { ref, value, ...field } }) => {
+                                            render={({ field: { ref, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        type='number'
-                                                        error={Boolean(errorsImovel.sqlDigito)}
+                                                        type='text'
                                                         slotProps={{
                                                             input: {
-                                                                min: 0
-                                                            },
+                                                                maxLength: 1
+                                                            }
                                                         }}
+                                                        error={Boolean(errorsImovel.sqlDigito)}
                                                         {...field}
                                                     />
                                                     {errorsImovel.sqlDigito && <FormHelperText color="danger">
@@ -871,16 +877,12 @@ export default function DetalhesPropriedade(props: any) {
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="sqlPai"
                                             control={controlImovel}
-                                            defaultValue={sqlPai}
-                                            render={({ field: { ref, value, ...field } }) => {
+                                            defaultValue={comum.formataSetorQuadraLote(sqlPai)}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        type='number'
-                                                        slotProps={{
-                                                            input: {
-                                                                min: 0
-                                                            },
-                                                        }}
+                                                        onChange={(e) => { setSqlPai(e.target.value); }}
+                                                        value={comum.formataSetorQuadraLote(sqlPai)}
                                                         error={Boolean(errorsImovel.sqlPai)}
                                                         {...field}
                                                     />
@@ -896,11 +898,13 @@ export default function DetalhesPropriedade(props: any) {
                                         {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                             name="sqlFilho"
                                             control={controlImovel}
-                                            defaultValue={sqlFilho}
-                                            render={({ field: { ref, value, ...field } }) => {
+                                            defaultValue={comum.formataSetorQuadraLote(sqlFilho)}
+                                            render={({ field: { ref, onChange, value, ...field } }) => {
                                                 return (<>
                                                     <Input
-                                                        type='number'
+                                                        type='text'
+                                                        onChange={(e) => { setSqlFilho(e.target.value); }}
+                                                        value={comum.formataSetorQuadraLote(sqlFilho)}
                                                         slotProps={{
                                                             input: {
                                                                 min: 0
