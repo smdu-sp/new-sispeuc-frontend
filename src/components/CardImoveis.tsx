@@ -33,7 +33,7 @@ export default function CardImoveis(props: IPropsCard) {
             <Typography level="body-md" fontWeight={600}>
                 {props.titulo}
             </Typography>
-            <Button sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}>
+            <Button sx={{ bgcolor: 'text.primary', color: 'background.body', '&:hover': { bgcolor: 'text.primary', color: 'background.body' } }}>
                 {props.botao}
             </Button>
         </Card>

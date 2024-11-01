@@ -27,7 +27,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import { set } from 'zod';
 
-export default function Prospeccao() {
+export default function Cadastramento() {
   const [autuacaoSei, setAutuacaoSei] = useState<boolean>(true);
   const [imovelContiguidade, setImovelContiguidade] = useState<boolean>(true);
   const [areaConstruidaTotal, setAreaConstruidaTotal] = useState<boolean>(true);
@@ -73,7 +73,6 @@ export default function Prospeccao() {
   const [confirma, setConfirma] = useState(false)
   const [id, setId] = useState('')
   const theme = useTheme();
-  const backgroudLevel1 = theme.palette.background.level1;
   const searchParams = useSearchParams();
   const [pagina, setPagina] = useState(searchParams.get('pagina') ? Number(searchParams.get('pagina')) : 1);
   const [limite, setLimite] = useState(searchParams.get('limite') ? Number(searchParams.get('limite')) : 10);
@@ -181,7 +180,7 @@ export default function Prospeccao() {
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', gap: 3, mb: 5 }}>
         <Button
           onClick={() => { router.push('/cadastramento/detalhes') }}
-          sx={{ bgcolor: theme.palette.text.primary, color: 'background.body', '&:hover': { bgcolor: theme.palette.text.primary, color: 'background.body' } }}
+          sx={{ bgcolor: 'text.primary', color: 'background.body', '&:hover': { bgcolor: 'text.primary', color: 'background.body' } }}
           startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}
         >
           Criar Cadastro
@@ -273,20 +272,20 @@ export default function Prospeccao() {
             </Menu>
           </Dropdown>
         </Box>
-        <Table aria-label="collapsible table" ref={tableRef}>
+        <Table sx={{ bgcolor: 'background.level1' }} aria-label="collapsible table" ref={tableRef}>
           <thead>
             <tr>
-              <th style={{ backgroundColor: backgroudLevel1 }}>ID</th>
-              {autuacaoSei ? <th style={{ backgroundColor: backgroudLevel1 }}>Autuação Sei</th> : null}
-              {imovelContiguidade ? <th style={{ backgroundColor: backgroudLevel1 }}>Imóvel Contiguidade</th> : null}
-              {areaConstruidaTotal ? <th style={{ backgroundColor: backgroudLevel1 }}>Area Total Construida</th> : null}
-              {areaLoteTotal ? <th style={{ backgroundColor: backgroudLevel1 }}>Area Lote Total</th> : null}
-              {prospeccaoOrigem ? <th style={{ backgroundColor: backgroudLevel1 }}>Origem prospecção</th> : null}
-              {prospeccaoTipologia ? <th style={{ backgroundColor: backgroudLevel1 }}>Prospecção Tipologia</th> : null}
-              {prospeccaoData ? <th style={{ backgroundColor: backgroudLevel1 }}>Prospecção Data</th> : null}
-              {estado ? <th style={{ backgroundColor: backgroudLevel1 }}>Estado</th> : null}
-              <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
-              <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
+              <th style={{ backgroundColor: 'transparent', width: '5%' }}>ID</th>
+              {autuacaoSei ? <th style={{ backgroundColor: 'transparent' }}>Autuação Sei</th> : null}
+              {imovelContiguidade ? <th style={{ backgroundColor: 'transparent' }}>Imóvel Contiguidade</th> : null}
+              {areaConstruidaTotal ? <th style={{ backgroundColor: 'transparent' }}>Area Total Construida</th> : null}
+              {areaLoteTotal ? <th style={{ backgroundColor: 'transparent' }}>Area Lote Total</th> : null}
+              {prospeccaoOrigem ? <th style={{ backgroundColor: 'transparent' }}>Origem prospecção</th> : null}
+              {prospeccaoTipologia ? <th style={{ backgroundColor: 'transparent' }}>Prospecção Tipologia</th> : null}
+              {prospeccaoData ? <th style={{ backgroundColor: 'transparent' }}>Prospecção Data</th> : null}
+              {estado ? <th style={{ backgroundColor: 'transparent' }}>Estado</th> : null}
+              <th style={{ backgroundColor: 'transparent', width: '4%' }} aria-label="empty" />
+              <th style={{ backgroundColor: 'transparent', width: '4%' }} aria-label="empty" />
             </tr>
           </thead>
           <tbody>
@@ -294,16 +293,16 @@ export default function Prospeccao() {
               <React.Fragment key={row.id}>
                 <Tooltip title={row.autuacaoSei} color="neutral" placement="bottom" variant={'outlined'}>
                   <tr>
-                    <td style={{ cursor: 'pointer' }}># {row.id}</td>
-                    {autuacaoSei ? <td style={{ cursor: 'pointer' }}>{row.autuacaoSei}</td> : null}
-                    {imovelContiguidade ? <td style={{ cursor: 'pointer' }}>{row.imovelContiguidade ? 'Contiguidade' : 'Não Contiguidade'}</td> : null}
-                    {areaConstruidaTotal ? <td style={{ cursor: 'pointer' }}>{row.areaConstruidaTotal}</td> : null}
-                    {areaLoteTotal ? <td style={{ cursor: 'pointer' }}>{row.areaLoteTotal}</td> : null}
-                    {prospeccaoOrigem ? <td style={{ cursor: 'pointer' }}>{row.prospeccaoOrigem}</td> : null}
-                    {prospeccaoTipologia ? <td style={{ cursor: 'pointer' }}>{row.prospeccaoTipologia}</td> : null}
-                    {prospeccaoData ? <td style={{ cursor: 'pointer' }}>{new Date(row.prospeccaoData).toLocaleDateString()}</td> : null}
-                    {estado ? <td style={{ cursor: 'pointer' }}>{row.estado}</td> : null}
-                    <td>
+                    <td style={{ backgroundColor: theme.palette.background.surface }}># {row.id}</td>
+                    {autuacaoSei ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.autuacaoSei}</td> : null}
+                    {imovelContiguidade ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.imovelContiguidade ? 'Contiguidade' : 'Não Contiguidade'}</td> : null}
+                    {areaConstruidaTotal ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.areaConstruidaTotal}</td> : null}
+                    {areaLoteTotal ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.areaLoteTotal}</td> : null}
+                    {prospeccaoOrigem ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.prospeccaoOrigem}</td> : null}
+                    {prospeccaoTipologia ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.prospeccaoTipologia}</td> : null}
+                    {prospeccaoData ? <td style={{ backgroundColor: theme.palette.background.surface }}>{new Date(row.prospeccaoData).toLocaleDateString()}</td> : null}
+                    {estado ? <td style={{ backgroundColor: theme.palette.background.surface }}>{row.estado}</td> : null}
+                    <td style={{ backgroundColor: theme.palette.background.surface }}>
                       <IconButton
                         aria-label="expand row"
                         variant="plain"
@@ -314,7 +313,7 @@ export default function Prospeccao() {
                         <KeyboardArrowUpIcon sx={{ transition: '0.2s', transform: openRows[row.id] ? 'rotate(0deg)' : 'rotate(180deg)' }} />
                       </IconButton>
                     </td>
-                    <td>
+                    <td style={{ backgroundColor: theme.palette.background.surface }}>
                       <Dropdown>
                         <MenuButton
                           slots={{ root: IconButton }}
@@ -350,37 +349,37 @@ export default function Prospeccao() {
                       <Table >
                         <thead>
                           <tr>
-                            <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>ID</th>
-                            {sqlSetor ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Setor</th> : null}
-                            {sqlQuadra ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Quadra</th> : null}
-                            {sqlLote ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Lote</th> : null}
-                            {sqlDigito ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL digito</th> : null}
-                            {sqlPai ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Pai</th> : null}
-                            {sqlFilho ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>SQL Filho</th> : null}
-                            {registroNotasReferencia ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Registro Notas Referencia</th> : null}
-                            {enderecoLogradouro ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Logradouro</th> : null}
-                            {enderecoNumero ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Numero</th> : null}
-                            {enderecoComplemento ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Complemento</th> : null}
-                            {enderecoReferencia ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Referencia</th> : null}
-                            {enderecoDistrito ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Distrito</th> : null}
-                            {enderecoCep ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>CEP</th> : null}
-                            {enderecoSubprefeitura ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Subprefeitura</th> : null}
-                            {enderecoSubprefeituraSigla ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Subprefeitura sigla</th> : null}
-                            {enderecoMacroarea ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Macroarea</th> : null}
-                            {enderecoMacroareaSigla ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Macroarea sigla</th> : null}
-                            {enderecoZona ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Zona</th> : null}
-                            {enderecoZonaSigla ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Zona sigla</th> : null}
-                            {areaConstruidaTotalRegistrada ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Area Construida Total Registrada</th> : null}
-                            {areaLoteTotalRegistrada ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Area Lote Total Registrada</th> : null}
-                            {areaCoeficienteAproveitamento ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Area Coeficiente Aproveitamento</th> : null}
-                            {areaCoeficienteAproveitamentoMinimo ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Area Coeficiente Aproveitamento Minimo</th> : null}
-                            {geoEpsg ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Geo EPSG</th> : null}
-                            {decretoNumero ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Numero Decreto</th> : null}
-                            {decretoTipo ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Tipo Decreto</th> : null}
-                            {tombamentoCompresp ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Tombamento Compresp</th> : null}
-                            {tombamentoCondephat ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Tombamento Condephat</th> : null}
-                            {tombamentoIphan ? <th style={{ backgroundColor: backgroudLevel1, borderBottomColor: 'transparent' }}>Tombamento Iphan</th> : null}
-                            <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
+                            <th style={{ width: '5%', borderBottomColor: 'transparent' }}>ID</th>
+                            {sqlSetor ? <th style={{ borderBottomColor: 'transparent' }}>SQL Setor</th> : null}
+                            {sqlQuadra ? <th style={{ borderBottomColor: 'transparent' }}>SQL Quadra</th> : null}
+                            {sqlLote ? <th style={{ borderBottomColor: 'transparent' }}>SQL Lote</th> : null}
+                            {sqlDigito ? <th style={{ borderBottomColor: 'transparent' }}>SQL digito</th> : null}
+                            {sqlPai ? <th style={{ borderBottomColor: 'transparent' }}>SQL Pai</th> : null}
+                            {sqlFilho ? <th style={{ borderBottomColor: 'transparent' }}>SQL Filho</th> : null}
+                            {registroNotasReferencia ? <th style={{ borderBottomColor: 'transparent' }}>Registro Notas Referencia</th> : null}
+                            {enderecoLogradouro ? <th style={{ borderBottomColor: 'transparent' }}>Logradouro</th> : null}
+                            {enderecoNumero ? <th style={{ borderBottomColor: 'transparent' }}>Numero</th> : null}
+                            {enderecoComplemento ? <th style={{ borderBottomColor: 'transparent' }}>Complemento</th> : null}
+                            {enderecoReferencia ? <th style={{ borderBottomColor: 'transparent' }}>Referencia</th> : null}
+                            {enderecoDistrito ? <th style={{ borderBottomColor: 'transparent' }}>Distrito</th> : null}
+                            {enderecoCep ? <th style={{ borderBottomColor: 'transparent' }}>CEP</th> : null}
+                            {enderecoSubprefeitura ? <th style={{ borderBottomColor: 'transparent' }}>Subprefeitura</th> : null}
+                            {enderecoSubprefeituraSigla ? <th style={{ borderBottomColor: 'transparent' }}>Subprefeitura sigla</th> : null}
+                            {enderecoMacroarea ? <th style={{ borderBottomColor: 'transparent' }}>Macroarea</th> : null}
+                            {enderecoMacroareaSigla ? <th style={{ borderBottomColor: 'transparent' }}>Macroarea sigla</th> : null}
+                            {enderecoZona ? <th style={{ borderBottomColor: 'transparent' }}>Zona</th> : null}
+                            {enderecoZonaSigla ? <th style={{ borderBottomColor: 'transparent' }}>Zona sigla</th> : null}
+                            {areaConstruidaTotalRegistrada ? <th style={{ borderBottomColor: 'transparent' }}>Area Construida Total Registrada</th> : null}
+                            {areaLoteTotalRegistrada ? <th style={{ borderBottomColor: 'transparent' }}>Area Lote Total Registrada</th> : null}
+                            {areaCoeficienteAproveitamento ? <th style={{ borderBottomColor: 'transparent' }}>Area Coeficiente Aproveitamento</th> : null}
+                            {areaCoeficienteAproveitamentoMinimo ? <th style={{ borderBottomColor: 'transparent' }}>Area Coeficiente Aproveitamento Minimo</th> : null}
+                            {geoEpsg ? <th style={{ borderBottomColor: 'transparent' }}>Geo EPSG</th> : null}
+                            {decretoNumero ? <th style={{ borderBottomColor: 'transparent' }}>Numero Decreto</th> : null}
+                            {decretoTipo ? <th style={{ borderBottomColor: 'transparent' }}>Tipo Decreto</th> : null}
+                            {tombamentoCompresp ? <th style={{ borderBottomColor: 'transparent' }}>Tombamento Compresp</th> : null}
+                            {tombamentoCondephat ? <th style={{ borderBottomColor: 'transparent' }}>Tombamento Condephat</th> : null}
+                            {tombamentoIphan ? <th style={{ borderBottomColor: 'transparent' }}>Tombamento Iphan</th> : null}
+                            <th style={{ width: '4%', borderBottomColor: 'transparent' }} aria-label="empty" />
                           </tr>
                         </thead>
                         <tbody>
@@ -426,7 +425,7 @@ export default function Prospeccao() {
                 )}
               </React.Fragment>
             )) : <tr style={{ textAlign: 'center', width: tableSize, padding: 1, fontWeight: 'bold' }}>
-              <td style={{ textAlign: 'center', width: tableSize, padding: 1, fontWeight: 'bold' }}>
+              <td colSpan={10} style={{ textAlign: 'center', width: tableSize, padding: 1, fontWeight: 'bold' }}>
                 Nenhum registro encontrado
               </td>
             </tr>}

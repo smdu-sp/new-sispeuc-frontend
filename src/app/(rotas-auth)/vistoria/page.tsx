@@ -144,9 +144,9 @@ export default function Prospeccao() {
       titulo="Vistorias"
       pagina="vistoria"
     >
-      <ModalImovelId 
-        open={openImovel} 
-        setOpen={setOpenImovel} 
+      <ModalImovelId
+        open={openImovel}
+        setOpen={setOpenImovel}
       />
       <Snackbar
         variant="solid"
@@ -178,7 +178,7 @@ export default function Prospeccao() {
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', gap: 3, mb: 5 }}>
         <Button
           onClick={() => setOpenImovel(true)}
-          sx={{ bgcolor: theme.palette.text.primary, color: 'background.body' }}
+          sx={{ bgcolor: 'text.primary', color: 'background.body', '&:hover': { bgcolor: 'text.primary', color: 'background.body' } }}
           startDecorator={<AddIcon sx={{ height: 20, width: 20 }} />}
         >
           Criar vistoria
@@ -255,22 +255,22 @@ export default function Prospeccao() {
             </Menu>
           </Dropdown>
         </Box>
-        <Table aria-label="collapsible table" ref={tableRef}>
+        <Table sx={{ bgcolor: 'background.level1' }} aria-label="collapsible table" ref={tableRef}>
           <thead>
             <tr>
-              <th style={{ backgroundColor: backgroudLevel1 }}>ID</th>
-              {processo ? <th style={{ backgroundColor: backgroudLevel1 }}>Processo</th> : null}
-              {imovel ? <th style={{ backgroundColor: backgroudLevel1 }}>Imovel</th> : null}
-              {tipoVistoria ? <th style={{ backgroundColor: backgroudLevel1 }}>Vistoria</th> : null}
-              {tipologia ? <th style={{ backgroundColor: backgroudLevel1 }}>Tipologia</th> : null}
-              {tipoUso ? <th style={{ backgroundColor: backgroudLevel1 }}>Tipo uso</th> : null}
-              {dataVistoria ? <th style={{ backgroundColor: backgroudLevel1 }}>Data vistoria</th> : null}
-              {areaConstruidaTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Area construída constatada</th> : null}
-              {areaLoteTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Lote total constatada</th> : null}
-              {areaCoberturaTotalConstatada ? <th style={{ backgroundColor: backgroudLevel1 }}>Cober. total constatada</th> : null}
-              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: backgroudLevel1 }}>Índice Ocupacao</th> : null}
-              <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
-              <th style={{ backgroundColor: backgroudLevel1, width: '4%' }} aria-label="empty" />
+              <th style={{ backgroundColor: 'transparent' }}>ID</th>
+              {processo ? <th style={{ backgroundColor: 'transparent' }}>Processo</th> : null}
+              {imovel ? <th style={{ backgroundColor: 'transparent' }}>Imovel</th> : null}
+              {tipoVistoria ? <th style={{ backgroundColor: 'transparent' }}>Vistoria</th> : null}
+              {tipologia ? <th style={{ backgroundColor: 'transparent' }}>Tipologia</th> : null}
+              {tipoUso ? <th style={{ backgroundColor: 'transparent' }}>Tipo uso</th> : null}
+              {dataVistoria ? <th style={{ backgroundColor: 'transparent' }}>Data vistoria</th> : null}
+              {areaConstruidaTotalConstatada ? <th style={{ backgroundColor: 'transparent' }}>Area construída constatada</th> : null}
+              {areaLoteTotalConstatada ? <th style={{ backgroundColor: 'transparent' }}>Lote total constatada</th> : null}
+              {areaCoberturaTotalConstatada ? <th style={{ backgroundColor: 'transparent' }}>Cober. total constatada</th> : null}
+              {indiceOcupacaoConstatado ? <th style={{ backgroundColor: 'transparent' }}>Índice Ocupacao</th> : null}
+              <th style={{ backgroundColor: 'transparent', width: '4%' }} aria-label="empty" />
+              <th style={{ backgroundColor: 'transparent', width: '4%' }} aria-label="empty" />
             </tr>
           </thead>
           <tbody>
@@ -278,18 +278,18 @@ export default function Prospeccao() {
               <React.Fragment key={row.id}>
                 <Tooltip title={row.descricao} color="neutral" placement="bottom" variant={'outlined'}>
                   <tr>
-                    <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}># {row.id}</td>
-                    {processo ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.processoId}</td> : null}
-                    {imovel ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.imovelId}</td> : null}
-                    {tipoVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{vistorias.get(row.tipoVistoria)}</td> : null}
-                    {tipologia ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{tipologias.get(row.tipoTipologia)}</td> : null}
-                    {tipoUso ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{tiposUsos.get(row.tipoUso)}</td> : null}
-                    {dataVistoria ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.dataVistoria).toLocaleDateString()}</td> : null}
-                    {areaConstruidaTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaConstruidaTotalConstatada}</td> : null}
-                    {areaLoteTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaLoteTotalConstatada}</td> : null}
-                    {areaCoberturaTotalConstatada ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaCoberturaTotalConstatada}</td> : null}
-                    {indiceOcupacaoConstatado ? <td style={{ cursor: 'pointer' }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.indiceOcupacaoConstatado}</td> : null}
-                    <td>
+                    <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}># {row.id}</td>
+                    {processo ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.processoId}</td> : null}
+                    {imovel ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.imovelId}</td> : null}
+                    {tipoVistoria ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{vistorias.get(row.tipoVistoria)}</td> : null}
+                    {tipologia ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{tipologias.get(row.tipoTipologia)}</td> : null}
+                    {tipoUso ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{tiposUsos.get(row.tipoUso)}</td> : null}
+                    {dataVistoria ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{new Date(row.dataVistoria).toLocaleDateString()}</td> : null}
+                    {areaConstruidaTotalConstatada ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaConstruidaTotalConstatada}</td> : null}
+                    {areaLoteTotalConstatada ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaLoteTotalConstatada}</td> : null}
+                    {areaCoberturaTotalConstatada ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.areaCoberturaTotalConstatada}</td> : null}
+                    {indiceOcupacaoConstatado ? <td style={{ backgroundColor: theme.palette.background.surface }} onClick={() => { router.push('/vistoria/detalhes/' + row.id) }}>{row.indiceOcupacaoConstatado}</td> : null}
+                    <td style={{ backgroundColor: theme.palette.background.surface }}>
                       <IconButton
                         aria-label="expand row"
                         variant="plain"
@@ -300,7 +300,9 @@ export default function Prospeccao() {
                         <KeyboardArrowUpIcon sx={{ transition: '0.2s', transform: openRows[row.id] ? 'rotate(0deg)' : 'rotate(180deg)' }} />
                       </IconButton>
                     </td>
-                    <td>
+                    <td
+                      style={{ backgroundColor: theme.palette.background.surface }}
+                    >
                       <IconButton size="sm" variant="soft" color="neutral">
                         <DeleteForeverIcon onClick={() => { setId(row.id); setConfirma(true) }} sx={{ color: theme.palette.text.primary, width: 25, height: 25 }} />
                       </IconButton>
@@ -355,7 +357,7 @@ export default function Prospeccao() {
           <Select
             variant='plain'
             value={limite}
-            onChange={(_, value) => {setLimite(value ? parseInt(value.toString()) : 0), getVistorias()}}
+            onChange={(_, value) => { setLimite(value ? parseInt(value.toString()) : 0), getVistorias() }}
           >
             <Option value={10}>10</Option>
             <Option value={20}>20</Option>
@@ -366,8 +368,8 @@ export default function Prospeccao() {
             <IconButton disabled={pagina === 1} onClick={() => setPagina(pagina - 1)}>
               <KeyboardArrowLeftIcon />
             </IconButton>
-            <IconButton  disabled={pagina === Math.ceil(total / limite)} onClick={() => setPagina(pagina + 1)} >
-              <KeyboardArrowRightIcon/>
+            <IconButton disabled={pagina === Math.ceil(total / limite)} onClick={() => setPagina(pagina + 1)} >
+              <KeyboardArrowRightIcon />
             </IconButton>
           </Box>
         </Box>

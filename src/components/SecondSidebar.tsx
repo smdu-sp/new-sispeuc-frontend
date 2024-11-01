@@ -160,14 +160,14 @@ export default function SecondSidebar({
         {/* <Usuario /> */}
         <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
           <IconButton onClick={() => { router.push('/eu') }} sx={{ display: "flex", justifyContent: 'start', alignItems: "center", gap: 1.5, width: "100%" }}>
-            <AccountCircleOutlinedIcon sx={{ color: theme.palette.text.primary }} />
-            <Typography level='body-md' sx={{ color: theme.palette.text.primary }}>
+            <AccountCircleOutlinedIcon sx={{ color: 'text.primary' }} />
+            <Typography level='body-md' sx={{ color: 'text.primary' }}>
               Minha Conta
             </Typography>
           </IconButton>
-          <IconButton onClick={() => setOpen(true)} sx={{ display: "flex", justifyContent: 'start', alignItems: "center", gap: 1.5, width: "100%", mb: 2, color: theme.palette.text.primary }}>
-            <LogoutIcon sx={{ color: theme.palette.text.primary }} />
-            <Typography level='body-md' sx={{ color: theme.palette.text.primary }}>
+          <IconButton onClick={() => setOpen(true)} sx={{ display: "flex", justifyContent: 'start', alignItems: "center", gap: 1.5, width: "100%", mb: 2, color: 'text.primary' }}>
+            <LogoutIcon sx={{ color: 'text.primary' }} />
+            <Typography level='body-md' sx={{ color: 'text.primary' }}>
               Sair
             </Typography>
           </IconButton>
