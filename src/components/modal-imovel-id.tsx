@@ -19,7 +19,7 @@ import { ImovelResponseDto } from '@/types/cadastros/cadastros.dto';
 
 export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpen: Function }) {
   const [ imoveisLabel, setImoveisLabel ] = React.useState<any>();
-  const [ imovel, setImovel ] = React.useState<ImovelResponseDto | null>();
+//   const [ imovel, setImovel ] = React.useState<ImovelResponseDto | null>();
   const [ imovelId, setImovelId ] = React.useState<number | null>();
   const [ loading, setLoading ] = React.useState<boolean>(false);
   const [ errror, setError ] = React.useState<boolean>(false);
@@ -31,8 +31,9 @@ export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpe
       getAllNoPagProspeccoes().then(r => {
         const lbl: any = [];
         r.forEach(r => {
-          lbl.push({ label: r.enderecoLogradouro + ', ' + r.enderecoNumero, value: r.id, imovel: r });
+          lbl.push({ label: r.enderecoLogradouro + ', ' + r.enderecoNumero, value: r.id });
         });
+        console.log(lbl)
         setImoveisLabel(lbl);
         setLoading(false);
       });
@@ -63,10 +64,10 @@ export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpe
                     loading={loading}
                     endDecorator={loading && <CircularProgress size='sm' />}
                     options={imoveisLabel}
-                    onChange={(e: any) => {
-                      imoveisLabel[e.target.value]?.value 
-                      ? setImovel(imoveisLabel[e.target.value].imovel)
-                      : setImovel(null);
+                    onChange={(e: any, selectedOption: any) => { 
+                      selectedOption
+                      ? setImovelId(selectedOption.value)
+                      : setImovelId(null);
                       setError(false);
                     }}
                   />
@@ -85,11 +86,11 @@ export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpe
                 type="submit" 
                 onClick={(e) => {
                   e.preventDefault();
-                  if (!imovel) {
+                  if (!imovelId) {
                     setError(true);
                     return
                   };
-                  router.push('/vistoria/detalhes' + `?imovelId=${imovel?.id}`);
+                  router.push('/vistoria/detalhes' + `?imovelId=${imovelId}`);
                 }}
               >
                 Associar

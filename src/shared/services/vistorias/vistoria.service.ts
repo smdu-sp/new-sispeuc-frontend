@@ -7,7 +7,7 @@ import { VistoriaPaginationDTO, VistoriaResponseDTO } from "@/types/vistorias/vi
 
 const api_url: string = 'http://localhost:3000/vistorias';
 
-export const createVistoria = async (request: FormData): Promise<VistoriaResponseDTO> => {
+export const createVistoria = async (request: FormData) => {
     const session = await getServerSession(authOptions);
     const response: Response = await fetch(`${api_url}/criar-vistoria`, {
         method: 'POST',

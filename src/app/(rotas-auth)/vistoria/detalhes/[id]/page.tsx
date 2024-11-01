@@ -261,7 +261,7 @@ export default function DetalhesVistorias(props: any) {
                     >
                         Tem certeza que deseja deletar o arquivo {" "}
                         {
-                            vistoriaAssets
+                            vistoriaAssets && vistoriaAssets.length != 0
                             && selectedFileIndex !== null
                             && selectedFileIndex !== undefined
                             && vistoriaAssets[selectedFileIndex ? selectedFileIndex : 0].nomeArquivo || ''
