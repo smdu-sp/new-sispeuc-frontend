@@ -15,11 +15,9 @@ import { getAllNoPagProspeccoes } from '@/shared/services/prospeccoes/prospeccoe
 import { useRouter } from 'next/navigation';
 import { Typography } from '@mui/material';
 import { InfoOutlined } from '@mui/icons-material';
-import { ImovelResponseDto } from '@/types/cadastros/cadastros.dto';
 
 export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpen: Function }) {
   const [ imoveisLabel, setImoveisLabel ] = React.useState<any>();
-//   const [ imovel, setImovel ] = React.useState<ImovelResponseDto | null>();
   const [ imovelId, setImovelId ] = React.useState<number | null>();
   const [ loading, setLoading ] = React.useState<boolean>(false);
   const [ errror, setError ] = React.useState<boolean>(false);
@@ -27,17 +25,14 @@ export default function ModalImovelId({ open, setOpen }: { open: boolean, setOpe
 
   React.useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      getAllNoPagProspeccoes().then(r => {
-        const lbl: any = [];
-        r.forEach(r => {
-          lbl.push({ label: r.enderecoLogradouro + ', ' + r.enderecoNumero, value: r.id });
-        });
-        console.log(lbl)
-        setImoveisLabel(lbl);
-        setLoading(false);
+    getAllNoPagProspeccoes().then(r => {
+      const lbl: any = [];
+      r.forEach(r => {
+        lbl.push({ label: r.enderecoLogradouro + ', ' + r.enderecoNumero, value: r.id });
       });
-    }, 5000);
+      setImoveisLabel(lbl);
+      setLoading(false);
+    });
   }, []);
 
   return (

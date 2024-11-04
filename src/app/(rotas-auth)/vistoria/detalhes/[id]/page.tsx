@@ -20,7 +20,6 @@ import VistoriaFilesCarousel from "@/components/VistoriaFilesCarousel";
 import { VistoriaAssetDto, VistoriaResponseDTO } from "@/types/vistorias/vistorias.dto";
 import { AlertsContext } from "@/providers/alertsProvider";
 import { getOneProcesso } from "@/shared/services/cadastros/cadastros.service";
-import { ProcessoResponseDTO } from "@/types/cadastros/cadastros.dto";
 import { getOneProspeccao } from "@/shared/services/prospeccoes/prospeccoes.service";
 import { ProspeccoesResponseDTO } from "@/types/prospeccoes/prospeccoes.dto";
 
@@ -120,8 +119,9 @@ export default function DetalhesVistorias(props: any) {
     };
 
     const handleImovelId = async () => {
-        setIdImovel(window.location.href.split('?')[1].split('=')[1]);
-        await getImovel(window.location.href.split('?')[1].split('=')[1]);
+        const imovelId = window.location.href.split('?')[1].split('=')[1]; 
+        setIdImovel(imovelId);
+        await getImovel(imovelId);
         window.history.replaceState({}, '', `${window.location.pathname}`);
     };
 
@@ -304,15 +304,16 @@ export default function DetalhesVistorias(props: any) {
                         <Box sx={{ padding: '24px', pt: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Stack sx={{ width: '100%', gap: 2 }} direction={{ sm: 'column', md: 'column', lg: 'row', xl: 'row' }}>
                                 <FormControl sx={{ width: '100%' }} error={Boolean(errors.processoId)}>
-                                    <FormLabel>SEI Processo</FormLabel>
+                                    <FormLabel>Número Processo</FormLabel>
                                     {carregando ? <Skeleton variant="text" level="h1" /> : <Controller
                                         name="processoId"
                                         control={control}
                                         render={({ field: { ref, value, ...field } }) => {
                                             return (<>
                                                 <Input
-                                                    // readOnly
-                                                    value={processoId}
+                                                    // value={processoId}
+                                                    readOnly
+                                                    value={sei}
                                                     error={Boolean(errors.processoId)}
                                                     {...field}
                                                 />
@@ -332,7 +333,6 @@ export default function DetalhesVistorias(props: any) {
                                         render={({ field: { ref, ...field } }) => {
                                             return (<>
                                                 <Input
-                                                    // readOnly
                                                     error={Boolean(errors.imovelId)}
                                                     {...field}
                                                 />
